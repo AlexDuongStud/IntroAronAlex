@@ -1,7 +1,7 @@
 /* ###################################################################
 **     Filename    : main.c
 **     Project     : git_test
-**     Processor   : MK22FX512VLQ12
+**     Processor   : MK22FX512VLL12
 **     Version     : Driver 01.01
 **     Compiler    : GNU C Compiler
 **     Date/Time   : 2018-09-21, 16:21, # CodeGen: 0
@@ -30,6 +30,10 @@
 /* Including needed modules to compile this module/procedure */
 #include "Cpu.h"
 #include "Events.h"
+#include "LED1.h"
+#include "BitIoLdd1.h"
+#include "WAIT1.h"
+#include "MCUC1.h"
 /* Including shared modules, which are used for whole project */
 #include "PE_Types.h"
 #include "PE_Error.h"
@@ -48,6 +52,13 @@ int main(void)
   /*** End of Processor Expert internal initialization.                    ***/
 
   /* Write your code here */
+  for(;;){
+	  LED1_ClrVal();
+	  WAIT1_Waitms(20);
+	  LED1_SetVal();
+	  WAIT1_Waitms(500);
+  }
+
   /* For example: for(;;) { } */
 
   /*** Don't write any code pass this line, or it will be deleted during code generation. ***/
