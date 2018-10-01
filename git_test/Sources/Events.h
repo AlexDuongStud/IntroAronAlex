@@ -1,7 +1,7 @@
 /* ###################################################################
 **     Filename    : Events.h
 **     Project     : git_test
-**     Processor   : MK22FX512VLQ12
+**     Processor   : MK22FX512VLL12
 **     Component   : Events
 **     Version     : Driver 01.00
 **     Compiler    : GNU C Compiler
@@ -33,6 +33,10 @@
 #include "PE_Error.h"
 #include "PE_Const.h"
 #include "IO_Map.h"
+#include "LED1.h"
+#include "BitIoLdd1.h"
+#include "WAIT1.h"
+#include "MCUC1.h"
 
 #ifdef __cplusplus
 extern "C" {
