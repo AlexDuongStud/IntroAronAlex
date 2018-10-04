@@ -1,0 +1,1549 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.file	"usb_driver.c"
+  17              		.text
+  18              	.Ltext0:
+  19              		.cfi_sections	.debug_frame
+  20              		.section	.rodata.g_usb_CB,"a",%progbits
+  21              		.align	2
+  24              	g_usb_CB:
+  25 0000 00000000 		.word	USB_Control_Service
+  26 0004 00000000 		.word	USB_Class_CDC_Service_Dic_Bulk_In
+  27 0008 00000000 		.word	USB_Class_CDC_Service_Dic_Bulk_Out
+  28 000c 00000000 		.word	USB_Class_CDC_Service_Cic_Notify
+  29 0010 00000000 		.word	USB_NULL_CALLBACK
+  30 0014 00000000 		.word	USB_NULL_CALLBACK
+  31 0018 00000000 		.word	USB_NULL_CALLBACK
+  32 001c 00000000 		.word	USB_NULL_CALLBACK
+  33 0020 00000000 		.word	USB_NULL_CALLBACK
+  34 0024 00000000 		.word	USB_NULL_CALLBACK
+  35 0028 00000000 		.word	USB_NULL_CALLBACK
+  36 002c 00000000 		.word	USB_NULL_CALLBACK
+  37 0030 00000000 		.word	USB_NULL_CALLBACK
+  38 0034 00000000 		.word	USB_NULL_CALLBACK
+  39 0038 00000000 		.word	USB_NULL_CALLBACK
+  40 003c 00000000 		.word	USB_NULL_CALLBACK
+  41 0040 00000000 		.word	USB_Reset_Service
+  42 0044 00000000 		.word	USB_Suspend_Service
+  43 0048 00000000 		.word	USB_Sof_Service
+  44 004c 00000000 		.word	USB_Resume_Service
+  45 0050 00000000 		.word	USB_Suspend_Service
+  46 0054 00000000 		.word	USB_NULL_CALLBACK
+  47 0058 00000000 		.word	USB_Error_Service
+  48 005c 00000000 		.word	USB_Stall_Service
+  49              		.section	.bss.g_usb_component_status,"aw",%nobits
+  50              		.align	2
+  53              	g_usb_component_status:
+  54 0000 00000000 		.space	7
+  54      000000
+  55 0007 00       		.section	.bss.g_usb_ep_status,"aw",%nobits
+  56              		.align	2
+  59              	g_usb_ep_status:
+  60 0000 00000000 		.space	7
+  60      000000
+  61 0007 00       		.section	.bss.g_EPn,"aw",%nobits
+  64              	g_EPn:
+  65 0000 00       		.space	1
+  66              		.section	.bss.g_EPn_max,"aw",%nobits
+  69              	g_EPn_max:
+  70 0000 00       		.space	1
+  71              		.section	.text.USB_Device_Init_Params,"ax",%progbits
+  72              		.align	2
+  73              		.thumb
+  74              		.thumb_func
+  76              	USB_Device_Init_Params:
+  77              	.LFB0:
+  78              		.file 1 "../Generated_Code/usb_driver.c"
+   1:../Generated_Code/usb_driver.c **** /******************************************************************************
+   2:../Generated_Code/usb_driver.c ****  *
+   3:../Generated_Code/usb_driver.c ****  * Freescale Semiconductor Inc.
+   4:../Generated_Code/usb_driver.c ****  * (c) Copyright 2004-2010 Freescale Semiconductor, Inc.
+   5:../Generated_Code/usb_driver.c ****  * ALL RIGHTS RESERVED.
+   6:../Generated_Code/usb_driver.c ****  *
+   7:../Generated_Code/usb_driver.c ****  ******************************************************************************
+   8:../Generated_Code/usb_driver.c ****  *
+   9:../Generated_Code/usb_driver.c ****  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+  10:../Generated_Code/usb_driver.c ****  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  11:../Generated_Code/usb_driver.c ****  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  12:../Generated_Code/usb_driver.c ****  * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  13:../Generated_Code/usb_driver.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  14:../Generated_Code/usb_driver.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  15:../Generated_Code/usb_driver.c ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  16:../Generated_Code/usb_driver.c ****  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+  17:../Generated_Code/usb_driver.c ****  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  18:../Generated_Code/usb_driver.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  19:../Generated_Code/usb_driver.c ****  * THE POSSIBILITY OF SUCH DAMAGE.
+  20:../Generated_Code/usb_driver.c ****  *
+  21:../Generated_Code/usb_driver.c ****  **************************************************************************//*!
+  22:../Generated_Code/usb_driver.c ****  *
+  23:../Generated_Code/usb_driver.c ****  * @file usb_driver.c
+  24:../Generated_Code/usb_driver.c ****  *
+  25:../Generated_Code/usb_driver.c ****  * @author
+  26:../Generated_Code/usb_driver.c ****  *
+  27:../Generated_Code/usb_driver.c ****  * @version
+  28:../Generated_Code/usb_driver.c ****  *
+  29:../Generated_Code/usb_driver.c ****  * @date
+  30:../Generated_Code/usb_driver.c ****  *
+  31:../Generated_Code/usb_driver.c ****  * @brief The file contains S08 USB stack device layer implementation.
+  32:../Generated_Code/usb_driver.c ****  *
+  33:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+  34:../Generated_Code/usb_driver.c **** 
+  35:../Generated_Code/usb_driver.c **** /******************************************************************************
+  36:../Generated_Code/usb_driver.c ****  * Includes
+  37:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+  38:../Generated_Code/usb_driver.c **** #include "usb_devapi.h" /* USB Device Layer API Header File */
+  39:../Generated_Code/usb_driver.c **** #include "usb_dciapi.h" /* USB Controller API Header File */
+  40:../Generated_Code/usb_driver.c **** #ifdef _MK_xxx_H_
+  41:../Generated_Code/usb_driver.c **** 	#include "usb_dci_kinetis.h"
+  42:../Generated_Code/usb_driver.c **** #endif
+  43:../Generated_Code/usb_driver.c **** #ifndef MULTIPLE_DEVICES
+  44:../Generated_Code/usb_driver.c **** 	#include "USB_Config.h"
+  45:../Generated_Code/usb_driver.c **** #endif
+  46:../Generated_Code/usb_driver.c **** 
+  47:../Generated_Code/usb_driver.c **** /*****************************************************************************
+  48:../Generated_Code/usb_driver.c ****  * Constant and Macro's
+  49:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+  50:../Generated_Code/usb_driver.c **** 
+  51:../Generated_Code/usb_driver.c **** 
+  52:../Generated_Code/usb_driver.c **** /****************************************************************************
+  53:../Generated_Code/usb_driver.c ****  * Global Variables
+  54:../Generated_Code/usb_driver.c ****  ****************************************************************************/
+  55:../Generated_Code/usb_driver.c **** extern void USB_Control_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  56:../Generated_Code/usb_driver.c **** extern void USB_Reset_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  57:../Generated_Code/usb_driver.c **** extern void USB_Sof_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  58:../Generated_Code/usb_driver.c **** extern void USB_Resume_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  59:../Generated_Code/usb_driver.c **** extern void USB_Suspend_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  60:../Generated_Code/usb_driver.c **** extern void USB_Error_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  61:../Generated_Code/usb_driver.c **** extern void USB_Stall_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  62:../Generated_Code/usb_driver.c **** extern void USB_NULL_CALLBACK (PTR_USB_DEV_EVENT_STRUCT event);
+  63:../Generated_Code/usb_driver.c **** 
+  64:../Generated_Code/usb_driver.c **** /* Array of USB Service pointers */
+  65:../Generated_Code/usb_driver.c **** #ifdef MULTIPLE_DEVICES
+  66:../Generated_Code/usb_driver.c **** 	static USB_SERVICE_CALLBACK g_usb_CB[USB_SERVICE_MAX];
+  67:../Generated_Code/usb_driver.c **** #else
+  68:../Generated_Code/usb_driver.c **** 	static USB_SERVICE_CALLBACK g_usb_CB[USB_SERVICE_MAX] = {
+  69:../Generated_Code/usb_driver.c **** 		USB_EP0_CALLBACK,
+  70:../Generated_Code/usb_driver.c **** 		USB_EP1_CALLBACK,
+  71:../Generated_Code/usb_driver.c **** 		USB_EP2_CALLBACK,
+  72:../Generated_Code/usb_driver.c **** 		USB_EP3_CALLBACK,
+  73:../Generated_Code/usb_driver.c **** 		USB_EP4_CALLBACK,
+  74:../Generated_Code/usb_driver.c **** 		USB_EP5_CALLBACK,
+  75:../Generated_Code/usb_driver.c **** 		USB_EP6_CALLBACK,
+  76:../Generated_Code/usb_driver.c **** 		USB_EP7_CALLBACK,
+  77:../Generated_Code/usb_driver.c **** 		USB_EP8_CALLBACK,
+  78:../Generated_Code/usb_driver.c **** 		USB_EP9_CALLBACK,
+  79:../Generated_Code/usb_driver.c **** 		USB_EP10_CALLBACK,
+  80:../Generated_Code/usb_driver.c **** 		USB_EP11_CALLBACK,
+  81:../Generated_Code/usb_driver.c **** 		USB_EP12_CALLBACK,
+  82:../Generated_Code/usb_driver.c **** 		USB_EP13_CALLBACK,
+  83:../Generated_Code/usb_driver.c **** 		USB_EP14_CALLBACK,
+  84:../Generated_Code/usb_driver.c **** 		USB_EP15_CALLBACK,
+  85:../Generated_Code/usb_driver.c **** 		USB_BUS_RESET_CALLBACK,
+  86:../Generated_Code/usb_driver.c **** 		USB_SUSPEND_CALLBACK,
+  87:../Generated_Code/usb_driver.c **** 		USB_SOF_CALLBACK,
+  88:../Generated_Code/usb_driver.c **** 		USB_RESUME_CALLBACK,
+  89:../Generated_Code/usb_driver.c **** 		USB_SLEEP_CALLBACK,
+  90:../Generated_Code/usb_driver.c **** 		USB_SPEED_DETECTION_CALLBACK,
+  91:../Generated_Code/usb_driver.c **** 		USB_ERROR_CALLBACK,
+  92:../Generated_Code/usb_driver.c **** 		USB_STALL_CALLBACK
+  93:../Generated_Code/usb_driver.c **** };
+  94:../Generated_Code/usb_driver.c **** #endif
+  95:../Generated_Code/usb_driver.c **** /* Array of USB Component Status */
+  96:../Generated_Code/usb_driver.c **** /* Test mode is the last service */
+  97:../Generated_Code/usb_driver.c **** static uint_8 g_usb_component_status[USB_STATUS_TEST_MODE];
+  98:../Generated_Code/usb_driver.c **** /* Array of USB Endpoint Status */
+  99:../Generated_Code/usb_driver.c **** static uint_8 g_usb_ep_status[MAX_SUPPORTED_ENDPOINTS];
+ 100:../Generated_Code/usb_driver.c **** /* Current un-initialized non CONTROL Endpoint */
+ 101:../Generated_Code/usb_driver.c **** static uint_8 g_EPn=0;
+ 102:../Generated_Code/usb_driver.c **** /* Maximum number of Non CONTROL Endpoint required by upper layer */
+ 103:../Generated_Code/usb_driver.c **** static uint_8 g_EPn_max=0;
+ 104:../Generated_Code/usb_driver.c **** 
+ 105:../Generated_Code/usb_driver.c **** /*****************************************************************************
+ 106:../Generated_Code/usb_driver.c ****  * Local Types - None
+ 107:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 108:../Generated_Code/usb_driver.c **** 
+ 109:../Generated_Code/usb_driver.c **** /*****************************************************************************
+ 110:../Generated_Code/usb_driver.c ****  * Local Functions Prototypes - None
+ 111:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 112:../Generated_Code/usb_driver.c **** static void USB_Device_Init_Params(void);
+ 113:../Generated_Code/usb_driver.c **** 
+ 114:../Generated_Code/usb_driver.c **** /*****************************************************************************
+ 115:../Generated_Code/usb_driver.c ****  * Local Variables - None
+ 116:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 117:../Generated_Code/usb_driver.c **** 
+ 118:../Generated_Code/usb_driver.c **** /*****************************************************************************
+ 119:../Generated_Code/usb_driver.c ****  * Local Functions
+ 120:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 121:../Generated_Code/usb_driver.c **** #if 0 /* << EST */
+ 122:../Generated_Code/usb_driver.c **** #if (defined(_MC9S08MM128_H) || defined(_MC9S08JE128_H))
+ 123:../Generated_Code/usb_driver.c **** #pragma CODE_SEG DEFAULT
+ 124:../Generated_Code/usb_driver.c **** #endif
+ 125:../Generated_Code/usb_driver.c **** #else
+ 126:../Generated_Code/usb_driver.c **** /* device is Kinetis K22F120 << EST */
+ 127:../Generated_Code/usb_driver.c **** #endif
+ 128:../Generated_Code/usb_driver.c **** /*****************************************************************************
+ 129:../Generated_Code/usb_driver.c ****  * Global Functions
+ 130:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 131:../Generated_Code/usb_driver.c **** extern uint_8 USB_DCI_Init (
+ 132:../Generated_Code/usb_driver.c ****     uint_8    controller_ID,
+ 133:../Generated_Code/usb_driver.c ****     uint_8    bVregEn
+ 134:../Generated_Code/usb_driver.c **** );
+ 135:../Generated_Code/usb_driver.c **** extern uint_8 USB_DCI_DeInit(void);
+ 136:../Generated_Code/usb_driver.c **** 
+ 137:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 138:../Generated_Code/usb_driver.c ****  *
+ 139:../Generated_Code/usb_driver.c ****  * @name  USB_Device_Init_Params
+ 140:../Generated_Code/usb_driver.c ****  *
+ 141:../Generated_Code/usb_driver.c ****  * @brief The function initializes the Device Layer Structures
+ 142:../Generated_Code/usb_driver.c ****  *
+ 143:../Generated_Code/usb_driver.c ****  * @param  None
+ 144:../Generated_Code/usb_driver.c ****  *
+ 145:../Generated_Code/usb_driver.c ****  * @return None
+ 146:../Generated_Code/usb_driver.c ****  *
+ 147:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 148:../Generated_Code/usb_driver.c ****  * Initializes USB Device Layer Structures
+ 149:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 150:../Generated_Code/usb_driver.c **** static void USB_Device_Init_Params(void)
+ 151:../Generated_Code/usb_driver.c **** {
+  79              		.loc 1 151 0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 8
+  82              		@ frame_needed = 1, uses_anonymous_args = 0
+  83              		@ link register save eliminated.
+  84 0000 80B4     		push	{r7}
+  85              		.cfi_def_cfa_offset 4
+  86              		.cfi_offset 7, -4
+  87 0002 83B0     		sub	sp, sp, #12
+  88              		.cfi_def_cfa_offset 16
+  89 0004 00AF     		add	r7, sp, #0
+  90              		.cfi_def_cfa_register 7
+ 152:../Generated_Code/usb_driver.c ****     uint_8 loop_index=0;
+  91              		.loc 1 152 0
+  92 0006 0023     		movs	r3, #0
+  93 0008 FB71     		strb	r3, [r7, #7]
+ 153:../Generated_Code/usb_driver.c **** 
+ 154:../Generated_Code/usb_driver.c ****     g_EPn= g_EPn_max; /* 1 control endpoint */
+  94              		.loc 1 154 0
+  95 000a 114B     		ldr	r3, .L6
+  96 000c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+  97 000e 114B     		ldr	r3, .L6+4
+  98 0010 1A70     		strb	r2, [r3]
+ 155:../Generated_Code/usb_driver.c **** 
+ 156:../Generated_Code/usb_driver.c ****     /*
+ 157:../Generated_Code/usb_driver.c ****        Initialize USB_STATUS_DEVICE_STATE, USB_STATUS_INTERFACE,
+ 158:../Generated_Code/usb_driver.c ****        USB_STATUS_ADDRESS, USB_STATUS_CURRENT_CONFIG, USB_STATUS_SOF_COUNT
+ 159:../Generated_Code/usb_driver.c ****        and USB_STATUS_DEVICE to USB_STATUS_UNKNOWN
+ 160:../Generated_Code/usb_driver.c ****     */
+ 161:../Generated_Code/usb_driver.c ****     for(loop_index = 0; loop_index < USB_STATUS_TEST_MODE; loop_index++)
+  99              		.loc 1 161 0
+ 100 0012 0023     		movs	r3, #0
+ 101 0014 FB71     		strb	r3, [r7, #7]
+ 102 0016 06E0     		b	.L2
+ 103              	.L3:
+ 162:../Generated_Code/usb_driver.c ****     {
+ 163:../Generated_Code/usb_driver.c ****         #ifdef OTG_BUILD
+ 164:../Generated_Code/usb_driver.c ****          if(loop_index != (USB_STATUS_OTG-1)) /* Do not initialize the OTG status with 0xFFFF */
+ 165:../Generated_Code/usb_driver.c ****         #endif
+ 166:../Generated_Code/usb_driver.c ****          {
+ 167:../Generated_Code/usb_driver.c ****           g_usb_component_status[loop_index] = USB_STATUS_UNKNOWN;
+ 104              		.loc 1 167 0 discriminator 2
+ 105 0018 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 106 001a 0F4A     		ldr	r2, .L6+8
+ 107 001c FF21     		movs	r1, #255
+ 108 001e D154     		strb	r1, [r2, r3]
+ 161:../Generated_Code/usb_driver.c ****     for(loop_index = 0; loop_index < USB_STATUS_TEST_MODE; loop_index++)
+ 109              		.loc 1 161 0 discriminator 2
+ 110 0020 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 111 0022 0133     		adds	r3, r3, #1
+ 112 0024 FB71     		strb	r3, [r7, #7]
+ 113              	.L2:
+ 161:../Generated_Code/usb_driver.c ****     for(loop_index = 0; loop_index < USB_STATUS_TEST_MODE; loop_index++)
+ 114              		.loc 1 161 0 is_stmt 0 discriminator 1
+ 115 0026 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 116 0028 062B     		cmp	r3, #6
+ 117 002a F5D9     		bls	.L3
+ 168:../Generated_Code/usb_driver.c ****          }
+ 169:../Generated_Code/usb_driver.c ****     }
+ 170:../Generated_Code/usb_driver.c **** 
+ 171:../Generated_Code/usb_driver.c ****     /* Initialize status of All Endpoints to USB_STATUS_DISABLED */
+ 172:../Generated_Code/usb_driver.c ****     for(loop_index = 0; loop_index < MAX_SUPPORTED_ENDPOINTS; loop_index++)
+ 118              		.loc 1 172 0 is_stmt 1
+ 119 002c 0023     		movs	r3, #0
+ 120 002e FB71     		strb	r3, [r7, #7]
+ 121 0030 06E0     		b	.L4
+ 122              	.L5:
+ 173:../Generated_Code/usb_driver.c ****     {
+ 174:../Generated_Code/usb_driver.c ****         g_usb_ep_status[loop_index] = USB_STATUS_DISABLED;
+ 123              		.loc 1 174 0 discriminator 2
+ 124 0032 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 125 0034 094A     		ldr	r2, .L6+12
+ 126 0036 0521     		movs	r1, #5
+ 127 0038 D154     		strb	r1, [r2, r3]
+ 172:../Generated_Code/usb_driver.c ****     for(loop_index = 0; loop_index < MAX_SUPPORTED_ENDPOINTS; loop_index++)
+ 128              		.loc 1 172 0 discriminator 2
+ 129 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 130 003c 0133     		adds	r3, r3, #1
+ 131 003e FB71     		strb	r3, [r7, #7]
+ 132              	.L4:
+ 172:../Generated_Code/usb_driver.c ****     for(loop_index = 0; loop_index < MAX_SUPPORTED_ENDPOINTS; loop_index++)
+ 133              		.loc 1 172 0 is_stmt 0 discriminator 1
+ 134 0040 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 135 0042 062B     		cmp	r3, #6
+ 136 0044 F5D9     		bls	.L5
+ 175:../Generated_Code/usb_driver.c ****     }
+ 176:../Generated_Code/usb_driver.c **** }
+ 137              		.loc 1 176 0 is_stmt 1
+ 138 0046 0C37     		adds	r7, r7, #12
+ 139 0048 BD46     		mov	sp, r7
+ 140              		@ sp needed
+ 141 004a 5DF8047B 		ldr	r7, [sp], #4
+ 142 004e 7047     		bx	lr
+ 143              	.L7:
+ 144              		.align	2
+ 145              	.L6:
+ 146 0050 00000000 		.word	g_EPn_max
+ 147 0054 00000000 		.word	g_EPn
+ 148 0058 00000000 		.word	g_usb_component_status
+ 149 005c 00000000 		.word	g_usb_ep_status
+ 150              		.cfi_endproc
+ 151              	.LFE0:
+ 153              		.section	.text._usb_device_init,"ax",%progbits
+ 154              		.align	2
+ 155              		.global	_usb_device_init
+ 156              		.thumb
+ 157              		.thumb_func
+ 159              	_usb_device_init:
+ 160              	.LFB1:
+ 177:../Generated_Code/usb_driver.c **** 
+ 178:../Generated_Code/usb_driver.c **** /*****************************************************************************
+ 179:../Generated_Code/usb_driver.c ****  * Global Functions
+ 180:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 181:../Generated_Code/usb_driver.c **** 
+ 182:../Generated_Code/usb_driver.c **** 
+ 183:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 184:../Generated_Code/usb_driver.c ****  *
+ 185:../Generated_Code/usb_driver.c ****  * @name  _usb_device_init
+ 186:../Generated_Code/usb_driver.c ****  *
+ 187:../Generated_Code/usb_driver.c ****  * @brief The function initializes the Device and Controller layer
+ 188:../Generated_Code/usb_driver.c ****  *
+ 189:../Generated_Code/usb_driver.c ****  * @param device_number       : USB Device controller to initialize
+ 190:../Generated_Code/usb_driver.c ****  * @param handle              : pointer to USB Device handle
+ 191:../Generated_Code/usb_driver.c ****  * @param number_of_endpoints : Endpoint count of the application
+ 192:../Generated_Code/usb_driver.c ****  *
+ 193:../Generated_Code/usb_driver.c ****  * @return status
+ 194:../Generated_Code/usb_driver.c ****  *         USB_OK                              : When Successfull
+ 195:../Generated_Code/usb_driver.c ****  *         USBERR_INVALID_NUM_OF_ENDPOINTS     : When endpoints > max Supported
+ 196:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 197:../Generated_Code/usb_driver.c ****  * This function initializes the Device layer and the Controller layer of the
+ 198:../Generated_Code/usb_driver.c ****  * S08 USB stack. It initializes the variables used for this layer and then
+ 199:../Generated_Code/usb_driver.c ****  * calls the controller layer initialize function
+ 200:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 201:../Generated_Code/usb_driver.c **** uint_8 _usb_device_init (
+ 202:../Generated_Code/usb_driver.c ****     uint_8    device_number,			/* [IN] USB Device controller to initialize */
+ 203:../Generated_Code/usb_driver.c ****     _usb_device_handle _PTR_  handle,	/* [IN] Pointer to USB Device handle */
+ 204:../Generated_Code/usb_driver.c ****     uint_8    number_of_endpoints,		/* [IN] Number of endpoints to initialize */
+ 205:../Generated_Code/usb_driver.c ****     uint_8    bVregEn        			/* Enables or disables internal regulator */
+ 206:../Generated_Code/usb_driver.c **** )
+ 207:../Generated_Code/usb_driver.c **** {
+ 161              		.loc 1 207 0
+ 162              		.cfi_startproc
+ 163              		@ args = 0, pretend = 0, frame = 8
+ 164              		@ frame_needed = 1, uses_anonymous_args = 0
+ 165 0000 80B5     		push	{r7, lr}
+ 166              		.cfi_def_cfa_offset 8
+ 167              		.cfi_offset 7, -8
+ 168              		.cfi_offset 14, -4
+ 169 0002 82B0     		sub	sp, sp, #8
+ 170              		.cfi_def_cfa_offset 16
+ 171 0004 00AF     		add	r7, sp, #0
+ 172              		.cfi_def_cfa_register 7
+ 173 0006 3960     		str	r1, [r7]
+ 174 0008 0146     		mov	r1, r0
+ 175 000a F971     		strb	r1, [r7, #7]
+ 176 000c BA71     		strb	r2, [r7, #6]
+ 177 000e 7B71     		strb	r3, [r7, #5]
+ 208:../Generated_Code/usb_driver.c **** 	UNUSED(handle);
+ 209:../Generated_Code/usb_driver.c **** 
+ 210:../Generated_Code/usb_driver.c ****     /* validate endpoints param */
+ 211:../Generated_Code/usb_driver.c ****     if((number_of_endpoints > MAX_SUPPORTED_ENDPOINTS) ||
+ 178              		.loc 1 211 0
+ 179 0010 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 180 0012 072B     		cmp	r3, #7
+ 181 0014 02D8     		bhi	.L9
+ 182              		.loc 1 211 0 is_stmt 0 discriminator 1
+ 183 0016 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 184 0018 002B     		cmp	r3, #0
+ 185 001a 01D1     		bne	.L10
+ 186              	.L9:
+ 212:../Generated_Code/usb_driver.c ****       (number_of_endpoints < MIN_SUPPORTED_ENDPOINTS))
+ 213:../Generated_Code/usb_driver.c ****     {
+ 214:../Generated_Code/usb_driver.c ****         return USBERR_INVALID_NUM_OF_ENDPOINTS;
+ 187              		.loc 1 214 0 is_stmt 1
+ 188 001c 9923     		movs	r3, #153
+ 189 001e 0DE0     		b	.L11
+ 190              	.L10:
+ 215:../Generated_Code/usb_driver.c ****     }
+ 216:../Generated_Code/usb_driver.c **** 
+ 217:../Generated_Code/usb_driver.c ****     /* init variables */
+ 218:../Generated_Code/usb_driver.c ****     g_EPn_max = (uint_8)(number_of_endpoints - 1);
+ 191              		.loc 1 218 0
+ 192 0020 BB79     		ldrb	r3, [r7, #6]
+ 193 0022 013B     		subs	r3, r3, #1
+ 194 0024 DAB2     		uxtb	r2, r3
+ 195 0026 074B     		ldr	r3, .L12
+ 196 0028 1A70     		strb	r2, [r3]
+ 219:../Generated_Code/usb_driver.c **** 
+ 220:../Generated_Code/usb_driver.c ****     USB_Device_Init_Params();
+ 197              		.loc 1 220 0
+ 198 002a FFF7FEFF 		bl	USB_Device_Init_Params
+ 221:../Generated_Code/usb_driver.c **** 
+ 222:../Generated_Code/usb_driver.c **** #ifdef MULTIPLE_DEVICES
+ 223:../Generated_Code/usb_driver.c ****     /* Initialize all services to null value */
+ 224:../Generated_Code/usb_driver.c ****     Clear_Mem((uint_8_ptr)g_usb_CB,
+ 225:../Generated_Code/usb_driver.c ****         (uint_32)(sizeof(USB_SERVICE_CALLBACK) * USB_SERVICE_MAX), (uint_8)0);
+ 226:../Generated_Code/usb_driver.c **** #endif
+ 227:../Generated_Code/usb_driver.c ****     /* Call controller layer initialization function */
+ 228:../Generated_Code/usb_driver.c ****     return USB_DCI_Init(device_number, bVregEn);
+ 199              		.loc 1 228 0
+ 200 002e FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 201 0030 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 202 0032 1046     		mov	r0, r2
+ 203 0034 1946     		mov	r1, r3
+ 204 0036 FFF7FEFF 		bl	USB_DCI_Init
+ 205 003a 0346     		mov	r3, r0
+ 206              	.L11:
+ 229:../Generated_Code/usb_driver.c **** 
+ 230:../Generated_Code/usb_driver.c **** }
+ 207              		.loc 1 230 0
+ 208 003c 1846     		mov	r0, r3
+ 209 003e 0837     		adds	r7, r7, #8
+ 210 0040 BD46     		mov	sp, r7
+ 211              		@ sp needed
+ 212 0042 80BD     		pop	{r7, pc}
+ 213              	.L13:
+ 214              		.align	2
+ 215              	.L12:
+ 216 0044 00000000 		.word	g_EPn_max
+ 217              		.cfi_endproc
+ 218              	.LFE1:
+ 220              		.section	.text._usb_device_deinit,"ax",%progbits
+ 221              		.align	2
+ 222              		.global	_usb_device_deinit
+ 223              		.thumb
+ 224              		.thumb_func
+ 226              	_usb_device_deinit:
+ 227              	.LFB2:
+ 231:../Generated_Code/usb_driver.c **** 
+ 232:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 233:../Generated_Code/usb_driver.c ****  *
+ 234:../Generated_Code/usb_driver.c ****  * @name  _usb_device_deinit
+ 235:../Generated_Code/usb_driver.c ****  *
+ 236:../Generated_Code/usb_driver.c ****  * @brief The function de-initializes the Device and Controller layer
+ 237:../Generated_Code/usb_driver.c ****  *
+ 238:../Generated_Code/usb_driver.c ****  * @return status
+ 239:../Generated_Code/usb_driver.c ****  *         USB_OK                              : When Successfull
+ 240:../Generated_Code/usb_driver.c ****  *         USBERR_INVALID_NUM_OF_ENDPOINTS     : When endpoints > max Supported
+ 241:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 242:../Generated_Code/usb_driver.c ****  * This function de-initializes the Device layer and the Controller layer
+ 243:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 244:../Generated_Code/usb_driver.c **** uint_8 _usb_device_deinit(void)
+ 245:../Generated_Code/usb_driver.c **** {
+ 228              		.loc 1 245 0
+ 229              		.cfi_startproc
+ 230              		@ args = 0, pretend = 0, frame = 0
+ 231              		@ frame_needed = 1, uses_anonymous_args = 0
+ 232 0000 80B5     		push	{r7, lr}
+ 233              		.cfi_def_cfa_offset 8
+ 234              		.cfi_offset 7, -8
+ 235              		.cfi_offset 14, -4
+ 236 0002 00AF     		add	r7, sp, #0
+ 237              		.cfi_def_cfa_register 7
+ 246:../Generated_Code/usb_driver.c **** 	g_EPn_max = 0;
+ 238              		.loc 1 246 0
+ 239 0004 034B     		ldr	r3, .L16
+ 240 0006 0022     		movs	r2, #0
+ 241 0008 1A70     		strb	r2, [r3]
+ 247:../Generated_Code/usb_driver.c **** 	/* Call controller layer de-initialization function */
+ 248:../Generated_Code/usb_driver.c **** 	return USB_DCI_DeInit();
+ 242              		.loc 1 248 0
+ 243 000a FFF7FEFF 		bl	USB_DCI_DeInit
+ 244 000e 0346     		mov	r3, r0
+ 249:../Generated_Code/usb_driver.c **** }
+ 245              		.loc 1 249 0
+ 246 0010 1846     		mov	r0, r3
+ 247 0012 80BD     		pop	{r7, pc}
+ 248              	.L17:
+ 249              		.align	2
+ 250              	.L16:
+ 251 0014 00000000 		.word	g_EPn_max
+ 252              		.cfi_endproc
+ 253              	.LFE2:
+ 255              		.section	.text._usb_device_init_endpoint,"ax",%progbits
+ 256              		.align	2
+ 257              		.global	_usb_device_init_endpoint
+ 258              		.thumb
+ 259              		.thumb_func
+ 261              	_usb_device_init_endpoint:
+ 262              	.LFB3:
+ 250:../Generated_Code/usb_driver.c **** 
+ 251:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 252:../Generated_Code/usb_driver.c ****  *
+ 253:../Generated_Code/usb_driver.c ****  * @name  _usb_device_init_endpoint
+ 254:../Generated_Code/usb_driver.c ****  *
+ 255:../Generated_Code/usb_driver.c ****  * @brief The function initializes the endpoint
+ 256:../Generated_Code/usb_driver.c ****  *
+ 257:../Generated_Code/usb_driver.c ****  * @param handle          : USB Device handle
+ 258:../Generated_Code/usb_driver.c ****  * @param endpoint_number : Endpoint number
+ 259:../Generated_Code/usb_driver.c ****  * @param max_packet_size : Maximum packet size (in bytes) for the endpoint
+ 260:../Generated_Code/usb_driver.c ****  * @param direction       : Direction of transfer
+ 261:../Generated_Code/usb_driver.c ****  * @param endpoint_type   : Type of endpoint
+ 262:../Generated_Code/usb_driver.c ****  * @param flag            : Zero termination flag
+ 263:../Generated_Code/usb_driver.c ****  *
+ 264:../Generated_Code/usb_driver.c ****  * @return status
+ 265:../Generated_Code/usb_driver.c ****  *         USB_OK                              : When Successfull
+ 266:../Generated_Code/usb_driver.c ****  *         USBERR_EP_INIT_FAILED     : When endpoints > max Supported
+ 267:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 268:../Generated_Code/usb_driver.c ****  *
+ 269:../Generated_Code/usb_driver.c ****  * This function initializes an endpoint the Device layer and the Controller
+ 270:../Generated_Code/usb_driver.c ****  * layer in the S08 USB stack. It validate whether all endpoints have already
+ 271:../Generated_Code/usb_driver.c ****  * been initialized or not and then calls the controller layer endpoint
+ 272:../Generated_Code/usb_driver.c ****  *  initialize function
+ 273:../Generated_Code/usb_driver.c ****  *
+ 274:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 275:../Generated_Code/usb_driver.c **** uint_8 _usb_device_init_endpoint (
+ 276:../Generated_Code/usb_driver.c ****     _usb_device_handle    handle,             /* [IN] USB Device handle */
+ 277:../Generated_Code/usb_driver.c ****     uint_8                endpoint_number,    /* [IN] Endpoint number*/	
+ 278:../Generated_Code/usb_driver.c ****     uint_16               max_packet_size,    /* [IN] Maximum packet size (in bytes) for the endpoi
+ 279:../Generated_Code/usb_driver.c ****     uint_8                direction,          /* [IN] Direction of transfer */
+ 280:../Generated_Code/usb_driver.c ****     uint_8                endpoint_type,      /* [IN] Type of endpoint */
+ 281:../Generated_Code/usb_driver.c ****     uint_8                flag                /* [IN] Zero termination flag */
+ 282:../Generated_Code/usb_driver.c **** )
+ 283:../Generated_Code/usb_driver.c **** {
+ 263              		.loc 1 283 0
+ 264              		.cfi_startproc
+ 265              		@ args = 8, pretend = 0, frame = 16
+ 266              		@ frame_needed = 1, uses_anonymous_args = 0
+ 267 0000 80B5     		push	{r7, lr}
+ 268              		.cfi_def_cfa_offset 8
+ 269              		.cfi_offset 7, -8
+ 270              		.cfi_offset 14, -4
+ 271 0002 84B0     		sub	sp, sp, #16
+ 272              		.cfi_def_cfa_offset 24
+ 273 0004 00AF     		add	r7, sp, #0
+ 274              		.cfi_def_cfa_register 7
+ 275 0006 7860     		str	r0, [r7, #4]
+ 276 0008 F970     		strb	r1, [r7, #3]
+ 277 000a 3A80     		strh	r2, [r7]	@ movhi
+ 278 000c BB70     		strb	r3, [r7, #2]
+ 284:../Generated_Code/usb_driver.c **** 	USB_EP_STRUCT ep_str;
+ 285:../Generated_Code/usb_driver.c **** 		
+ 286:../Generated_Code/usb_driver.c ****     uint_8 status = USB_OK;
+ 279              		.loc 1 286 0
+ 280 000e 0023     		movs	r3, #0
+ 281 0010 FB73     		strb	r3, [r7, #15]
+ 287:../Generated_Code/usb_driver.c **** 
+ 288:../Generated_Code/usb_driver.c ****     /* check if all endpoint have already been initialised */
+ 289:../Generated_Code/usb_driver.c ****     if((g_EPn == 0) && (endpoint_number != CONTROL_ENDPOINT))
+ 282              		.loc 1 289 0
+ 283 0012 174B     		ldr	r3, .L23
+ 284 0014 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 285 0016 002B     		cmp	r3, #0
+ 286 0018 04D1     		bne	.L19
+ 287              		.loc 1 289 0 is_stmt 0 discriminator 1
+ 288 001a FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 289 001c 002B     		cmp	r3, #0
+ 290 001e 01D0     		beq	.L19
+ 290:../Generated_Code/usb_driver.c ****     {
+ 291:../Generated_Code/usb_driver.c ****         return USBERR_EP_INIT_FAILED;
+ 291              		.loc 1 291 0 is_stmt 1
+ 292 0020 9523     		movs	r3, #149
+ 293 0022 21E0     		b	.L22
+ 294              	.L19:
+ 292:../Generated_Code/usb_driver.c ****     }
+ 293:../Generated_Code/usb_driver.c **** 
+ 294:../Generated_Code/usb_driver.c ****     ep_str.direction = direction;
+ 295              		.loc 1 294 0
+ 296 0024 BB78     		ldrb	r3, [r7, #2]
+ 297 0026 BB72     		strb	r3, [r7, #10]
+ 295:../Generated_Code/usb_driver.c ****     ep_str.ep_num = endpoint_number;
+ 298              		.loc 1 295 0
+ 299 0028 FB78     		ldrb	r3, [r7, #3]
+ 300 002a 3B72     		strb	r3, [r7, #8]
+ 296:../Generated_Code/usb_driver.c **** 
+ 297:../Generated_Code/usb_driver.c **** #if 0 /* << EST */
+ 298:../Generated_Code/usb_driver.c **** #ifndef _MC9S08JS16_H    
+ 299:../Generated_Code/usb_driver.c ****     ep_str.size = max_packet_size;
+ 300:../Generated_Code/usb_driver.c **** #else
+ 301:../Generated_Code/usb_driver.c ****     ep_str.size = (char)max_packet_size;
+ 302:../Generated_Code/usb_driver.c **** #endif    
+ 303:../Generated_Code/usb_driver.c **** #else
+ 304:../Generated_Code/usb_driver.c **** /* device is Kinetis K22F120 << EST */
+ 305:../Generated_Code/usb_driver.c ****     ep_str.size = max_packet_size;
+ 301              		.loc 1 305 0
+ 302 002c 3B88     		ldrh	r3, [r7]	@ movhi
+ 303 002e A7F80B30 		strh	r3, [r7, #11]	@ unaligned
+ 306:../Generated_Code/usb_driver.c **** #endif
+ 307:../Generated_Code/usb_driver.c **** 
+ 308:../Generated_Code/usb_driver.c ****     ep_str.type = endpoint_type;
+ 304              		.loc 1 308 0
+ 305 0032 3B7E     		ldrb	r3, [r7, #24]
+ 306 0034 7B72     		strb	r3, [r7, #9]
+ 309:../Generated_Code/usb_driver.c **** 
+ 310:../Generated_Code/usb_driver.c ****     /* call controller layer for initiazation */
+ 311:../Generated_Code/usb_driver.c ****     status = USB_DCI_Init_EndPoint(*((uint_8*)handle), &ep_str, flag);
+ 307              		.loc 1 311 0
+ 308 0036 7B68     		ldr	r3, [r7, #4]
+ 309 0038 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 310 003a 07F10802 		add	r2, r7, #8
+ 311 003e 3B7F     		ldrb	r3, [r7, #28]	@ zero_extendqisi2
+ 312 0040 0846     		mov	r0, r1
+ 313 0042 1146     		mov	r1, r2
+ 314 0044 1A46     		mov	r2, r3
+ 315 0046 FFF7FEFF 		bl	USB_DCI_Init_EndPoint
+ 316 004a 0346     		mov	r3, r0
+ 317 004c FB73     		strb	r3, [r7, #15]
+ 312:../Generated_Code/usb_driver.c **** 
+ 313:../Generated_Code/usb_driver.c ****     /* if endpoint successfully initialised update counter */
+ 314:../Generated_Code/usb_driver.c ****     if ((ep_str.ep_num != CONTROL_ENDPOINT) && (status == USB_OK))
+ 318              		.loc 1 314 0
+ 319 004e 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 320 0050 002B     		cmp	r3, #0
+ 321 0052 08D0     		beq	.L21
+ 322              		.loc 1 314 0 is_stmt 0 discriminator 1
+ 323 0054 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 324 0056 002B     		cmp	r3, #0
+ 325 0058 05D1     		bne	.L21
+ 315:../Generated_Code/usb_driver.c ****     {
+ 316:../Generated_Code/usb_driver.c ****         g_EPn--;
+ 326              		.loc 1 316 0 is_stmt 1
+ 327 005a 054B     		ldr	r3, .L23
+ 328 005c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 329 005e 013B     		subs	r3, r3, #1
+ 330 0060 DAB2     		uxtb	r2, r3
+ 331 0062 034B     		ldr	r3, .L23
+ 332 0064 1A70     		strb	r2, [r3]
+ 333              	.L21:
+ 317:../Generated_Code/usb_driver.c ****     }
+ 318:../Generated_Code/usb_driver.c **** 
+ 319:../Generated_Code/usb_driver.c ****     return status;
+ 334              		.loc 1 319 0
+ 335 0066 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 336              	.L22:
+ 320:../Generated_Code/usb_driver.c **** }
+ 337              		.loc 1 320 0
+ 338 0068 1846     		mov	r0, r3
+ 339 006a 1037     		adds	r7, r7, #16
+ 340 006c BD46     		mov	sp, r7
+ 341              		@ sp needed
+ 342 006e 80BD     		pop	{r7, pc}
+ 343              	.L24:
+ 344              		.align	2
+ 345              	.L23:
+ 346 0070 00000000 		.word	g_EPn
+ 347              		.cfi_endproc
+ 348              	.LFE3:
+ 350              		.section	.text._usb_device_deinit_endpoint,"ax",%progbits
+ 351              		.align	2
+ 352              		.global	_usb_device_deinit_endpoint
+ 353              		.thumb
+ 354              		.thumb_func
+ 356              	_usb_device_deinit_endpoint:
+ 357              	.LFB4:
+ 321:../Generated_Code/usb_driver.c **** 
+ 322:../Generated_Code/usb_driver.c **** 
+ 323:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 324:../Generated_Code/usb_driver.c ****  *
+ 325:../Generated_Code/usb_driver.c ****  * @name  _usb_device_deinit_endpoint
+ 326:../Generated_Code/usb_driver.c ****  *
+ 327:../Generated_Code/usb_driver.c ****  * @brief The function de-initializes the endpoint
+ 328:../Generated_Code/usb_driver.c ****  *
+ 329:../Generated_Code/usb_driver.c ****  * @param handle          : USB Device handle
+ 330:../Generated_Code/usb_driver.c ****  * @param endpoint_number : Endpoint number
+ 331:../Generated_Code/usb_driver.c ****  * @param direction       : Endpoint direction
+ 332:../Generated_Code/usb_driver.c ****  *
+ 333:../Generated_Code/usb_driver.c ****  * @return status
+ 334:../Generated_Code/usb_driver.c ****  *         USB_OK                              : When Successfull
+ 335:../Generated_Code/usb_driver.c ****  *         USBERR_EP_DEINIT_FAILED     : When endpoints > max Supported
+ 336:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 337:../Generated_Code/usb_driver.c ****  *
+ 338:../Generated_Code/usb_driver.c ****  * This function deinitializes an endpoint the Device layer and the Controller
+ 339:../Generated_Code/usb_driver.c ****  * layer in the S08 USB stack. It validate whether all endpoints have already
+ 340:../Generated_Code/usb_driver.c ****  * been deinitialized or not and then calls the controller layer endpoint
+ 341:../Generated_Code/usb_driver.c ****  * deinitialize function
+ 342:../Generated_Code/usb_driver.c ****  *
+ 343:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 344:../Generated_Code/usb_driver.c **** uint_8 _usb_device_deinit_endpoint (
+ 345:../Generated_Code/usb_driver.c ****     _usb_device_handle    handle,             /* [IN] USB Device handle */
+ 346:../Generated_Code/usb_driver.c ****     uint_8                endpoint_number,    /* [IN] Endpoint number */
+ 347:../Generated_Code/usb_driver.c ****     uint_8                direction           /* [IN] Direction */
+ 348:../Generated_Code/usb_driver.c **** )
+ 349:../Generated_Code/usb_driver.c **** {
+ 358              		.loc 1 349 0
+ 359              		.cfi_startproc
+ 360              		@ args = 0, pretend = 0, frame = 16
+ 361              		@ frame_needed = 1, uses_anonymous_args = 0
+ 362 0000 80B5     		push	{r7, lr}
+ 363              		.cfi_def_cfa_offset 8
+ 364              		.cfi_offset 7, -8
+ 365              		.cfi_offset 14, -4
+ 366 0002 84B0     		sub	sp, sp, #16
+ 367              		.cfi_def_cfa_offset 24
+ 368 0004 00AF     		add	r7, sp, #0
+ 369              		.cfi_def_cfa_register 7
+ 370 0006 7860     		str	r0, [r7, #4]
+ 371 0008 1346     		mov	r3, r2
+ 372 000a 0A46     		mov	r2, r1
+ 373 000c FA70     		strb	r2, [r7, #3]
+ 374 000e BB70     		strb	r3, [r7, #2]
+ 350:../Generated_Code/usb_driver.c ****     uint_8 status=USB_OK;
+ 375              		.loc 1 350 0
+ 376 0010 0023     		movs	r3, #0
+ 377 0012 FB73     		strb	r3, [r7, #15]
+ 351:../Generated_Code/usb_driver.c **** 
+ 352:../Generated_Code/usb_driver.c ****     /* check if all endpoint have already been initialised */
+ 353:../Generated_Code/usb_driver.c ****     if((g_EPn == g_EPn_max) && (endpoint_number != CONTROL_ENDPOINT))
+ 378              		.loc 1 353 0
+ 379 0014 134B     		ldr	r3, .L29
+ 380 0016 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 381 0018 134B     		ldr	r3, .L29+4
+ 382 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 383 001c 9A42     		cmp	r2, r3
+ 384 001e 04D1     		bne	.L26
+ 385              		.loc 1 353 0 is_stmt 0 discriminator 1
+ 386 0020 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 387 0022 002B     		cmp	r3, #0
+ 388 0024 01D0     		beq	.L26
+ 354:../Generated_Code/usb_driver.c ****     {
+ 355:../Generated_Code/usb_driver.c ****         return USBERR_EP_DEINIT_FAILED;
+ 389              		.loc 1 355 0 is_stmt 1
+ 390 0026 9623     		movs	r3, #150
+ 391 0028 17E0     		b	.L27
+ 392              	.L26:
+ 356:../Generated_Code/usb_driver.c ****     }
+ 357:../Generated_Code/usb_driver.c **** 
+ 358:../Generated_Code/usb_driver.c ****     /* call controller layer for initiazation */
+ 359:../Generated_Code/usb_driver.c ****     status = USB_DCI_Deinit_EndPoint(*((uint_8*)handle), endpoint_number, direction);
+ 393              		.loc 1 359 0
+ 394 002a 7B68     		ldr	r3, [r7, #4]
+ 395 002c 1978     		ldrb	r1, [r3]	@ zero_extendqisi2
+ 396 002e FA78     		ldrb	r2, [r7, #3]	@ zero_extendqisi2
+ 397 0030 BB78     		ldrb	r3, [r7, #2]	@ zero_extendqisi2
+ 398 0032 0846     		mov	r0, r1
+ 399 0034 1146     		mov	r1, r2
+ 400 0036 1A46     		mov	r2, r3
+ 401 0038 FFF7FEFF 		bl	USB_DCI_Deinit_EndPoint
+ 402 003c 0346     		mov	r3, r0
+ 403 003e FB73     		strb	r3, [r7, #15]
+ 360:../Generated_Code/usb_driver.c **** 
+ 361:../Generated_Code/usb_driver.c ****     /* if endpoint successfully deinitialised update counter */
+ 362:../Generated_Code/usb_driver.c ****     if ((endpoint_number != CONTROL_ENDPOINT) && (status == USB_OK))
+ 404              		.loc 1 362 0
+ 405 0040 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 406 0042 002B     		cmp	r3, #0
+ 407 0044 08D0     		beq	.L28
+ 408              		.loc 1 362 0 is_stmt 0 discriminator 1
+ 409 0046 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 410 0048 002B     		cmp	r3, #0
+ 411 004a 05D1     		bne	.L28
+ 363:../Generated_Code/usb_driver.c ****     {
+ 364:../Generated_Code/usb_driver.c ****         g_EPn++;
+ 412              		.loc 1 364 0 is_stmt 1
+ 413 004c 054B     		ldr	r3, .L29
+ 414 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 415 0050 0133     		adds	r3, r3, #1
+ 416 0052 DAB2     		uxtb	r2, r3
+ 417 0054 034B     		ldr	r3, .L29
+ 418 0056 1A70     		strb	r2, [r3]
+ 419              	.L28:
+ 365:../Generated_Code/usb_driver.c ****     }
+ 366:../Generated_Code/usb_driver.c **** 
+ 367:../Generated_Code/usb_driver.c ****     return status;
+ 420              		.loc 1 367 0
+ 421 0058 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 422              	.L27:
+ 368:../Generated_Code/usb_driver.c **** }
+ 423              		.loc 1 368 0
+ 424 005a 1846     		mov	r0, r3
+ 425 005c 1037     		adds	r7, r7, #16
+ 426 005e BD46     		mov	sp, r7
+ 427              		@ sp needed
+ 428 0060 80BD     		pop	{r7, pc}
+ 429              	.L30:
+ 430 0062 00BF     		.align	2
+ 431              	.L29:
+ 432 0064 00000000 		.word	g_EPn
+ 433 0068 00000000 		.word	g_EPn_max
+ 434              		.cfi_endproc
+ 435              	.LFE4:
+ 437              		.section	.text._usb_device_get_status,"ax",%progbits
+ 438              		.align	2
+ 439              		.global	_usb_device_get_status
+ 440              		.thumb
+ 441              		.thumb_func
+ 443              	_usb_device_get_status:
+ 444              	.LFB5:
+ 369:../Generated_Code/usb_driver.c **** 
+ 370:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 371:../Generated_Code/usb_driver.c ****  *
+ 372:../Generated_Code/usb_driver.c ****  * @name  _usb_device_get_status
+ 373:../Generated_Code/usb_driver.c ****  *
+ 374:../Generated_Code/usb_driver.c ****  * @brief The function retrieves various endpoint as well as USB component status
+ 375:../Generated_Code/usb_driver.c ****  *
+ 376:../Generated_Code/usb_driver.c ****  * @param handle        : USB Device handle
+ 377:../Generated_Code/usb_driver.c ****  * @param component     : USB component
+ 378:../Generated_Code/usb_driver.c ****  * @param status        : Pointer to 16 bit return value
+ 379:../Generated_Code/usb_driver.c ****  *
+ 380:../Generated_Code/usb_driver.c ****  * @return status
+ 381:../Generated_Code/usb_driver.c ****  *         USB_OK                : When Successfull
+ 382:../Generated_Code/usb_driver.c ****  *         USBERR_BAD_STATUS     : When error
+ 383:../Generated_Code/usb_driver.c ****  *
+ 384:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 385:../Generated_Code/usb_driver.c ****  * This function retrieves the endpoint as well USB component status which is
+ 386:../Generated_Code/usb_driver.c ****  * stored by calling USB_Device_Set_Status. This function can be called by Ap-
+ 387:../Generated_Code/usb_driver.c ****  * plication as well as the DCI layer.
+ 388:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 389:../Generated_Code/usb_driver.c **** uint_8 _usb_device_get_status (
+ 390:../Generated_Code/usb_driver.c ****     _usb_device_handle    handle,       /* [IN]  USB Device handle */
+ 391:../Generated_Code/usb_driver.c ****     uint_8                component,    /* [IN]  USB component */
+ 392:../Generated_Code/usb_driver.c ****     uint_8_ptr            status        /* [OUT] Pointer to 16 bit return value */
+ 393:../Generated_Code/usb_driver.c **** )
+ 394:../Generated_Code/usb_driver.c **** {
+ 445              		.loc 1 394 0
+ 446              		.cfi_startproc
+ 447              		@ args = 0, pretend = 0, frame = 24
+ 448              		@ frame_needed = 1, uses_anonymous_args = 0
+ 449              		@ link register save eliminated.
+ 450 0000 80B4     		push	{r7}
+ 451              		.cfi_def_cfa_offset 4
+ 452              		.cfi_offset 7, -4
+ 453 0002 87B0     		sub	sp, sp, #28
+ 454              		.cfi_def_cfa_offset 32
+ 455 0004 00AF     		add	r7, sp, #0
+ 456              		.cfi_def_cfa_register 7
+ 457 0006 F860     		str	r0, [r7, #12]
+ 458 0008 0B46     		mov	r3, r1
+ 459 000a 7A60     		str	r2, [r7, #4]
+ 460 000c FB72     		strb	r3, [r7, #11]
+ 395:../Generated_Code/usb_driver.c ****     /* get the endpoint number from component input variable */
+ 396:../Generated_Code/usb_driver.c ****     uint_8 ep_num = (uint_8)(component & USB_STATUS_ENDPOINT_NUMBER_MASK);
+ 461              		.loc 1 396 0
+ 462 000e FB7A     		ldrb	r3, [r7, #11]
+ 463 0010 03F00F03 		and	r3, r3, #15
+ 464 0014 FB75     		strb	r3, [r7, #23]
+ 397:../Generated_Code/usb_driver.c ****     UNUSED (handle)
+ 398:../Generated_Code/usb_driver.c **** 
+ 399:../Generated_Code/usb_driver.c ****     if((component <= USB_STATUS_TEST_MODE) &&
+ 465              		.loc 1 399 0
+ 466 0016 FB7A     		ldrb	r3, [r7, #11]	@ zero_extendqisi2
+ 467 0018 072B     		cmp	r3, #7
+ 468 001a 09D8     		bhi	.L32
+ 469              		.loc 1 399 0 is_stmt 0 discriminator 1
+ 470 001c FB7A     		ldrb	r3, [r7, #11]	@ zero_extendqisi2
+ 471 001e 002B     		cmp	r3, #0
+ 472 0020 06D0     		beq	.L32
+ 400:../Generated_Code/usb_driver.c ****         (component >= USB_STATUS_DEVICE_STATE))
+ 401:../Generated_Code/usb_driver.c ****     {
+ 402:../Generated_Code/usb_driver.c ****         /* Get the corresponding component status
+ 403:../Generated_Code/usb_driver.c ****            -1 as components start from 1 */
+ 404:../Generated_Code/usb_driver.c ****         *status = g_usb_component_status[component-1];
+ 473              		.loc 1 404 0 is_stmt 1
+ 474 0022 FB7A     		ldrb	r3, [r7, #11]	@ zero_extendqisi2
+ 475 0024 013B     		subs	r3, r3, #1
+ 476 0026 0E4A     		ldr	r2, .L36
+ 477 0028 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 478 002a 7B68     		ldr	r3, [r7, #4]
+ 479 002c 1A70     		strb	r2, [r3]
+ 480 002e 0FE0     		b	.L33
+ 481              	.L32:
+ 405:../Generated_Code/usb_driver.c ****     }
+ 406:../Generated_Code/usb_driver.c ****     else if ((component & USB_STATUS_ENDPOINT) &&
+ 482              		.loc 1 406 0
+ 483 0030 FB7A     		ldrb	r3, [r7, #11]	@ zero_extendqisi2
+ 484 0032 03F01003 		and	r3, r3, #16
+ 485 0036 002B     		cmp	r3, #0
+ 486 0038 08D0     		beq	.L34
+ 487              		.loc 1 406 0 is_stmt 0 discriminator 1
+ 488 003a FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 489 003c 062B     		cmp	r3, #6
+ 490 003e 05D8     		bhi	.L34
+ 407:../Generated_Code/usb_driver.c ****         (ep_num < MAX_SUPPORTED_ENDPOINTS))
+ 408:../Generated_Code/usb_driver.c ****     {
+ 409:../Generated_Code/usb_driver.c ****         /* Get the corresponding endpoint status */
+ 410:../Generated_Code/usb_driver.c ****         *status = g_usb_ep_status[ep_num];
+ 491              		.loc 1 410 0 is_stmt 1
+ 492 0040 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 493 0042 084A     		ldr	r2, .L36+4
+ 494 0044 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 495 0046 7B68     		ldr	r3, [r7, #4]
+ 496 0048 1A70     		strb	r2, [r3]
+ 497 004a 01E0     		b	.L33
+ 498              	.L34:
+ 411:../Generated_Code/usb_driver.c ****     }
+ 412:../Generated_Code/usb_driver.c ****     else
+ 413:../Generated_Code/usb_driver.c ****     {
+ 414:../Generated_Code/usb_driver.c ****         return USBERR_BAD_STATUS;
+ 499              		.loc 1 414 0
+ 500 004c 8223     		movs	r3, #130
+ 501 004e 00E0     		b	.L35
+ 502              	.L33:
+ 415:../Generated_Code/usb_driver.c ****     }
+ 416:../Generated_Code/usb_driver.c **** 
+ 417:../Generated_Code/usb_driver.c ****     return USB_OK;
+ 503              		.loc 1 417 0
+ 504 0050 0023     		movs	r3, #0
+ 505              	.L35:
+ 418:../Generated_Code/usb_driver.c **** }
+ 506              		.loc 1 418 0
+ 507 0052 1846     		mov	r0, r3
+ 508 0054 1C37     		adds	r7, r7, #28
+ 509 0056 BD46     		mov	sp, r7
+ 510              		@ sp needed
+ 511 0058 5DF8047B 		ldr	r7, [sp], #4
+ 512 005c 7047     		bx	lr
+ 513              	.L37:
+ 514 005e 00BF     		.align	2
+ 515              	.L36:
+ 516 0060 00000000 		.word	g_usb_component_status
+ 517 0064 00000000 		.word	g_usb_ep_status
+ 518              		.cfi_endproc
+ 519              	.LFE5:
+ 521              		.section	.text._usb_device_set_status,"ax",%progbits
+ 522              		.align	2
+ 523              		.global	_usb_device_set_status
+ 524              		.thumb
+ 525              		.thumb_func
+ 527              	_usb_device_set_status:
+ 528              	.LFB6:
+ 419:../Generated_Code/usb_driver.c **** 
+ 420:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 421:../Generated_Code/usb_driver.c ****  *
+ 422:../Generated_Code/usb_driver.c ****  * @name  _usb_device_set_status
+ 423:../Generated_Code/usb_driver.c ****  *
+ 424:../Generated_Code/usb_driver.c ****  * @brief The function saves status of endpoints as well as USB components.
+ 425:../Generated_Code/usb_driver.c ****  *
+ 426:../Generated_Code/usb_driver.c ****  * @param handle    : USB Device handle
+ 427:../Generated_Code/usb_driver.c ****  * @param component : USB component
+ 428:../Generated_Code/usb_driver.c ****  * @param setting   : Value to be set
+ 429:../Generated_Code/usb_driver.c ****  *
+ 430:../Generated_Code/usb_driver.c ****  * @return status
+ 431:../Generated_Code/usb_driver.c ****  *         USB_OK                : When Successfull
+ 432:../Generated_Code/usb_driver.c ****  *         USBERR_BAD_STATUS     : When error
+ 433:../Generated_Code/usb_driver.c ****  *
+ 434:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 435:../Generated_Code/usb_driver.c ****  * This function sets the endpoint as well USB component status which can be
+ 436:../Generated_Code/usb_driver.c ****  * retrieved by calling _usb_device_get_status. This function can be called by
+ 437:../Generated_Code/usb_driver.c ****  * Application as well as the DCI layer.
+ 438:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 439:../Generated_Code/usb_driver.c **** uint_8 _usb_device_set_status(
+ 440:../Generated_Code/usb_driver.c ****     _usb_device_handle    handle,       /* [IN] USB Device handle */
+ 441:../Generated_Code/usb_driver.c ****     uint_8                component,    /* [IN] USB Component status to set */
+ 442:../Generated_Code/usb_driver.c ****     uint_8                setting       /* [IN] Status to set */
+ 443:../Generated_Code/usb_driver.c **** )
+ 444:../Generated_Code/usb_driver.c **** {
+ 529              		.loc 1 444 0
+ 530              		.cfi_startproc
+ 531              		@ args = 0, pretend = 0, frame = 16
+ 532              		@ frame_needed = 1, uses_anonymous_args = 0
+ 533 0000 80B5     		push	{r7, lr}
+ 534              		.cfi_def_cfa_offset 8
+ 535              		.cfi_offset 7, -8
+ 536              		.cfi_offset 14, -4
+ 537 0002 84B0     		sub	sp, sp, #16
+ 538              		.cfi_def_cfa_offset 24
+ 539 0004 00AF     		add	r7, sp, #0
+ 540              		.cfi_def_cfa_register 7
+ 541 0006 7860     		str	r0, [r7, #4]
+ 542 0008 1346     		mov	r3, r2
+ 543 000a 0A46     		mov	r2, r1
+ 544 000c FA70     		strb	r2, [r7, #3]
+ 545 000e BB70     		strb	r3, [r7, #2]
+ 445:../Generated_Code/usb_driver.c ****     /* get the endpoint number from component input variable */
+ 446:../Generated_Code/usb_driver.c ****     uint_8 ep_num = (uint_8)(component & USB_STATUS_ENDPOINT_NUMBER_MASK);
+ 546              		.loc 1 446 0
+ 547 0010 FB78     		ldrb	r3, [r7, #3]
+ 548 0012 03F00F03 		and	r3, r3, #15
+ 549 0016 FB73     		strb	r3, [r7, #15]
+ 447:../Generated_Code/usb_driver.c ****     UNUSED (handle)
+ 448:../Generated_Code/usb_driver.c **** 
+ 449:../Generated_Code/usb_driver.c ****     if((component <= USB_STATUS_TEST_MODE) &&
+ 550              		.loc 1 449 0
+ 551 0018 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 552 001a 072B     		cmp	r3, #7
+ 553 001c 08D8     		bhi	.L39
+ 554              		.loc 1 449 0 is_stmt 0 discriminator 1
+ 555 001e FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 556 0020 002B     		cmp	r3, #0
+ 557 0022 05D0     		beq	.L39
+ 450:../Generated_Code/usb_driver.c ****         (component >= USB_STATUS_DEVICE_STATE))
+ 451:../Generated_Code/usb_driver.c ****     {
+ 452:../Generated_Code/usb_driver.c ****         /*
+ 453:../Generated_Code/usb_driver.c ****            Set the corresponding component setting
+ 454:../Generated_Code/usb_driver.c ****            -1 as components start from 1
+ 455:../Generated_Code/usb_driver.c ****         */
+ 456:../Generated_Code/usb_driver.c ****         g_usb_component_status[component-1] = setting;
+ 558              		.loc 1 456 0 is_stmt 1
+ 559 0024 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 560 0026 013B     		subs	r3, r3, #1
+ 561 0028 224A     		ldr	r2, .L45
+ 562 002a B978     		ldrb	r1, [r7, #2]
+ 563 002c D154     		strb	r1, [r2, r3]
+ 564 002e 3CE0     		b	.L40
+ 565              	.L39:
+ 457:../Generated_Code/usb_driver.c ****     }
+ 458:../Generated_Code/usb_driver.c ****     else if ((component & USB_STATUS_ENDPOINT) &&
+ 566              		.loc 1 458 0
+ 567 0030 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 568 0032 03F01003 		and	r3, r3, #16
+ 569 0036 002B     		cmp	r3, #0
+ 570 0038 35D0     		beq	.L41
+ 571              		.loc 1 458 0 is_stmt 0 discriminator 1
+ 572 003a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 573 003c 062B     		cmp	r3, #6
+ 574 003e 32D8     		bhi	.L41
+ 575              	.LBB2:
+ 459:../Generated_Code/usb_driver.c ****         (ep_num < MAX_SUPPORTED_ENDPOINTS))
+ 460:../Generated_Code/usb_driver.c ****     {
+ 461:../Generated_Code/usb_driver.c ****         uint_8 direction =
+ 576              		.loc 1 461 0 is_stmt 1
+ 577 0040 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 578 0042 DB09     		lsrs	r3, r3, #7
+ 579 0044 BB73     		strb	r3, [r7, #14]
+ 462:../Generated_Code/usb_driver.c ****             (uint_8)((component >> USB_COMPONENT_DIRECTION_SHIFT) &
+ 463:../Generated_Code/usb_driver.c ****             USB_COMPONENT_DIRECTION_MASK);
+ 464:../Generated_Code/usb_driver.c ****         /* HALT Endpoint */
+ 465:../Generated_Code/usb_driver.c ****         if(setting == USB_STATUS_STALLED)
+ 580              		.loc 1 465 0
+ 581 0046 BB78     		ldrb	r3, [r7, #2]	@ zero_extendqisi2
+ 582 0048 012B     		cmp	r3, #1
+ 583 004a 07D1     		bne	.L42
+ 466:../Generated_Code/usb_driver.c ****         {
+ 467:../Generated_Code/usb_driver.c ****         	_usb_device_stall_endpoint(handle, ep_num, direction);
+ 584              		.loc 1 467 0
+ 585 004c FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 586 004e BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 587 0050 7868     		ldr	r0, [r7, #4]
+ 588 0052 1146     		mov	r1, r2
+ 589 0054 1A46     		mov	r2, r3
+ 590 0056 FFF7FEFF 		bl	_usb_device_stall_endpoint
+ 591 005a 1FE0     		b	.L43
+ 592              	.L42:
+ 468:../Generated_Code/usb_driver.c ****         }
+ 469:../Generated_Code/usb_driver.c ****         else if((setting == USB_STATUS_IDLE) &&
+ 593              		.loc 1 469 0
+ 594 005c BB78     		ldrb	r3, [r7, #2]	@ zero_extendqisi2
+ 595 005e 002B     		cmp	r3, #0
+ 596 0060 1CD1     		bne	.L43
+ 470:../Generated_Code/usb_driver.c ****             (g_usb_ep_status[ep_num] == USB_STATUS_STALLED))
+ 597              		.loc 1 470 0 discriminator 1
+ 598 0062 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 599 0064 144A     		ldr	r2, .L45+4
+ 600 0066 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 469:../Generated_Code/usb_driver.c ****         else if((setting == USB_STATUS_IDLE) &&
+ 601              		.loc 1 469 0 discriminator 1
+ 602 0068 012B     		cmp	r3, #1
+ 603 006a 17D1     		bne	.L43
+ 471:../Generated_Code/usb_driver.c ****         {
+ 472:../Generated_Code/usb_driver.c ****         	_usb_device_unstall_endpoint(handle, ep_num, direction);
+ 604              		.loc 1 472 0
+ 605 006c FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 606 006e BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 607 0070 7868     		ldr	r0, [r7, #4]
+ 608 0072 1146     		mov	r1, r2
+ 609 0074 1A46     		mov	r2, r3
+ 610 0076 FFF7FEFF 		bl	_usb_device_unstall_endpoint
+ 473:../Generated_Code/usb_driver.c **** 
+ 474:../Generated_Code/usb_driver.c ****             if(ep_num == CONTROL_ENDPOINT)
+ 611              		.loc 1 474 0
+ 612 007a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 613 007c 002B     		cmp	r3, #0
+ 614 007e 0DD1     		bne	.L43
+ 475:../Generated_Code/usb_driver.c ****             {
+ 476:../Generated_Code/usb_driver.c ****                 direction = (uint_8)((direction == USB_SEND)?
+ 615              		.loc 1 476 0
+ 616 0080 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 617 0082 012B     		cmp	r3, #1
+ 618 0084 0CBF     		ite	eq
+ 619 0086 0023     		moveq	r3, #0
+ 620 0088 0123     		movne	r3, #1
+ 621 008a DBB2     		uxtb	r3, r3
+ 622 008c BB73     		strb	r3, [r7, #14]
+ 477:../Generated_Code/usb_driver.c ****                     (USB_RECV):(USB_SEND));
+ 478:../Generated_Code/usb_driver.c ****                 _usb_device_unstall_endpoint(handle, ep_num, direction);
+ 623              		.loc 1 478 0
+ 624 008e FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 625 0090 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 626 0092 7868     		ldr	r0, [r7, #4]
+ 627 0094 1146     		mov	r1, r2
+ 628 0096 1A46     		mov	r2, r3
+ 629 0098 FFF7FEFF 		bl	_usb_device_unstall_endpoint
+ 630              	.L43:
+ 479:../Generated_Code/usb_driver.c ****             }
+ 480:../Generated_Code/usb_driver.c ****         }
+ 481:../Generated_Code/usb_driver.c ****         /* Set the corresponding endpoint setting */
+ 482:../Generated_Code/usb_driver.c ****         g_usb_ep_status[ep_num] = setting;
+ 631              		.loc 1 482 0
+ 632 009c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 633 009e 064A     		ldr	r2, .L45+4
+ 634 00a0 B978     		ldrb	r1, [r7, #2]
+ 635 00a2 D154     		strb	r1, [r2, r3]
+ 636              	.LBE2:
+ 460:../Generated_Code/usb_driver.c ****     {
+ 637              		.loc 1 460 0
+ 638 00a4 01E0     		b	.L40
+ 639              	.L41:
+ 483:../Generated_Code/usb_driver.c ****     }
+ 484:../Generated_Code/usb_driver.c ****     else
+ 485:../Generated_Code/usb_driver.c ****     {
+ 486:../Generated_Code/usb_driver.c ****         return USBERR_BAD_STATUS;
+ 640              		.loc 1 486 0
+ 641 00a6 8223     		movs	r3, #130
+ 642 00a8 00E0     		b	.L44
+ 643              	.L40:
+ 487:../Generated_Code/usb_driver.c ****     }
+ 488:../Generated_Code/usb_driver.c ****     return USB_OK;
+ 644              		.loc 1 488 0
+ 645 00aa 0023     		movs	r3, #0
+ 646              	.L44:
+ 489:../Generated_Code/usb_driver.c **** }
+ 647              		.loc 1 489 0
+ 648 00ac 1846     		mov	r0, r3
+ 649 00ae 1037     		adds	r7, r7, #16
+ 650 00b0 BD46     		mov	sp, r7
+ 651              		@ sp needed
+ 652 00b2 80BD     		pop	{r7, pc}
+ 653              	.L46:
+ 654              		.align	2
+ 655              	.L45:
+ 656 00b4 00000000 		.word	g_usb_component_status
+ 657 00b8 00000000 		.word	g_usb_ep_status
+ 658              		.cfi_endproc
+ 659              	.LFE6:
+ 661              		.section	.text._usb_device_register_service,"ax",%progbits
+ 662              		.align	2
+ 663              		.global	_usb_device_register_service
+ 664              		.thumb
+ 665              		.thumb_func
+ 667              	_usb_device_register_service:
+ 668              	.LFB7:
+ 490:../Generated_Code/usb_driver.c **** 
+ 491:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 492:../Generated_Code/usb_driver.c ****  *
+ 493:../Generated_Code/usb_driver.c ****  * @name  _usb_device_register_service
+ 494:../Generated_Code/usb_driver.c ****  *
+ 495:../Generated_Code/usb_driver.c ****  * @brief The function registers a callback function from the Application layer
+ 496:../Generated_Code/usb_driver.c ****  *
+ 497:../Generated_Code/usb_driver.c ****  * @param controller_ID : Controller ID
+ 498:../Generated_Code/usb_driver.c ****  * @param type          : event type or endpoint number
+ 499:../Generated_Code/usb_driver.c ****  * @param service       : callback function pointer
+ 500:../Generated_Code/usb_driver.c ****  *
+ 501:../Generated_Code/usb_driver.c ****  * @return status
+ 502:../Generated_Code/usb_driver.c ****  *         USB_OK                   : When Successfull
+ 503:../Generated_Code/usb_driver.c ****  *         USBERR_ALLOC_SERVICE     : When invalid type or already registered
+ 504:../Generated_Code/usb_driver.c ****  *
+ 505:../Generated_Code/usb_driver.c ****  ******************************************************************************
+ 506:../Generated_Code/usb_driver.c ****  * This function registers a callback function from the application if it is
+ 507:../Generated_Code/usb_driver.c ****  * called not already registered so that the registered callback function can
+ 508:../Generated_Code/usb_driver.c ****  * be if the event of that type occurs
+ 509:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 510:../Generated_Code/usb_driver.c **** uint_8 _usb_device_register_service(
+ 511:../Generated_Code/usb_driver.c ****     uint_8                    controller_ID, /* [IN] Controller ID           */
+ 512:../Generated_Code/usb_driver.c ****     uint_8                    type,          /* [IN] type of event or endpoint
+ 513:../Generated_Code/usb_driver.c ****                                                      number to service       */
+ 514:../Generated_Code/usb_driver.c ****     USB_SERVICE_CALLBACK      service        /* [IN] pointer to callback
+ 515:../Generated_Code/usb_driver.c ****                                                      function                */
+ 516:../Generated_Code/usb_driver.c **** )
+ 517:../Generated_Code/usb_driver.c **** {
+ 669              		.loc 1 517 0
+ 670              		.cfi_startproc
+ 671              		@ args = 0, pretend = 0, frame = 8
+ 672              		@ frame_needed = 1, uses_anonymous_args = 0
+ 673              		@ link register save eliminated.
+ 674 0000 80B4     		push	{r7}
+ 675              		.cfi_def_cfa_offset 4
+ 676              		.cfi_offset 7, -4
+ 677 0002 83B0     		sub	sp, sp, #12
+ 678              		.cfi_def_cfa_offset 16
+ 679 0004 00AF     		add	r7, sp, #0
+ 680              		.cfi_def_cfa_register 7
+ 681 0006 0B46     		mov	r3, r1
+ 682 0008 3A60     		str	r2, [r7]
+ 683 000a 0246     		mov	r2, r0
+ 684 000c FA71     		strb	r2, [r7, #7]
+ 685 000e BB71     		strb	r3, [r7, #6]
+ 518:../Generated_Code/usb_driver.c ****     UNUSED (controller_ID)
+ 519:../Generated_Code/usb_driver.c ****     UNUSED (service)
+ 520:../Generated_Code/usb_driver.c **** #ifdef MULTIPLE_DEVICES
+ 521:../Generated_Code/usb_driver.c ****     /* check if the type is valid and callback for the type
+ 522:../Generated_Code/usb_driver.c ****        is not already registered */
+ 523:../Generated_Code/usb_driver.c ****     if(((type  <= USB_SERVICE_MAX_EP) ||
+ 524:../Generated_Code/usb_driver.c ****         ((type < USB_SERVICE_MAX) && (type >= USB_SERVICE_BUS_RESET))) &&
+ 525:../Generated_Code/usb_driver.c ****        (g_usb_CB[type] == NULL))
+ 526:../Generated_Code/usb_driver.c ****     {
+ 527:../Generated_Code/usb_driver.c **** 
+ 528:../Generated_Code/usb_driver.c ****         /* register the callback function */
+ 529:../Generated_Code/usb_driver.c ****         g_usb_CB[type] = service;
+ 530:../Generated_Code/usb_driver.c ****         return USB_OK;
+ 531:../Generated_Code/usb_driver.c ****     }
+ 532:../Generated_Code/usb_driver.c ****     else
+ 533:../Generated_Code/usb_driver.c ****     {
+ 534:../Generated_Code/usb_driver.c ****         return USBERR_ALLOC_SERVICE;
+ 535:../Generated_Code/usb_driver.c ****     }
+ 536:../Generated_Code/usb_driver.c **** #else
+ 537:../Generated_Code/usb_driver.c ****     UNUSED(type);
+ 538:../Generated_Code/usb_driver.c ****     return USB_OK;
+ 686              		.loc 1 538 0
+ 687 0010 0023     		movs	r3, #0
+ 539:../Generated_Code/usb_driver.c **** #endif
+ 540:../Generated_Code/usb_driver.c ****     
+ 541:../Generated_Code/usb_driver.c **** }
+ 688              		.loc 1 541 0
+ 689 0012 1846     		mov	r0, r3
+ 690 0014 0C37     		adds	r7, r7, #12
+ 691 0016 BD46     		mov	sp, r7
+ 692              		@ sp needed
+ 693 0018 5DF8047B 		ldr	r7, [sp], #4
+ 694 001c 7047     		bx	lr
+ 695              		.cfi_endproc
+ 696              	.LFE7:
+ 698 001e 00BF     		.section	.text._usb_device_unregister_service,"ax",%progbits
+ 699              		.align	2
+ 700              		.global	_usb_device_unregister_service
+ 701              		.thumb
+ 702              		.thumb_func
+ 704              	_usb_device_unregister_service:
+ 705              	.LFB8:
+ 542:../Generated_Code/usb_driver.c **** 
+ 543:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 544:../Generated_Code/usb_driver.c ****  *
+ 545:../Generated_Code/usb_driver.c ****  * @name  _usb_device_unregister_service
+ 546:../Generated_Code/usb_driver.c ****  *
+ 547:../Generated_Code/usb_driver.c ****  * @brief The function unregisters an event or endpoint callback function
+ 548:../Generated_Code/usb_driver.c ****  *
+ 549:../Generated_Code/usb_driver.c ****  * @param handle         : USB Device handle
+ 550:../Generated_Code/usb_driver.c ****  * @param event_endpoint : event type or endpoint number
+ 551:../Generated_Code/usb_driver.c ****  *
+ 552:../Generated_Code/usb_driver.c ****  * @return status
+ 553:../Generated_Code/usb_driver.c ****  *         USB_OK                   : When Successfull
+ 554:../Generated_Code/usb_driver.c ****  *         USBERR_UNKNOWN_ERROR     : When invalid type or not registered
+ 555:../Generated_Code/usb_driver.c ****  *
+ 556:../Generated_Code/usb_driver.c ****  *****************************************************************************
+ 557:../Generated_Code/usb_driver.c ****  * This function un registers a callback function which has been previously
+ 558:../Generated_Code/usb_driver.c ****  * registered by the application layer
+ 559:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 560:../Generated_Code/usb_driver.c **** uint_8 _usb_device_unregister_service(
+ 561:../Generated_Code/usb_driver.c ****     _usb_device_handle    handle,           /* [IN] USB Device handle */
+ 562:../Generated_Code/usb_driver.c ****     uint_8                event_endpoint    /* [IN] Endpoint (0 through 15) or event to service */
+ 563:../Generated_Code/usb_driver.c **** )
+ 564:../Generated_Code/usb_driver.c **** {
+ 706              		.loc 1 564 0
+ 707              		.cfi_startproc
+ 708              		@ args = 0, pretend = 0, frame = 8
+ 709              		@ frame_needed = 1, uses_anonymous_args = 0
+ 710              		@ link register save eliminated.
+ 711 0000 80B4     		push	{r7}
+ 712              		.cfi_def_cfa_offset 4
+ 713              		.cfi_offset 7, -4
+ 714 0002 83B0     		sub	sp, sp, #12
+ 715              		.cfi_def_cfa_offset 16
+ 716 0004 00AF     		add	r7, sp, #0
+ 717              		.cfi_def_cfa_register 7
+ 718 0006 7860     		str	r0, [r7, #4]
+ 719 0008 0B46     		mov	r3, r1
+ 720 000a FB70     		strb	r3, [r7, #3]
+ 565:../Generated_Code/usb_driver.c ****     UNUSED (handle)
+ 566:../Generated_Code/usb_driver.c ****     /* check if the type is valid and callback for the type
+ 567:../Generated_Code/usb_driver.c ****        is already registered */
+ 568:../Generated_Code/usb_driver.c ****     if(((event_endpoint  <= USB_SERVICE_MAX_EP) ||
+ 721              		.loc 1 568 0
+ 722 000c FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 723 000e 062B     		cmp	r3, #6
+ 724 0010 05D9     		bls	.L50
+ 725              		.loc 1 568 0 is_stmt 0 discriminator 1
+ 726 0012 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 727 0014 172B     		cmp	r3, #23
+ 728 0016 0AD8     		bhi	.L51
+ 569:../Generated_Code/usb_driver.c ****         ((event_endpoint < USB_SERVICE_MAX) && (event_endpoint >= USB_SERVICE_BUS_RESET))) &&
+ 729              		.loc 1 569 0 is_stmt 1
+ 730 0018 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 731 001a 0F2B     		cmp	r3, #15
+ 732 001c 07D9     		bls	.L51
+ 733              	.L50:
+ 570:../Generated_Code/usb_driver.c ****        (g_usb_CB[event_endpoint] != NULL))
+ 734              		.loc 1 570 0 discriminator 1
+ 735 001e FA78     		ldrb	r2, [r7, #3]	@ zero_extendqisi2
+ 736 0020 064B     		ldr	r3, .L53
+ 737 0022 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 569:../Generated_Code/usb_driver.c ****         ((event_endpoint < USB_SERVICE_MAX) && (event_endpoint >= USB_SERVICE_BUS_RESET))) &&
+ 738              		.loc 1 569 0 discriminator 1
+ 739 0026 002B     		cmp	r3, #0
+ 740 0028 01D0     		beq	.L51
+ 571:../Generated_Code/usb_driver.c ****     {
+ 572:../Generated_Code/usb_driver.c **** #ifdef MULTIPLE_DEVICES
+ 573:../Generated_Code/usb_driver.c ****         /* unregister the callback */
+ 574:../Generated_Code/usb_driver.c ****         g_usb_CB[event_endpoint] = NULL;
+ 575:../Generated_Code/usb_driver.c **** #endif
+ 576:../Generated_Code/usb_driver.c ****         return USB_OK;
+ 741              		.loc 1 576 0
+ 742 002a 0023     		movs	r3, #0
+ 743 002c 00E0     		b	.L52
+ 744              	.L51:
+ 577:../Generated_Code/usb_driver.c ****     }
+ 578:../Generated_Code/usb_driver.c ****     else
+ 579:../Generated_Code/usb_driver.c ****     {
+ 580:../Generated_Code/usb_driver.c ****         return USBERR_UNKNOWN_ERROR;
+ 745              		.loc 1 580 0
+ 746 002e C423     		movs	r3, #196
+ 747              	.L52:
+ 581:../Generated_Code/usb_driver.c ****     }
+ 582:../Generated_Code/usb_driver.c **** }
+ 748              		.loc 1 582 0
+ 749 0030 1846     		mov	r0, r3
+ 750 0032 0C37     		adds	r7, r7, #12
+ 751 0034 BD46     		mov	sp, r7
+ 752              		@ sp needed
+ 753 0036 5DF8047B 		ldr	r7, [sp], #4
+ 754 003a 7047     		bx	lr
+ 755              	.L54:
+ 756              		.align	2
+ 757              	.L53:
+ 758 003c 00000000 		.word	g_usb_CB
+ 759              		.cfi_endproc
+ 760              	.LFE8:
+ 762              		.section	.text.USB_Device_Call_Service,"ax",%progbits
+ 763              		.align	2
+ 764              		.global	USB_Device_Call_Service
+ 765              		.thumb
+ 766              		.thumb_func
+ 768              	USB_Device_Call_Service:
+ 769              	.LFB9:
+ 583:../Generated_Code/usb_driver.c **** 
+ 584:../Generated_Code/usb_driver.c **** /**************************************************************************//*!
+ 585:../Generated_Code/usb_driver.c ****  *
+ 586:../Generated_Code/usb_driver.c ****  * @name  USB_Device_Call_Service
+ 587:../Generated_Code/usb_driver.c ****  *
+ 588:../Generated_Code/usb_driver.c ****  * @brief The function is a device layer event handler
+ 589:../Generated_Code/usb_driver.c ****  *
+ 590:../Generated_Code/usb_driver.c ****  * @param type  : Type of service or endpoint
+ 591:../Generated_Code/usb_driver.c ****  * @param event : Pointer to event structure
+ 592:../Generated_Code/usb_driver.c ****  *
+ 593:../Generated_Code/usb_driver.c ****  * @return status
+ 594:../Generated_Code/usb_driver.c ****  *         USB_OK      : Always
+ 595:../Generated_Code/usb_driver.c ****  *
+ 596:../Generated_Code/usb_driver.c ****  *****************************************************************************
+ 597:../Generated_Code/usb_driver.c ****  *
+ 598:../Generated_Code/usb_driver.c ****  * This function calls the registered service callback function of the applic-
+ 599:../Generated_Code/usb_driver.c ****  * ation layer based on the type of event received. This function is called
+ 600:../Generated_Code/usb_driver.c ****  * from the DCI layer.
+ 601:../Generated_Code/usb_driver.c ****  *
+ 602:../Generated_Code/usb_driver.c ****  *****************************************************************************/
+ 603:../Generated_Code/usb_driver.c **** uint_8 USB_Device_Call_Service(
+ 604:../Generated_Code/usb_driver.c ****     uint_8                    type,    /* [IN] Type of service or endpoint */
+ 605:../Generated_Code/usb_driver.c ****     PTR_USB_DEV_EVENT_STRUCT  event    /* [IN] Pointer to event structure  */
+ 606:../Generated_Code/usb_driver.c **** )
+ 607:../Generated_Code/usb_driver.c **** {
+ 770              		.loc 1 607 0
+ 771              		.cfi_startproc
+ 772              		@ args = 0, pretend = 0, frame = 8
+ 773              		@ frame_needed = 1, uses_anonymous_args = 0
+ 774 0000 80B5     		push	{r7, lr}
+ 775              		.cfi_def_cfa_offset 8
+ 776              		.cfi_offset 7, -8
+ 777              		.cfi_offset 14, -4
+ 778 0002 82B0     		sub	sp, sp, #8
+ 779              		.cfi_def_cfa_offset 16
+ 780 0004 00AF     		add	r7, sp, #0
+ 781              		.cfi_def_cfa_register 7
+ 782 0006 0346     		mov	r3, r0
+ 783 0008 3960     		str	r1, [r7]
+ 784 000a FB71     		strb	r3, [r7, #7]
+ 608:../Generated_Code/usb_driver.c **** 
+ 609:../Generated_Code/usb_driver.c ****     if(type == USB_SERVICE_BUS_RESET)
+ 785              		.loc 1 609 0
+ 786 000c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 787 000e 102B     		cmp	r3, #16
+ 788 0010 01D1     		bne	.L56
+ 610:../Generated_Code/usb_driver.c ****     {    /* if it is an reset interrupt then reset all status structures */
+ 611:../Generated_Code/usb_driver.c ****        USB_Device_Init_Params();
+ 789              		.loc 1 611 0
+ 790 0012 FFF7FEFF 		bl	USB_Device_Init_Params
+ 791              	.L56:
+ 612:../Generated_Code/usb_driver.c ****     }
+ 613:../Generated_Code/usb_driver.c **** 
+ 614:../Generated_Code/usb_driver.c ****     /* check if the callback is registered or not */
+ 615:../Generated_Code/usb_driver.c ****     if(g_usb_CB[type] != NULL)
+ 792              		.loc 1 615 0
+ 793 0016 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 794 0018 074B     		ldr	r3, .L59
+ 795 001a 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 796 001e 002B     		cmp	r3, #0
+ 797 0020 05D0     		beq	.L57
+ 616:../Generated_Code/usb_driver.c ****     {
+ 617:../Generated_Code/usb_driver.c ****         /* call the callback function */
+ 618:../Generated_Code/usb_driver.c ****         g_usb_CB[type](event);
+ 798              		.loc 1 618 0
+ 799 0022 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 800 0024 044B     		ldr	r3, .L59
+ 801 0026 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 802 002a 3868     		ldr	r0, [r7]
+ 803 002c 9847     		blx	r3
+ 804              	.L57:
+ 619:../Generated_Code/usb_driver.c ****     }
+ 620:../Generated_Code/usb_driver.c **** 
+ 621:../Generated_Code/usb_driver.c ****     return USB_OK;
+ 805              		.loc 1 621 0
+ 806 002e 0023     		movs	r3, #0
+ 622:../Generated_Code/usb_driver.c **** }
+ 807              		.loc 1 622 0
+ 808 0030 1846     		mov	r0, r3
+ 809 0032 0837     		adds	r7, r7, #8
+ 810 0034 BD46     		mov	sp, r7
+ 811              		@ sp needed
+ 812 0036 80BD     		pop	{r7, pc}
+ 813              	.L60:
+ 814              		.align	2
+ 815              	.L59:
+ 816 0038 00000000 		.word	g_usb_CB
+ 817              		.cfi_endproc
+ 818              	.LFE9:
+ 820              		.section	.text.USB_NULL_CALLBACK,"ax",%progbits
+ 821              		.align	2
+ 822              		.global	USB_NULL_CALLBACK
+ 823              		.thumb
+ 824              		.thumb_func
+ 826              	USB_NULL_CALLBACK:
+ 827              	.LFB10:
+ 623:../Generated_Code/usb_driver.c **** 
+ 624:../Generated_Code/usb_driver.c **** void USB_NULL_CALLBACK (PTR_USB_DEV_EVENT_STRUCT event)
+ 625:../Generated_Code/usb_driver.c **** {
+ 828              		.loc 1 625 0
+ 829              		.cfi_startproc
+ 830              		@ args = 0, pretend = 0, frame = 8
+ 831              		@ frame_needed = 1, uses_anonymous_args = 0
+ 832              		@ link register save eliminated.
+ 833 0000 80B4     		push	{r7}
+ 834              		.cfi_def_cfa_offset 4
+ 835              		.cfi_offset 7, -4
+ 836 0002 83B0     		sub	sp, sp, #12
+ 837              		.cfi_def_cfa_offset 16
+ 838 0004 00AF     		add	r7, sp, #0
+ 839              		.cfi_def_cfa_register 7
+ 840 0006 7860     		str	r0, [r7, #4]
+ 626:../Generated_Code/usb_driver.c **** 	UNUSED(event)
+ 627:../Generated_Code/usb_driver.c **** 	
+ 628:../Generated_Code/usb_driver.c **** 	#if (defined(__CWCC__) || defined(__IAR_SYSTEMS_ICC__))
+ 629:../Generated_Code/usb_driver.c **** 		asm("nop");
+ 630:../Generated_Code/usb_driver.c ****         #elif defined(__GNUC__)
+ 631:../Generated_Code/usb_driver.c **** 		__asm("nop");
+ 841              		.loc 1 631 0
+ 842              	@ 631 "../Generated_Code/usb_driver.c" 1
+ 843 0008 00BF     		nop
+ 844              	@ 0 "" 2
+ 632:../Generated_Code/usb_driver.c **** 	#elif defined (__CC_ARM)
+ 633:../Generated_Code/usb_driver.c **** 		__nop();
+ 634:../Generated_Code/usb_driver.c **** 	#endif	   
+ 635:../Generated_Code/usb_driver.c **** }
+ 845              		.loc 1 635 0
+ 846              		.thumb
+ 847 000a 0C37     		adds	r7, r7, #12
+ 848 000c BD46     		mov	sp, r7
+ 849              		@ sp needed
+ 850 000e 5DF8047B 		ldr	r7, [sp], #4
+ 851 0012 7047     		bx	lr
+ 852              		.cfi_endproc
+ 853              	.LFE10:
+ 855              		.text
+ 856              	.Letext0:
+ 857              		.file 2 "../Generated_Code/types.h"
+ 858              		.file 3 "../Generated_Code/usb_devapi.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_driver.c
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:21     .rodata.g_usb_CB:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:24     .rodata.g_usb_CB:00000000 g_usb_CB
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:826    .text.USB_NULL_CALLBACK:00000000 USB_NULL_CALLBACK
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:50     .bss.g_usb_component_status:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:53     .bss.g_usb_component_status:00000000 g_usb_component_status
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:56     .bss.g_usb_ep_status:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:59     .bss.g_usb_ep_status:00000000 g_usb_ep_status
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:64     .bss.g_EPn:00000000 g_EPn
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:65     .bss.g_EPn:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:69     .bss.g_EPn_max:00000000 g_EPn_max
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:70     .bss.g_EPn_max:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:72     .text.USB_Device_Init_Params:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:76     .text.USB_Device_Init_Params:00000000 USB_Device_Init_Params
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:146    .text.USB_Device_Init_Params:00000050 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:154    .text._usb_device_init:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:159    .text._usb_device_init:00000000 _usb_device_init
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:216    .text._usb_device_init:00000044 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:221    .text._usb_device_deinit:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:226    .text._usb_device_deinit:00000000 _usb_device_deinit
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:251    .text._usb_device_deinit:00000014 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:256    .text._usb_device_init_endpoint:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:261    .text._usb_device_init_endpoint:00000000 _usb_device_init_endpoint
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:346    .text._usb_device_init_endpoint:00000070 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:351    .text._usb_device_deinit_endpoint:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:356    .text._usb_device_deinit_endpoint:00000000 _usb_device_deinit_endpoint
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:432    .text._usb_device_deinit_endpoint:00000064 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:438    .text._usb_device_get_status:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:443    .text._usb_device_get_status:00000000 _usb_device_get_status
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:516    .text._usb_device_get_status:00000060 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:522    .text._usb_device_set_status:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:527    .text._usb_device_set_status:00000000 _usb_device_set_status
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:656    .text._usb_device_set_status:000000b4 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:662    .text._usb_device_register_service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:667    .text._usb_device_register_service:00000000 _usb_device_register_service
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:699    .text._usb_device_unregister_service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:704    .text._usb_device_unregister_service:00000000 _usb_device_unregister_service
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:758    .text._usb_device_unregister_service:0000003c $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:763    .text.USB_Device_Call_Service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:768    .text.USB_Device_Call_Service:00000000 USB_Device_Call_Service
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:816    .text.USB_Device_Call_Service:00000038 $d
+C:\Users\Aron\AppData\Local\Temp\cc8dWyve.s:821    .text.USB_NULL_CALLBACK:00000000 $t
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.0.22dcf9ce9babd46e5ea858ea4400d115
+                           .group:00000000 wm4.stddef.h.39.daafd3d79fe2f3a84d2d73d7d4e706f8
+                           .group:00000000 wm4.types.h.50.034d0729b1885c66fd44563eba5494e4
+                           .group:00000000 wm4.hidef.h.47.6ef7d215344a2f057d0c5b3f27c726aa
+                           .group:00000000 wm4.features.h.22.6a4ca7cd053637cc1d0db6c16f39b2d7
+                           .group:00000000 wm4._default_types.h.15.8b2cb27e528498f8ff711db085d6e489
+                           .group:00000000 wm4.stdint.h.20.796e373797e732130a803d4c0338fa1b
+                           .group:00000000 wm4.PE_Types.h.111.91c29732807f8842161a15451efcd747
+                           .group:00000000 wm4.PE_Error.h.60.6ccf96637e85421388d147a5dcbc3621
+                           .group:00000000 wm4.PE_Const.h.60.44eca2ca2a72148441f11b3e43b344a9
+                           .group:00000000 wm4.MK22F12.h.59.83dcc0895f45d7d67f2182a38aa7f04f
+                           .group:00000000 wm4.Cpu.h.80.27ab3269a1d751f899c04690559be7d6
+                           .group:00000000 wm4.FSL_USB_Stack_Config.h.5.a51a5d818e84d127c6c2fe6362a5c643
+                           .group:00000000 wm4.usb_user_config.h.47.47e295f338247e629ef1110422279558
+                           .group:00000000 wm4.usb_devapi.h.60.9ad576a4fab4e64ae00ce9daf4685bf6
+                           .group:00000000 wm4.usb_dciapi.h.36.96f19d8fcb42600c7e749b50c8c79b7e
+                           .group:00000000 wm4.USB_Config.h.35.084d2187ff7601eb219ebe421b9e0fdb
+
+UNDEFINED SYMBOLS
+USB_Control_Service
+USB_Class_CDC_Service_Dic_Bulk_In
+USB_Class_CDC_Service_Dic_Bulk_Out
+USB_Class_CDC_Service_Cic_Notify
+USB_Reset_Service
+USB_Suspend_Service
+USB_Sof_Service
+USB_Resume_Service
+USB_Error_Service
+USB_Stall_Service
+USB_DCI_Init
+USB_DCI_DeInit
+USB_DCI_Init_EndPoint
+USB_DCI_Deinit_EndPoint
+_usb_device_stall_endpoint
+_usb_device_unstall_endpoint

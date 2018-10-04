@@ -1,0 +1,328 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.file	"Application.c"
+  17              		.text
+  18              	.Ltext0:
+  19              		.cfi_sections	.debug_frame
+  20              		.section	.text.APP_AdoptToHardware,"ax",%progbits
+  21              		.align	2
+  22              		.thumb
+  23              		.thumb_func
+  25              	APP_AdoptToHardware:
+  26              	.LFB0:
+  27              		.file 1 "C:/INTRO_HS18/IntroAronAlex/TEAM_Common/Application.c"
+   1:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** /**
+   2:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****  * \file
+   3:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****  * \brief Main application file
+   4:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****  * \author Erich Styger, erich.styger@hslu.ch
+   5:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****  *
+   6:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****  * This provides the main application entry point.
+   7:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****  */
+   8:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+   9:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "Platform.h"
+  10:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "Application.h"
+  11:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "Event.h"
+  12:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "LED.h"
+  13:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "WAIT1.h"
+  14:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "CS1.h"
+  15:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "KeyDebounce.h"
+  16:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "CLS1.h"
+  17:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "KIN1.h"
+  18:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_KEYS
+  19:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Keys.h"
+  20:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  21:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_SHELL
+  22:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "CLS1.h"
+  23:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Shell.h"
+  24:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "RTT1.h"
+  25:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  26:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_BUZZER
+  27:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Buzzer.h"
+  28:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  29:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_RTOS
+  30:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "FRTOS1.h"
+  31:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "RTOS.h"
+  32:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  33:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE
+  34:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Q4CLeft.h"
+  35:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Q4CRight.h"
+  36:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  37:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_MOTOR
+  38:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Motor.h"
+  39:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  40:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_BOARD_IS_ROBO_V2
+  41:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "PORT_PDD.h"
+  42:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  43:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_LINE_FOLLOW
+  44:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "LineFollow.h"
+  45:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  46:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_LCD_MENU
+  47:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "LCD.h"
+  48:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  49:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_SNAKE_GAME
+  50:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Snake.h"
+  51:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  52:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_REFLECTANCE
+  53:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #include "Reflectance.h"
+  54:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  55:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #include "Sumo.h"
+  56:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+  57:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_EVENTS
+  58:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+  59:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** static void BtnMsg(int btn, const char *msg) {
+  60:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_SHELL
+  61:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #if PL_CONFIG_HAS_SHELL_QUEUE
+  62:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     uint8_t buf[48];
+  63:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+  64:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     UTIL1_strcpy(buf, sizeof(buf), "Button pressed: ");
+  65:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     UTIL1_strcat(buf, sizeof(buf), msg);
+  66:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     UTIL1_strcat(buf, sizeof(buf), ": ");
+  67:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     UTIL1_strcatNum32s(buf, sizeof(buf), btn);
+  68:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     UTIL1_strcat(buf, sizeof(buf), "\r\n");
+  69:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     SHELL_SendString(buf);
+  70:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #else
+  71:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     CLS1_SendStr("Button pressed: ", CLS1_GetStdio()->stdOut);
+  72:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     CLS1_SendStr(msg, CLS1_GetStdio()->stdOut);
+  73:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     CLS1_SendStr(": ", CLS1_GetStdio()->stdOut);
+  74:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     CLS1_SendNum32s(btn, CLS1_GetStdio()->stdOut);
+  75:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     CLS1_SendStr("\r\n", CLS1_GetStdio()->stdOut);
+  76:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   #endif
+  77:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+  78:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** }
+  79:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+  80:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** void APP_EventHandler(EVNT_Handle event) {
+  81:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /*! \todo handle events */
+  82:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   switch(event) {
+  83:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   case EVNT_STARTUP:
+  84:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     {
+  85:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****       int i;
+  86:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****       for (i=0;i<5;i++) {
+  87:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****         LED1_Neg();
+  88:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****         WAIT1_Waitms(50);
+  89:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****       }
+  90:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****       LED1_Off();
+  91:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     }
+  92:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   case EVNT_LED_HEARTBEAT:
+  93:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     LED2_Neg();
+  94:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     break;
+  95:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_NOF_KEYS>=1
+  96:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   case EVNT_SW1_PRESSED:
+  97:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     BtnMsg(1, "pressed");
+  98:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****      break;
+  99:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 100:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     default:
+ 101:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****       break;
+ 102:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****    } /* switch */
+ 103:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** }
+ 104:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif /* PL_CONFIG_HAS_EVENTS */
+ 105:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+ 106:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_MOTOR /* currently only used for robots */
+ 107:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** static const KIN1_UID RoboIDs[] = {
+ 108:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 0: L20, V2 */ {{0x00,0x03,0x00,0x00,0x67,0xCD,0xB7,0x21,0x4E,0x45,0x32,0x15,0x30,0x02,0x00,0x1
+ 109:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 1: L21, V2 */ {{0x00,0x05,0x00,0x00,0x4E,0x45,0xB7,0x21,0x4E,0x45,0x32,0x15,0x30,0x02,0x00,0x1
+ 110:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 2: L4, V1  */ {{0x00,0x0B,0xFF,0xFF,0x4E,0x45,0xFF,0xFF,0x4E,0x45,0x27,0x99,0x10,0x02,0x00,0x2
+ 111:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 3: L23, V2 */ {{0x00,0x0A,0x00,0x00,0x67,0xCD,0xB8,0x21,0x4E,0x45,0x32,0x15,0x30,0x02,0x00,0x1
+ 112:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 4: L11, V2 */ {{0x00,0x19,0x00,0x00,0x67,0xCD,0xB9,0x11,0x4E,0x45,0x32,0x15,0x30,0x02,0x00,0x1
+ 113:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 5: L5, V2 */  {{0x00,0x38,0x00,0x00,0x67,0xCD,0xB5,0x41,0x4E,0x45,0x32,0x15,0x30,0x02,0x00,0x1
+ 114:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 6: L3, V1 */  {{0x00,0x33,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x4E,0x45,0x27,0x99,0x10,0x02,0x00,0x0
+ 115:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* 7: L1, V1 */  {{0x00,0x19,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x4E,0x45,0x27,0x99,0x10,0x02,0x00,0x2
+ 116:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** };
+ 117:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 118:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+ 119:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** static void APP_AdoptToHardware(void) {
+  28              		.loc 1 119 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 24
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32 0000 80B5     		push	{r7, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 86B0     		sub	sp, sp, #24
+  37              		.cfi_def_cfa_offset 32
+  38 0004 00AF     		add	r7, sp, #0
+  39              		.cfi_def_cfa_register 7
+ 120:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   KIN1_UID id;
+ 121:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   uint8_t res;
+ 122:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+ 123:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   res = KIN1_UIDGet(&id);
+  40              		.loc 1 123 0
+  41 0006 3B1D     		adds	r3, r7, #4
+  42 0008 1846     		mov	r0, r3
+  43 000a FFF7FEFF 		bl	KIN1_UIDGet
+  44 000e 0346     		mov	r3, r0
+  45 0010 FB75     		strb	r3, [r7, #23]
+ 124:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   if (res!=ERR_OK) {
+  46              		.loc 1 124 0
+  47 0012 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+  48 0014 002B     		cmp	r3, #0
+  49 0016 00D0     		beq	.L1
+  50              	.L3:
+ 125:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     for(;;); /* error */
+  51              		.loc 1 125 0 discriminator 1
+  52 0018 FEE7     		b	.L3
+  53              	.L1:
+ 126:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   }
+ 127:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_MOTOR
+ 128:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   if (KIN1_UIDSame(&id, &RoboIDs[0])) { /* L20 */
+ 129:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE
+ 130:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CRight_SwapPins(TRUE);
+ 131:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 132:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_LEFT), TRUE); /* invert left motor */
+ 133:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_RIGHT), TRUE); /* invert left motor */
+ 134:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   } else if (KIN1_UIDSame(&id, &RoboIDs[1])) { /* V2 L21 */
+ 135:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     /* no change needed */
+ 136:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   } else if (KIN1_UIDSame(&id, &RoboIDs[2])) { /* V1 L4 */
+ 137:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_LEFT), TRUE); /* revert left motor */
+ 138:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE
+ 139:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CLeft_SwapPins(TRUE);
+ 140:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CRight_SwapPins(TRUE);
+ 141:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 142:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   } else if (KIN1_UIDSame(&id, &RoboIDs[3])) { /* L23 */
+ 143:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE
+ 144:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CRight_SwapPins(TRUE);
+ 145:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 146:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_LEFT), TRUE); /* invert left motor */
+ 147:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_RIGHT), TRUE); /* invert left motor */
+ 148:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   } else if (KIN1_UIDSame(&id, &RoboIDs[4])) { /* L11 */
+ 149:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE
+ 150:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CRight_SwapPins(TRUE);
+ 151:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 152:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   } else if (KIN1_UIDSame(&id, &RoboIDs[5])) { /* L5, V2 */
+ 153:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_RIGHT), TRUE); /* invert right motor */
+ 154:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CRight_SwapPins(TRUE);
+ 155:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   } else if (KIN1_UIDSame(&id, &RoboIDs[6])) { /* L3, V1 */
+ 156:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_LEFT), TRUE); /* invert right motor */
+ 157:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE
+ 158:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CLeft_SwapPins(TRUE);
+ 159:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CRight_SwapPins(TRUE);
+ 160:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 161:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   } else if (KIN1_UIDSame(&id, &RoboIDs[7])) { /* L1, V1 */
+ 162:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     MOT_Invert(MOT_GetMotorHandle(MOT_MOTOR_LEFT), TRUE); /* invert right motor */
+ 163:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE
+ 164:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CLeft_SwapPins(TRUE);
+ 165:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****     (void)Q4CRight_SwapPins(TRUE);
+ 166:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 167:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   }
+ 168:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 169:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #if PL_CONFIG_HAS_QUADRATURE && PL_CONFIG_BOARD_IS_ROBO_V2
+ 170:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   /* pull-ups for Quadrature Encoder Pins */
+ 171:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullSelect(PORTC_BASE_PTR, 10, PORT_PDD_PULL_UP);
+ 172:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullEnable(PORTC_BASE_PTR, 10, PORT_PDD_PULL_ENABLE);
+ 173:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullSelect(PORTC_BASE_PTR, 11, PORT_PDD_PULL_UP);
+ 174:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullEnable(PORTC_BASE_PTR, 11, PORT_PDD_PULL_ENABLE);
+ 175:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullSelect(PORTC_BASE_PTR, 16, PORT_PDD_PULL_UP);
+ 176:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullEnable(PORTC_BASE_PTR, 16, PORT_PDD_PULL_ENABLE);
+ 177:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullSelect(PORTC_BASE_PTR, 17, PORT_PDD_PULL_UP);
+ 178:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PORT_PDD_SetPinPullEnable(PORTC_BASE_PTR, 17, PORT_PDD_PULL_ENABLE);
+ 179:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** #endif
+ 180:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** }
+  54              		.loc 1 180 0
+  55 001a 1837     		adds	r7, r7, #24
+  56 001c BD46     		mov	sp, r7
+  57              		@ sp needed
+  58 001e 80BD     		pop	{r7, pc}
+  59              		.cfi_endproc
+  60              	.LFE0:
+  62              		.section	.text.APP_Start,"ax",%progbits
+  63              		.align	2
+  64              		.global	APP_Start
+  65              		.thumb
+  66              		.thumb_func
+  68              	APP_Start:
+  69              	.LFB1:
+ 181:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** 
+ 182:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c **** void APP_Start(void) {
+  70              		.loc 1 182 0
+  71              		.cfi_startproc
+  72              		@ args = 0, pretend = 0, frame = 0
+  73              		@ frame_needed = 1, uses_anonymous_args = 0
+  74 0000 80B5     		push	{r7, lr}
+  75              		.cfi_def_cfa_offset 8
+  76              		.cfi_offset 7, -8
+  77              		.cfi_offset 14, -4
+  78 0002 00AF     		add	r7, sp, #0
+  79              		.cfi_def_cfa_register 7
+ 183:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   PL_Init();
+  80              		.loc 1 183 0
+  81 0004 FFF7FEFF 		bl	PL_Init
+ 184:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   APP_AdoptToHardware();
+  82              		.loc 1 184 0
+  83 0008 FFF7FEFF 		bl	APP_AdoptToHardware
+ 185:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   __asm volatile("cpsie i"); /* enable interrupts */
+  84              		.loc 1 185 0
+  85              	@ 185 "C:/INTRO_HS18/IntroAronAlex/TEAM_Common/Application.c" 1
+  86 000c 62B6     		cpsie i
+  87              	@ 0 "" 2
+  88              		.thumb
+  89              	.L5:
+ 186:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   for(;;) {
+ 187:C:/INTRO_HS18/IntroAronAlex/TEAM_Common\Application.c ****   }
+  90              		.loc 1 187 0 discriminator 1
+  91 000e FEE7     		b	.L5
+  92              		.cfi_endproc
+  93              	.LFE1:
+  95              		.text
+  96              	.Letext0:
+  97              		.file 2 "c:\\freescale\\kds_v3\\toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+  98              		.file 3 "c:\\freescale\\kds_v3\\toolchain\\arm-none-eabi\\include\\stdint.h"
+  99              		.file 4 "C:/INTRO_HS18/IntroAronAlex/TEAM_Robot/Generated_Code/KIN1.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 Application.c
+C:\Users\Aron\AppData\Local\Temp\cctyTAz6.s:21     .text.APP_AdoptToHardware:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cctyTAz6.s:25     .text.APP_AdoptToHardware:00000000 APP_AdoptToHardware
+C:\Users\Aron\AppData\Local\Temp\cctyTAz6.s:63     .text.APP_Start:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cctyTAz6.s:68     .text.APP_Start:00000000 APP_Start
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.0.22dcf9ce9babd46e5ea858ea4400d115
+                           .group:00000000 wm4.features.h.22.6a4ca7cd053637cc1d0db6c16f39b2d7
+                           .group:00000000 wm4._default_types.h.15.8b2cb27e528498f8ff711db085d6e489
+                           .group:00000000 wm4.stdint.h.20.796e373797e732130a803d4c0338fa1b
+                           .group:00000000 wm4.PE_Types.h.68.de7a315b6e4c635a9a7a45ae6ec20b08
+                           .group:00000000 wm4.PE_Error.h.60.6ccf96637e85421388d147a5dcbc3621
+                           .group:00000000 wm4.PE_Const.h.60.44eca2ca2a72148441f11b3e43b344a9
+                           .group:00000000 wm4.MK22F12.h.59.83dcc0895f45d7d67f2182a38aa7f04f
+                           .group:00000000 wm4.Cpu.h.80.27ab3269a1d751f899c04690559be7d6
+                           .group:00000000 wm4.Platform_Local.h.12.1c54ecad631b4f1f78f95b12b9dbbf9c
+                           .group:00000000 wm4.Platform.h.18.5b06f5253c5f37b7878db104ac027c4e
+                           .group:00000000 wm4.MCUC1config.h.9.0bb8fec22d828f19e34a4cdf9951d555
+                           .group:00000000 wm4.WAIT1config.h.9.10dc563fdcbcf1b71ae6cd3c0d22fd32
+                           .group:00000000 wm4.WAIT1.h.93.af9b975f9a6d5eb80ff72ca188861d18
+                           .group:00000000 wm4.CS1config.h.2.e5153cf58e5fe0ee6ea0dc776d94aafd
+                           .group:00000000 wm4.CS1.h.86.71773cc9f7a1189b60d5af00334fca8e
+                           .group:00000000 wm4.CLS1config.h.2.854bb35357facad932898800d8509913
+                           .group:00000000 wm4.CLS1.h.122.6dfe00e3ccac8c27c20e405bc6b8e609
+                           .group:00000000 wm4.newlib.h.8.fec018e441fee7bfa1923812ad010f97
+                           .group:00000000 wm4.config.h.212.4163ef2871a828c674038d036b081cfd
+                           .group:00000000 wm4._ansi.h.23.2147fde150631f5584b9dc29b914d1b8
+                           .group:00000000 wm4.stddef.h.39.daafd3d79fe2f3a84d2d73d7d4e706f8
+                           .group:00000000 wm4.lock.h.2.9bc98482741e5e2a9450b12934a684ea
+                           .group:00000000 wm4._types.h.54.d3d34a3b7f3cc230cd159baf022b4b08
+                           .group:00000000 wm4.stddef.h.158.61317cdbfb4026324507d123a50b0fd6
+                           .group:00000000 wm4.reent.h.17.8bd9e4098e0428508c282cad794fae43
+                           .group:00000000 wm4.cdefs.h.56.a2d04de9d47039852021e66fca39bb58
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.a7efb00f6cbc6f43213b50e183c9830c
+                           .group:00000000 wm4.UTIL1.h.779.3f4da336bf693064cf78522cb140d5f7
+                           .group:00000000 wm4.XF1config.h.2.019525ef4bf64d9e3cd792a651ed2fc0
+                           .group:00000000 wm4.stdarg.h.31.72c3aa8d68b291953fa52b9471bcdff7
+                           .group:00000000 wm4.CLS1.h.172.83b9daee286b58c7d453522f7dba0b4f
+                           .group:00000000 wm4.KIN1config.h.9.ab40a5871d92daf91163fbd666cce881
+                           .group:00000000 wm4.KIN1.h.91.3d4462c05cb3114f21995efcad73491e
+
+UNDEFINED SYMBOLS
+KIN1_UIDGet
+PL_Init

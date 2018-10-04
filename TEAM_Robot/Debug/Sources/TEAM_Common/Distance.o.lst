@@ -1,0 +1,35 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.file	"Distance.c"
+  17              		.text
+  18              	.Ltext0:
+  19              		.cfi_sections	.debug_frame
+  20              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 Distance.c
+                           .group:00000000 wm4.0.22dcf9ce9babd46e5ea858ea4400d115
+                           .group:00000000 wm4.features.h.22.6a4ca7cd053637cc1d0db6c16f39b2d7
+                           .group:00000000 wm4._default_types.h.15.8b2cb27e528498f8ff711db085d6e489
+                           .group:00000000 wm4.stdint.h.20.796e373797e732130a803d4c0338fa1b
+                           .group:00000000 wm4.PE_Types.h.68.de7a315b6e4c635a9a7a45ae6ec20b08
+                           .group:00000000 wm4.PE_Error.h.60.6ccf96637e85421388d147a5dcbc3621
+                           .group:00000000 wm4.PE_Const.h.60.44eca2ca2a72148441f11b3e43b344a9
+                           .group:00000000 wm4.MK22F12.h.59.83dcc0895f45d7d67f2182a38aa7f04f
+                           .group:00000000 wm4.Cpu.h.80.27ab3269a1d751f899c04690559be7d6
+                           .group:00000000 wm4.Platform_Local.h.12.1c54ecad631b4f1f78f95b12b9dbbf9c
+                           .group:00000000 wm4.Platform.h.18.5b06f5253c5f37b7878db104ac027c4e
+
+NO UNDEFINED SYMBOLS

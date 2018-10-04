@@ -1,0 +1,1101 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.file	"usb_cdc_pstn.c"
+  17              		.text
+  18              	.Ltext0:
+  19              		.cfi_sections	.debug_frame
+  20              		.section	.bss.g_pstn_callback,"aw",%nobits
+  21              		.align	2
+  24              	g_pstn_callback:
+  25 0000 00000000 		.space	4
+  26              		.section	.bss.g_dte_present,"aw",%nobits
+  29              	g_dte_present:
+  30 0000 00       		.space	1
+  31              		.section	.bss.g_dte_status,"aw",%nobits
+  34              	g_dte_status:
+  35 0000 00       		.space	1
+  36              		.section	.bss.g_break_duration,"aw",%nobits
+  37              		.align	1
+  40              	g_break_duration:
+  41 0000 0000     		.space	2
+  42              		.section	.bss.g_current_interface,"aw",%nobits
+  45              	g_current_interface:
+  46 0000 00       		.space	1
+  47              		.section	.bss.g_uart_bitmap,"aw",%nobits
+  48              		.align	2
+  51              	g_uart_bitmap:
+  52 0000 00       		.space	1
+  53 0001 000000   		.section	.data.g_serial_state_buf,"aw",%progbits
+  54              		.align	2
+  57              	g_serial_state_buf:
+  58 0000 A1       		.byte	-95
+  59 0001 20       		.byte	32
+  60 0002 00       		.byte	0
+  61 0003 00       		.byte	0
+  62 0004 00       		.byte	0
+  63 0005 00       		.byte	0
+  64 0006 02       		.byte	2
+  65 0007 00       		.byte	0
+  66 0008 00       		.byte	0
+  67 0009 00       		.byte	0
+  68 000a 0000     		.section	.text.USB_Class_CDC_Pstn_Init,"ax",%progbits
+  69              		.align	2
+  70              		.global	USB_Class_CDC_Pstn_Init
+  71              		.thumb
+  72              		.thumb_func
+  74              	USB_Class_CDC_Pstn_Init:
+  75              	.LFB0:
+  76              		.file 1 "../Generated_Code/usb_cdc_pstn.c"
+   1:../Generated_Code/usb_cdc_pstn.c **** /******************************************************************************
+   2:../Generated_Code/usb_cdc_pstn.c ****  *
+   3:../Generated_Code/usb_cdc_pstn.c ****  * Freescale Semiconductor Inc.
+   4:../Generated_Code/usb_cdc_pstn.c ****  * (c) Copyright 2004-2009 Freescale Semiconductor, Inc.
+   5:../Generated_Code/usb_cdc_pstn.c ****  * ALL RIGHTS RESERVED.
+   6:../Generated_Code/usb_cdc_pstn.c ****  *
+   7:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+   8:../Generated_Code/usb_cdc_pstn.c ****  *
+   9:../Generated_Code/usb_cdc_pstn.c ****  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
+  10:../Generated_Code/usb_cdc_pstn.c ****  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
+  11:../Generated_Code/usb_cdc_pstn.c ****  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
+  12:../Generated_Code/usb_cdc_pstn.c ****  * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+  13:../Generated_Code/usb_cdc_pstn.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+  14:../Generated_Code/usb_cdc_pstn.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+  15:../Generated_Code/usb_cdc_pstn.c ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+  16:../Generated_Code/usb_cdc_pstn.c ****  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+  17:../Generated_Code/usb_cdc_pstn.c ****  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
+  18:../Generated_Code/usb_cdc_pstn.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+  19:../Generated_Code/usb_cdc_pstn.c ****  * THE POSSIBILITY OF SUCH DAMAGE.
+  20:../Generated_Code/usb_cdc_pstn.c ****  *
+  21:../Generated_Code/usb_cdc_pstn.c ****  **************************************************************************//*!
+  22:../Generated_Code/usb_cdc_pstn.c ****  *
+  23:../Generated_Code/usb_cdc_pstn.c ****  * @file usb_cdc_pstn.c
+  24:../Generated_Code/usb_cdc_pstn.c ****  *
+  25:../Generated_Code/usb_cdc_pstn.c ****  * @author
+  26:../Generated_Code/usb_cdc_pstn.c ****  *
+  27:../Generated_Code/usb_cdc_pstn.c ****  * @version
+  28:../Generated_Code/usb_cdc_pstn.c ****  *
+  29:../Generated_Code/usb_cdc_pstn.c ****  * @date May-28-2009
+  30:../Generated_Code/usb_cdc_pstn.c ****  *
+  31:../Generated_Code/usb_cdc_pstn.c ****  * @brief The file contains USB CDC_PSTN Sub Class implementation.
+  32:../Generated_Code/usb_cdc_pstn.c ****  *
+  33:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  34:../Generated_Code/usb_cdc_pstn.c **** 
+  35:../Generated_Code/usb_cdc_pstn.c **** /******************************************************************************
+  36:../Generated_Code/usb_cdc_pstn.c ****  * Includes
+  37:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  38:../Generated_Code/usb_cdc_pstn.c ****  #include "usb_cdc_pstn.h"  /* USB CDC PSTN Sub Class Header File */
+  39:../Generated_Code/usb_cdc_pstn.c **** 
+  40:../Generated_Code/usb_cdc_pstn.c ****  /*****************************************************************************
+  41:../Generated_Code/usb_cdc_pstn.c ****  * Constant and Macro's
+  42:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  43:../Generated_Code/usb_cdc_pstn.c **** 
+  44:../Generated_Code/usb_cdc_pstn.c **** /*****************************************************************************
+  45:../Generated_Code/usb_cdc_pstn.c ****  * Global Functions Prototypes
+  46:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  47:../Generated_Code/usb_cdc_pstn.c **** 
+  48:../Generated_Code/usb_cdc_pstn.c **** /****************************************************************************
+  49:../Generated_Code/usb_cdc_pstn.c ****  * Global Variables
+  50:../Generated_Code/usb_cdc_pstn.c ****  ****************************************************************************/
+  51:../Generated_Code/usb_cdc_pstn.c **** 
+  52:../Generated_Code/usb_cdc_pstn.c **** /*****************************************************************************
+  53:../Generated_Code/usb_cdc_pstn.c ****  * Local Types - None
+  54:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  55:../Generated_Code/usb_cdc_pstn.c **** 
+  56:../Generated_Code/usb_cdc_pstn.c **** /*****************************************************************************
+  57:../Generated_Code/usb_cdc_pstn.c ****  * Local Functions Prototypes
+  58:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  59:../Generated_Code/usb_cdc_pstn.c **** 
+  60:../Generated_Code/usb_cdc_pstn.c **** /*****************************************************************************
+  61:../Generated_Code/usb_cdc_pstn.c ****  * Local Variables
+  62:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  63:../Generated_Code/usb_cdc_pstn.c **** /* PSTN subclass callback pointer */
+  64:../Generated_Code/usb_cdc_pstn.c **** static USB_CLASS_CALLBACK g_pstn_callback = NULL;
+  65:../Generated_Code/usb_cdc_pstn.c **** /* data terminal equipment present or not */
+  66:../Generated_Code/usb_cdc_pstn.c **** static boolean g_dte_present = FALSE;
+  67:../Generated_Code/usb_cdc_pstn.c **** static uint_8 g_dte_status = 0; /* Status of DATA TERMINAL EQUIPMENT */
+  68:../Generated_Code/usb_cdc_pstn.c **** static uint_16 g_break_duration = 0; /* Length of time in milliseconds of the
+  69:../Generated_Code/usb_cdc_pstn.c ****                                                               break signal */
+  70:../Generated_Code/usb_cdc_pstn.c **** static uint_8 g_current_interface = 0;
+  71:../Generated_Code/usb_cdc_pstn.c **** static UART_BITMAP g_uart_bitmap;
+  72:../Generated_Code/usb_cdc_pstn.c **** 
+  73:../Generated_Code/usb_cdc_pstn.c **** #if CIC_NOTIF_ELEM_SUPPORT
+  74:../Generated_Code/usb_cdc_pstn.c **** static uint_8 g_serial_state_buf[NOTIF_PACKET_SIZE+UART_BITMAP_SIZE] =
+  75:../Generated_Code/usb_cdc_pstn.c **** {
+  76:../Generated_Code/usb_cdc_pstn.c ****     NOTIF_REQUEST_TYPE,SERIAL_STATE_NOTIF,
+  77:../Generated_Code/usb_cdc_pstn.c ****     0x00,0x00,/*wValue*/
+  78:../Generated_Code/usb_cdc_pstn.c ****     0x00,0x00,/*interface - modifies*/
+  79:../Generated_Code/usb_cdc_pstn.c ****     UART_BITMAP_SIZE,0x00,/* wlength*/
+  80:../Generated_Code/usb_cdc_pstn.c ****     0x00,0x00 /*data initialized - modifies*/
+  81:../Generated_Code/usb_cdc_pstn.c **** };/*uart bitmap*/
+  82:../Generated_Code/usb_cdc_pstn.c **** #endif
+  83:../Generated_Code/usb_cdc_pstn.c ****  /*****************************************************************************
+  84:../Generated_Code/usb_cdc_pstn.c ****  * Local Functions
+  85:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  86:../Generated_Code/usb_cdc_pstn.c **** 
+  87:../Generated_Code/usb_cdc_pstn.c **** /*****************************************************************************
+  88:../Generated_Code/usb_cdc_pstn.c ****  * Global Functions
+  89:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+  90:../Generated_Code/usb_cdc_pstn.c **** 
+  91:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+  92:../Generated_Code/usb_cdc_pstn.c ****  *
+  93:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_Pstn_Init
+  94:../Generated_Code/usb_cdc_pstn.c ****  *
+  95:../Generated_Code/usb_cdc_pstn.c ****  * @brief The function initializes the PSTN Module
+  96:../Generated_Code/usb_cdc_pstn.c ****  *
+  97:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID     : Controller ID
+  98:../Generated_Code/usb_cdc_pstn.c ****  * @param callback          : PSTN Callback
+  99:../Generated_Code/usb_cdc_pstn.c ****  *
+ 100:../Generated_Code/usb_cdc_pstn.c ****  * @return error
+ 101:../Generated_Code/usb_cdc_pstn.c ****  *         USB_OK           : Always
+ 102:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 103:../Generated_Code/usb_cdc_pstn.c ****  * PSTN Sub Class Initialization routine
+ 104:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 105:../Generated_Code/usb_cdc_pstn.c **** uint_8 USB_Class_CDC_Pstn_Init (
+ 106:../Generated_Code/usb_cdc_pstn.c ****     uint_8    controller_ID,        /* [IN] Controller ID */
+ 107:../Generated_Code/usb_cdc_pstn.c ****     USB_CLASS_CALLBACK callback     /* [IN] PSTN Callback */
+ 108:../Generated_Code/usb_cdc_pstn.c **** )
+ 109:../Generated_Code/usb_cdc_pstn.c **** {
+  77              		.loc 1 109 0
+  78              		.cfi_startproc
+  79              		@ args = 0, pretend = 0, frame = 16
+  80              		@ frame_needed = 1, uses_anonymous_args = 0
+  81              		@ link register save eliminated.
+  82 0000 80B4     		push	{r7}
+  83              		.cfi_def_cfa_offset 4
+  84              		.cfi_offset 7, -4
+  85 0002 85B0     		sub	sp, sp, #20
+  86              		.cfi_def_cfa_offset 24
+  87 0004 00AF     		add	r7, sp, #0
+  88              		.cfi_def_cfa_register 7
+  89 0006 0346     		mov	r3, r0
+  90 0008 3960     		str	r1, [r7]
+  91 000a FB71     		strb	r3, [r7, #7]
+ 110:../Generated_Code/usb_cdc_pstn.c ****     uint_8 error = USB_OK;
+  92              		.loc 1 110 0
+  93 000c 0023     		movs	r3, #0
+  94 000e FB73     		strb	r3, [r7, #15]
+ 111:../Generated_Code/usb_cdc_pstn.c ****     UNUSED (controller_ID)
+ 112:../Generated_Code/usb_cdc_pstn.c ****     
+ 113:../Generated_Code/usb_cdc_pstn.c ****     /* save input parameters */
+ 114:../Generated_Code/usb_cdc_pstn.c ****     g_pstn_callback = callback;
+  95              		.loc 1 114 0
+  96 0010 044B     		ldr	r3, .L3
+  97 0012 3A68     		ldr	r2, [r7]
+  98 0014 1A60     		str	r2, [r3]
+ 115:../Generated_Code/usb_cdc_pstn.c ****     return error;
+  99              		.loc 1 115 0
+ 100 0016 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 116:../Generated_Code/usb_cdc_pstn.c **** }
+ 101              		.loc 1 116 0
+ 102 0018 1846     		mov	r0, r3
+ 103 001a 1437     		adds	r7, r7, #20
+ 104 001c BD46     		mov	sp, r7
+ 105              		@ sp needed
+ 106 001e 5DF8047B 		ldr	r7, [sp], #4
+ 107 0022 7047     		bx	lr
+ 108              	.L4:
+ 109              		.align	2
+ 110              	.L3:
+ 111 0024 00000000 		.word	g_pstn_callback
+ 112              		.cfi_endproc
+ 113              	.LFE0:
+ 115              		.section	.text.USB_Class_CDC_PSTN_Get_Line_Coding,"ax",%progbits
+ 116              		.align	2
+ 117              		.global	USB_Class_CDC_PSTN_Get_Line_Coding
+ 118              		.thumb
+ 119              		.thumb_func
+ 121              	USB_Class_CDC_PSTN_Get_Line_Coding:
+ 122              	.LFB1:
+ 117:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+ 118:../Generated_Code/usb_cdc_pstn.c ****  *
+ 119:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_PSTN_Get_Line_Coding
+ 120:../Generated_Code/usb_cdc_pstn.c ****  *
+ 121:../Generated_Code/usb_cdc_pstn.c ****  * @brief  This function is called in response to GetLineCoding request
+ 122:../Generated_Code/usb_cdc_pstn.c ****  *
+ 123:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID   : Controller ID
+ 124:../Generated_Code/usb_cdc_pstn.c ****  * @param setup_packet    : Pointer to setup packet
+ 125:../Generated_Code/usb_cdc_pstn.c ****  * @param data            : Pointer to Data to be send
+ 126:../Generated_Code/usb_cdc_pstn.c ****  * @param size            : Pointer to Size of Data
+ 127:../Generated_Code/usb_cdc_pstn.c ****  *
+ 128:../Generated_Code/usb_cdc_pstn.c ****  * @return status:
+ 129:../Generated_Code/usb_cdc_pstn.c ****  *          USB_OK : When Successfull
+ 130:../Generated_Code/usb_cdc_pstn.c ****  *          USBERR_INVALID_REQ_TYPE: When  request for
+ 131:../Generated_Code/usb_cdc_pstn.c ****  *                                   invalid Interface is presented
+ 132:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 133:../Generated_Code/usb_cdc_pstn.c ****  * Calls application to receive Line Coding Information
+ 134:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 135:../Generated_Code/usb_cdc_pstn.c **** uint_8 USB_Class_CDC_PSTN_Get_Line_Coding (
+ 136:../Generated_Code/usb_cdc_pstn.c ****     uint_8 controller_ID,               /* [IN] Controller ID */
+ 137:../Generated_Code/usb_cdc_pstn.c ****     USB_SETUP_STRUCT * setup_packet,    /* [IN] Pointer to setup packet */
+ 138:../Generated_Code/usb_cdc_pstn.c ****     uint_8_ptr *data,                   /* [OUT] Pointer to Data to be send */
+ 139:../Generated_Code/usb_cdc_pstn.c ****     USB_PACKET_SIZE *size               /* [OUT] Pointer to Size of Data */
+ 140:../Generated_Code/usb_cdc_pstn.c **** )
+ 141:../Generated_Code/usb_cdc_pstn.c **** {
+ 123              		.loc 1 141 0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 24
+ 126              		@ frame_needed = 1, uses_anonymous_args = 0
+ 127 0000 80B5     		push	{r7, lr}
+ 128              		.cfi_def_cfa_offset 8
+ 129              		.cfi_offset 7, -8
+ 130              		.cfi_offset 14, -4
+ 131 0002 86B0     		sub	sp, sp, #24
+ 132              		.cfi_def_cfa_offset 32
+ 133 0004 00AF     		add	r7, sp, #0
+ 134              		.cfi_def_cfa_register 7
+ 135 0006 B960     		str	r1, [r7, #8]
+ 136 0008 7A60     		str	r2, [r7, #4]
+ 137 000a 3B60     		str	r3, [r7]
+ 138 000c 0346     		mov	r3, r0
+ 139 000e FB73     		strb	r3, [r7, #15]
+ 142:../Generated_Code/usb_cdc_pstn.c ****     uint_8 status;
+ 143:../Generated_Code/usb_cdc_pstn.c ****     UNUSED (size)
+ 144:../Generated_Code/usb_cdc_pstn.c ****     g_current_interface = (uint_8)setup_packet->index ;
+ 140              		.loc 1 144 0
+ 141 0010 BB68     		ldr	r3, [r7, #8]
+ 142 0012 9B88     		ldrh	r3, [r3, #4]
+ 143 0014 DAB2     		uxtb	r2, r3
+ 144 0016 084B     		ldr	r3, .L7
+ 145 0018 1A70     		strb	r2, [r3]
+ 145:../Generated_Code/usb_cdc_pstn.c ****     status = USB_Desc_Get_Line_Coding(controller_ID, g_current_interface, 
+ 146              		.loc 1 145 0
+ 147 001a 074B     		ldr	r3, .L7
+ 148 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 149 001e FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 150 0020 1046     		mov	r0, r2
+ 151 0022 1946     		mov	r1, r3
+ 152 0024 7A68     		ldr	r2, [r7, #4]
+ 153 0026 FFF7FEFF 		bl	USB_Desc_Get_Line_Coding
+ 154 002a 0346     		mov	r3, r0
+ 155 002c FB75     		strb	r3, [r7, #23]
+ 146:../Generated_Code/usb_cdc_pstn.c ****         data);
+ 147:../Generated_Code/usb_cdc_pstn.c **** 
+ 148:../Generated_Code/usb_cdc_pstn.c ****     return status;
+ 156              		.loc 1 148 0
+ 157 002e FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 149:../Generated_Code/usb_cdc_pstn.c **** }
+ 158              		.loc 1 149 0
+ 159 0030 1846     		mov	r0, r3
+ 160 0032 1837     		adds	r7, r7, #24
+ 161 0034 BD46     		mov	sp, r7
+ 162              		@ sp needed
+ 163 0036 80BD     		pop	{r7, pc}
+ 164              	.L8:
+ 165              		.align	2
+ 166              	.L7:
+ 167 0038 00000000 		.word	g_current_interface
+ 168              		.cfi_endproc
+ 169              	.LFE1:
+ 171              		.section	.text.USB_Class_CDC_PSTN_Set_Line_Coding,"ax",%progbits
+ 172              		.align	2
+ 173              		.global	USB_Class_CDC_PSTN_Set_Line_Coding
+ 174              		.thumb
+ 175              		.thumb_func
+ 177              	USB_Class_CDC_PSTN_Set_Line_Coding:
+ 178              	.LFB2:
+ 150:../Generated_Code/usb_cdc_pstn.c **** 
+ 151:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+ 152:../Generated_Code/usb_cdc_pstn.c ****  *
+ 153:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_PSTN_Set_Line_Coding
+ 154:../Generated_Code/usb_cdc_pstn.c ****  *
+ 155:../Generated_Code/usb_cdc_pstn.c ****  * @brief  This function is called in response to SetLineCoding request
+ 156:../Generated_Code/usb_cdc_pstn.c ****  *
+ 157:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID   : Controller ID
+ 158:../Generated_Code/usb_cdc_pstn.c ****  * @param setup_packet    : Pointer to setup packet
+ 159:../Generated_Code/usb_cdc_pstn.c ****  * @param data            : Pointer to Data
+ 160:../Generated_Code/usb_cdc_pstn.c ****  * @param size            : Pointer to Size of Data
+ 161:../Generated_Code/usb_cdc_pstn.c ****  *
+ 162:../Generated_Code/usb_cdc_pstn.c ****  * @return status:
+ 163:../Generated_Code/usb_cdc_pstn.c ****  *      USB_OK                  : When Successfull
+ 164:../Generated_Code/usb_cdc_pstn.c ****  *      USBERR_INVALID_REQ_TYPE : When  request for invalid
+ 165:../Generated_Code/usb_cdc_pstn.c ****  *                                Interface is presented
+ 166:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 167:../Generated_Code/usb_cdc_pstn.c ****  * Calls Applciation to update Line Coding Information
+ 168:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 169:../Generated_Code/usb_cdc_pstn.c **** uint_8 USB_Class_CDC_PSTN_Set_Line_Coding (
+ 170:../Generated_Code/usb_cdc_pstn.c ****     uint_8 controller_ID,               /* [IN] Controller ID */
+ 171:../Generated_Code/usb_cdc_pstn.c ****     USB_SETUP_STRUCT * setup_packet,    /* [IN] Pointer to setup packet */
+ 172:../Generated_Code/usb_cdc_pstn.c ****     uint_8_ptr *data,                   /* [OUT] Pointer to Data */
+ 173:../Generated_Code/usb_cdc_pstn.c ****     USB_PACKET_SIZE *size               /* [OUT] Pointer to Size of Data */
+ 174:../Generated_Code/usb_cdc_pstn.c **** )
+ 175:../Generated_Code/usb_cdc_pstn.c **** {
+ 179              		.loc 1 175 0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 24
+ 182              		@ frame_needed = 1, uses_anonymous_args = 0
+ 183 0000 80B5     		push	{r7, lr}
+ 184              		.cfi_def_cfa_offset 8
+ 185              		.cfi_offset 7, -8
+ 186              		.cfi_offset 14, -4
+ 187 0002 86B0     		sub	sp, sp, #24
+ 188              		.cfi_def_cfa_offset 32
+ 189 0004 00AF     		add	r7, sp, #0
+ 190              		.cfi_def_cfa_register 7
+ 191 0006 B960     		str	r1, [r7, #8]
+ 192 0008 7A60     		str	r2, [r7, #4]
+ 193 000a 3B60     		str	r3, [r7]
+ 194 000c 0346     		mov	r3, r0
+ 195 000e FB73     		strb	r3, [r7, #15]
+ 176:../Generated_Code/usb_cdc_pstn.c ****     uint_8 status;
+ 177:../Generated_Code/usb_cdc_pstn.c ****     UNUSED(data)
+ 178:../Generated_Code/usb_cdc_pstn.c ****     
+ 179:../Generated_Code/usb_cdc_pstn.c ****     *size = 0;
+ 196              		.loc 1 179 0
+ 197 0010 3B68     		ldr	r3, [r7]
+ 198 0012 0022     		movs	r2, #0
+ 199 0014 1A80     		strh	r2, [r3]	@ movhi
+ 180:../Generated_Code/usb_cdc_pstn.c **** 
+ 181:../Generated_Code/usb_cdc_pstn.c ****     g_current_interface = (uint_8)setup_packet->index ;
+ 200              		.loc 1 181 0
+ 201 0016 BB68     		ldr	r3, [r7, #8]
+ 202 0018 9B88     		ldrh	r3, [r3, #4]
+ 203 001a DAB2     		uxtb	r2, r3
+ 204 001c 094B     		ldr	r3, .L11
+ 205 001e 1A70     		strb	r2, [r3]
+ 182:../Generated_Code/usb_cdc_pstn.c ****     status = USB_Desc_Set_Line_Coding(controller_ID, g_current_interface,
+ 206              		.loc 1 182 0
+ 207 0020 084B     		ldr	r3, .L11
+ 208 0022 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 209 0024 F97B     		ldrb	r1, [r7, #15]	@ zero_extendqisi2
+ 210 0026 07F10803 		add	r3, r7, #8
+ 211 002a 0846     		mov	r0, r1
+ 212 002c 1146     		mov	r1, r2
+ 213 002e 1A46     		mov	r2, r3
+ 214 0030 FFF7FEFF 		bl	USB_Desc_Set_Line_Coding
+ 215 0034 0346     		mov	r3, r0
+ 216 0036 FB75     		strb	r3, [r7, #23]
+ 183:../Generated_Code/usb_cdc_pstn.c ****         (uint_8_ptr *)&setup_packet);
+ 184:../Generated_Code/usb_cdc_pstn.c **** 
+ 185:../Generated_Code/usb_cdc_pstn.c ****     return status;
+ 217              		.loc 1 185 0
+ 218 0038 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 186:../Generated_Code/usb_cdc_pstn.c **** }
+ 219              		.loc 1 186 0
+ 220 003a 1846     		mov	r0, r3
+ 221 003c 1837     		adds	r7, r7, #24
+ 222 003e BD46     		mov	sp, r7
+ 223              		@ sp needed
+ 224 0040 80BD     		pop	{r7, pc}
+ 225              	.L12:
+ 226 0042 00BF     		.align	2
+ 227              	.L11:
+ 228 0044 00000000 		.word	g_current_interface
+ 229              		.cfi_endproc
+ 230              	.LFE2:
+ 232              		.section	.text.USB_Class_CDC_PSTN_Set_Ctrl_Line_State,"ax",%progbits
+ 233              		.align	2
+ 234              		.global	USB_Class_CDC_PSTN_Set_Ctrl_Line_State
+ 235              		.thumb
+ 236              		.thumb_func
+ 238              	USB_Class_CDC_PSTN_Set_Ctrl_Line_State:
+ 239              	.LFB3:
+ 187:../Generated_Code/usb_cdc_pstn.c **** 
+ 188:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+ 189:../Generated_Code/usb_cdc_pstn.c ****  *
+ 190:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_PSTN_Set_Ctrl_Line_State
+ 191:../Generated_Code/usb_cdc_pstn.c ****  *
+ 192:../Generated_Code/usb_cdc_pstn.c ****  * @brief  This function is called in response to Set Control Line State
+ 193:../Generated_Code/usb_cdc_pstn.c ****  *
+ 194:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID   : Controller ID
+ 195:../Generated_Code/usb_cdc_pstn.c ****  * @param setup_packet    : Pointer to setup packet
+ 196:../Generated_Code/usb_cdc_pstn.c ****  * @param data            : Pointer to Data
+ 197:../Generated_Code/usb_cdc_pstn.c ****  * @param size            : Pointer to Size of Data
+ 198:../Generated_Code/usb_cdc_pstn.c ****  *
+ 199:../Generated_Code/usb_cdc_pstn.c ****  * @return status:
+ 200:../Generated_Code/usb_cdc_pstn.c ****  *                        USB_OK : Always
+ 201:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 202:../Generated_Code/usb_cdc_pstn.c ****  * Updates Control Line State
+ 203:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 204:../Generated_Code/usb_cdc_pstn.c **** uint_8 USB_Class_CDC_PSTN_Set_Ctrl_Line_State (
+ 205:../Generated_Code/usb_cdc_pstn.c ****     uint_8 controller_ID,               /* [IN] Controller ID */
+ 206:../Generated_Code/usb_cdc_pstn.c ****     USB_SETUP_STRUCT * setup_packet,    /* [IN] Pointer to setup packet */
+ 207:../Generated_Code/usb_cdc_pstn.c ****     uint_8_ptr *data,                   /* [OUT] Pointer to Data  */
+ 208:../Generated_Code/usb_cdc_pstn.c ****     USB_PACKET_SIZE *size               /* [OUT] Pointer to Size of Data */
+ 209:../Generated_Code/usb_cdc_pstn.c **** )
+ 210:../Generated_Code/usb_cdc_pstn.c **** {
+ 240              		.loc 1 210 0
+ 241              		.cfi_startproc
+ 242              		@ args = 0, pretend = 0, frame = 16
+ 243              		@ frame_needed = 1, uses_anonymous_args = 0
+ 244 0000 80B5     		push	{r7, lr}
+ 245              		.cfi_def_cfa_offset 8
+ 246              		.cfi_offset 7, -8
+ 247              		.cfi_offset 14, -4
+ 248 0002 84B0     		sub	sp, sp, #16
+ 249              		.cfi_def_cfa_offset 24
+ 250 0004 00AF     		add	r7, sp, #0
+ 251              		.cfi_def_cfa_register 7
+ 252 0006 B960     		str	r1, [r7, #8]
+ 253 0008 7A60     		str	r2, [r7, #4]
+ 254 000a 3B60     		str	r3, [r7]
+ 255 000c 0346     		mov	r3, r0
+ 256 000e FB73     		strb	r3, [r7, #15]
+ 211:../Generated_Code/usb_cdc_pstn.c ****     UNUSED(data)
+ 212:../Generated_Code/usb_cdc_pstn.c ****     *size = 0;
+ 257              		.loc 1 212 0
+ 258 0010 3B68     		ldr	r3, [r7]
+ 259 0012 0022     		movs	r2, #0
+ 260 0014 1A80     		strh	r2, [r3]	@ movhi
+ 213:../Generated_Code/usb_cdc_pstn.c **** 
+ 214:../Generated_Code/usb_cdc_pstn.c ****     g_dte_status = (uint_8)setup_packet->value ;
+ 261              		.loc 1 214 0
+ 262 0016 BB68     		ldr	r3, [r7, #8]
+ 263 0018 5B88     		ldrh	r3, [r3, #2]
+ 264 001a DAB2     		uxtb	r2, r3
+ 265 001c 244B     		ldr	r3, .L17
+ 266 001e 1A70     		strb	r2, [r3]
+ 215:../Generated_Code/usb_cdc_pstn.c ****     g_uart_bitmap._byte = 0x00; /* initialize */
+ 267              		.loc 1 215 0
+ 268 0020 244B     		ldr	r3, .L17+4
+ 269 0022 0022     		movs	r2, #0
+ 270 0024 1A70     		strb	r2, [r3]
+ 216:../Generated_Code/usb_cdc_pstn.c ****     /* activate/deactivate Tx carrier */
+ 217:../Generated_Code/usb_cdc_pstn.c ****     g_uart_bitmap.Bitmap_Uart.bTxCarrier = (g_dte_status &
+ 271              		.loc 1 217 0
+ 272 0026 224B     		ldr	r3, .L17
+ 273 0028 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 274 002a 03F00203 		and	r3, r3, #2
+ 218:../Generated_Code/usb_cdc_pstn.c ****         CARRIER_ACTIVATION_CHECK) ? 1 : 0 ;
+ 275              		.loc 1 218 0
+ 276 002e 002B     		cmp	r3, #0
+ 277 0030 0CBF     		ite	eq
+ 278 0032 0023     		moveq	r3, #0
+ 279 0034 0123     		movne	r3, #1
+ 280 0036 D9B2     		uxtb	r1, r3
+ 217:../Generated_Code/usb_cdc_pstn.c ****     g_uart_bitmap.Bitmap_Uart.bTxCarrier = (g_dte_status &
+ 281              		.loc 1 217 0
+ 282 0038 1E4A     		ldr	r2, .L17+4
+ 283 003a 1378     		ldrb	r3, [r2]
+ 284 003c 61F34103 		bfi	r3, r1, #1, #1
+ 285 0040 1370     		strb	r3, [r2]
+ 219:../Generated_Code/usb_cdc_pstn.c ****      /* activate carrier and DTE */
+ 220:../Generated_Code/usb_cdc_pstn.c ****     g_uart_bitmap.Bitmap_Uart.bRxCarrier = (g_dte_status &
+ 286              		.loc 1 220 0
+ 287 0042 1B4B     		ldr	r3, .L17
+ 288 0044 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 289 0046 03F00203 		and	r3, r3, #2
+ 221:../Generated_Code/usb_cdc_pstn.c ****         CARRIER_ACTIVATION_CHECK) ? 1 : 0 ;
+ 290              		.loc 1 221 0
+ 291 004a 002B     		cmp	r3, #0
+ 292 004c 0CBF     		ite	eq
+ 293 004e 0023     		moveq	r3, #0
+ 294 0050 0123     		movne	r3, #1
+ 295 0052 D9B2     		uxtb	r1, r3
+ 220:../Generated_Code/usb_cdc_pstn.c ****     g_uart_bitmap.Bitmap_Uart.bRxCarrier = (g_dte_status &
+ 296              		.loc 1 220 0
+ 297 0054 174A     		ldr	r2, .L17+4
+ 298 0056 1378     		ldrb	r3, [r2]
+ 299 0058 61F30003 		bfi	r3, r1, #0, #1
+ 300 005c 1370     		strb	r3, [r2]
+ 222:../Generated_Code/usb_cdc_pstn.c **** 
+ 223:../Generated_Code/usb_cdc_pstn.c ****     /* Indicates to DCE if DTE is present or not */
+ 224:../Generated_Code/usb_cdc_pstn.c ****     g_dte_present = (boolean)((g_dte_status & DTE_PRESENCE_CHECK) ?
+ 301              		.loc 1 224 0
+ 302 005e 144B     		ldr	r3, .L17
+ 303 0060 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 304 0062 03F00103 		and	r3, r3, #1
+ 305 0066 DAB2     		uxtb	r2, r3
+ 306 0068 134B     		ldr	r3, .L17+8
+ 307 006a 1A70     		strb	r2, [r3]
+ 225:../Generated_Code/usb_cdc_pstn.c ****         TRUE : FALSE);
+ 226:../Generated_Code/usb_cdc_pstn.c ****     UNUSED(g_dte_present);
+ 227:../Generated_Code/usb_cdc_pstn.c **** #if CIC_NOTIF_ELEM_SUPPORT
+ 228:../Generated_Code/usb_cdc_pstn.c ****     /* Send Notification to Host - Parameter on Device side has changed */
+ 229:../Generated_Code/usb_cdc_pstn.c ****     USB_Class_CDC_PSTN_Send_Serial_State(controller_ID);
+ 308              		.loc 1 229 0
+ 309 006c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 310 006e 1846     		mov	r0, r3
+ 311 0070 FFF7FEFF 		bl	USB_Class_CDC_PSTN_Send_Serial_State
+ 230:../Generated_Code/usb_cdc_pstn.c **** #endif
+ 231:../Generated_Code/usb_cdc_pstn.c ****     if(g_pstn_callback != NULL)
+ 312              		.loc 1 231 0
+ 313 0074 114B     		ldr	r3, .L17+12
+ 314 0076 1B68     		ldr	r3, [r3]
+ 315 0078 002B     		cmp	r3, #0
+ 316 007a 14D0     		beq	.L14
+ 232:../Generated_Code/usb_cdc_pstn.c ****     {
+ 233:../Generated_Code/usb_cdc_pstn.c **** #if 1 /* original implementation */
+ 234:../Generated_Code/usb_cdc_pstn.c ****         if(g_dte_status & CARRIER_ACTIVATION_CHECK)
+ 317              		.loc 1 234 0
+ 318 007c 0C4B     		ldr	r3, .L17
+ 319 007e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 320 0080 03F00203 		and	r3, r3, #2
+ 321 0084 002B     		cmp	r3, #0
+ 322 0086 07D0     		beq	.L15
+ 235:../Generated_Code/usb_cdc_pstn.c ****         {
+ 236:../Generated_Code/usb_cdc_pstn.c ****             g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_ACTIVATED, 
+ 323              		.loc 1 236 0
+ 324 0088 0C4B     		ldr	r3, .L17+12
+ 325 008a 1B68     		ldr	r3, [r3]
+ 326 008c FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 327 008e 1046     		mov	r0, r2
+ 328 0090 2221     		movs	r1, #34
+ 329 0092 0022     		movs	r2, #0
+ 330 0094 9847     		blx	r3
+ 331 0096 06E0     		b	.L14
+ 332              	.L15:
+ 237:../Generated_Code/usb_cdc_pstn.c ****                 NULL);
+ 238:../Generated_Code/usb_cdc_pstn.c ****         }
+ 239:../Generated_Code/usb_cdc_pstn.c ****         else
+ 240:../Generated_Code/usb_cdc_pstn.c ****         {
+ 241:../Generated_Code/usb_cdc_pstn.c ****             g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_DEACTIVATED,
+ 333              		.loc 1 241 0
+ 334 0098 084B     		ldr	r3, .L17+12
+ 335 009a 1B68     		ldr	r3, [r3]
+ 336 009c FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 337 009e 1046     		mov	r0, r2
+ 338 00a0 2121     		movs	r1, #33
+ 339 00a2 0022     		movs	r2, #0
+ 340 00a4 9847     		blx	r3
+ 341              	.L14:
+ 242:../Generated_Code/usb_cdc_pstn.c ****                 NULL);
+ 243:../Generated_Code/usb_cdc_pstn.c ****         }
+ 244:../Generated_Code/usb_cdc_pstn.c **** #else /* contribution from Joe Serdenkovski, see https://community.freescale.com/message/605537?et=
+ 245:../Generated_Code/usb_cdc_pstn.c ****         if(g_dte_status & CARRIER_ACTIVATION_CHECK)
+ 246:../Generated_Code/usb_cdc_pstn.c ****         {
+ 247:../Generated_Code/usb_cdc_pstn.c ****              if (g_dte_present) {
+ 248:../Generated_Code/usb_cdc_pstn.c ****                   g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_ACTIVATED,NULL);
+ 249:../Generated_Code/usb_cdc_pstn.c ****              } else {
+ 250:../Generated_Code/usb_cdc_pstn.c ****                   g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_DEACTIVATED,NULL);
+ 251:../Generated_Code/usb_cdc_pstn.c ****              }
+ 252:../Generated_Code/usb_cdc_pstn.c ****         }
+ 253:../Generated_Code/usb_cdc_pstn.c **** #endif
+ 254:../Generated_Code/usb_cdc_pstn.c ****     }
+ 255:../Generated_Code/usb_cdc_pstn.c ****     return USB_OK;
+ 342              		.loc 1 255 0
+ 343 00a6 0023     		movs	r3, #0
+ 256:../Generated_Code/usb_cdc_pstn.c **** }
+ 344              		.loc 1 256 0
+ 345 00a8 1846     		mov	r0, r3
+ 346 00aa 1037     		adds	r7, r7, #16
+ 347 00ac BD46     		mov	sp, r7
+ 348              		@ sp needed
+ 349 00ae 80BD     		pop	{r7, pc}
+ 350              	.L18:
+ 351              		.align	2
+ 352              	.L17:
+ 353 00b0 00000000 		.word	g_dte_status
+ 354 00b4 00000000 		.word	g_uart_bitmap
+ 355 00b8 00000000 		.word	g_dte_present
+ 356 00bc 00000000 		.word	g_pstn_callback
+ 357              		.cfi_endproc
+ 358              	.LFE3:
+ 360              		.section	.text.USB_Class_CDC_PSTN_Send_Break,"ax",%progbits
+ 361              		.align	2
+ 362              		.global	USB_Class_CDC_PSTN_Send_Break
+ 363              		.thumb
+ 364              		.thumb_func
+ 366              	USB_Class_CDC_PSTN_Send_Break:
+ 367              	.LFB4:
+ 257:../Generated_Code/usb_cdc_pstn.c **** 
+ 258:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+ 259:../Generated_Code/usb_cdc_pstn.c ****  *
+ 260:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_PSTN_Send_Break
+ 261:../Generated_Code/usb_cdc_pstn.c ****  *
+ 262:../Generated_Code/usb_cdc_pstn.c ****  * @brief  This function is called in response to Set Config request
+ 263:../Generated_Code/usb_cdc_pstn.c ****  *
+ 264:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID   : Controller ID
+ 265:../Generated_Code/usb_cdc_pstn.c ****  * @param setup_packet    : Pointer to setup packet
+ 266:../Generated_Code/usb_cdc_pstn.c ****  * @param data            : Pointer to Data
+ 267:../Generated_Code/usb_cdc_pstn.c ****  * @param size            : Pointer to Size of Data
+ 268:../Generated_Code/usb_cdc_pstn.c ****  *
+ 269:../Generated_Code/usb_cdc_pstn.c ****  * @return status:
+ 270:../Generated_Code/usb_cdc_pstn.c ****  *                        USB_OK : Always
+ 271:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 272:../Generated_Code/usb_cdc_pstn.c ****  * Updates Break Duration Information from Host
+ 273:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 274:../Generated_Code/usb_cdc_pstn.c **** uint_8 USB_Class_CDC_PSTN_Send_Break (
+ 275:../Generated_Code/usb_cdc_pstn.c ****     uint_8 controller_ID,               /* [IN] Controller ID */
+ 276:../Generated_Code/usb_cdc_pstn.c ****     USB_SETUP_STRUCT * setup_packet,    /* [IN] Pointer to setup packet */
+ 277:../Generated_Code/usb_cdc_pstn.c ****     uint_8_ptr *data,                   /* [OUT] Pointer to Data  */
+ 278:../Generated_Code/usb_cdc_pstn.c ****     USB_PACKET_SIZE *size               /* [OUT] Pointer to Size of Data */
+ 279:../Generated_Code/usb_cdc_pstn.c **** )
+ 280:../Generated_Code/usb_cdc_pstn.c **** {
+ 368              		.loc 1 280 0
+ 369              		.cfi_startproc
+ 370              		@ args = 0, pretend = 0, frame = 16
+ 371              		@ frame_needed = 1, uses_anonymous_args = 0
+ 372              		@ link register save eliminated.
+ 373 0000 80B4     		push	{r7}
+ 374              		.cfi_def_cfa_offset 4
+ 375              		.cfi_offset 7, -4
+ 376 0002 85B0     		sub	sp, sp, #20
+ 377              		.cfi_def_cfa_offset 24
+ 378 0004 00AF     		add	r7, sp, #0
+ 379              		.cfi_def_cfa_register 7
+ 380 0006 B960     		str	r1, [r7, #8]
+ 381 0008 7A60     		str	r2, [r7, #4]
+ 382 000a 3B60     		str	r3, [r7]
+ 383 000c 0346     		mov	r3, r0
+ 384 000e FB73     		strb	r3, [r7, #15]
+ 281:../Generated_Code/usb_cdc_pstn.c ****     UNUSED (controller_ID)
+ 282:../Generated_Code/usb_cdc_pstn.c ****     UNUSED (data)
+ 283:../Generated_Code/usb_cdc_pstn.c ****     *size = 0;
+ 385              		.loc 1 283 0
+ 386 0010 3B68     		ldr	r3, [r7]
+ 387 0012 0022     		movs	r2, #0
+ 388 0014 1A80     		strh	r2, [r3]	@ movhi
+ 284:../Generated_Code/usb_cdc_pstn.c **** 
+ 285:../Generated_Code/usb_cdc_pstn.c ****     g_break_duration = setup_packet->value;
+ 389              		.loc 1 285 0
+ 390 0016 BB68     		ldr	r3, [r7, #8]
+ 391 0018 5A88     		ldrh	r2, [r3, #2]
+ 392 001a 044B     		ldr	r3, .L21
+ 393 001c 1A80     		strh	r2, [r3]	@ movhi
+ 286:../Generated_Code/usb_cdc_pstn.c ****     UNUSED(g_break_duration);
+ 287:../Generated_Code/usb_cdc_pstn.c **** 
+ 288:../Generated_Code/usb_cdc_pstn.c ****     return USB_OK;
+ 394              		.loc 1 288 0
+ 395 001e 0023     		movs	r3, #0
+ 289:../Generated_Code/usb_cdc_pstn.c **** }
+ 396              		.loc 1 289 0
+ 397 0020 1846     		mov	r0, r3
+ 398 0022 1437     		adds	r7, r7, #20
+ 399 0024 BD46     		mov	sp, r7
+ 400              		@ sp needed
+ 401 0026 5DF8047B 		ldr	r7, [sp], #4
+ 402 002a 7047     		bx	lr
+ 403              	.L22:
+ 404              		.align	2
+ 405              	.L21:
+ 406 002c 00000000 		.word	g_break_duration
+ 407              		.cfi_endproc
+ 408              	.LFE4:
+ 410              		.section	.text.USB_Class_CDC_PSTN_Get_Comm_Feature,"ax",%progbits
+ 411              		.align	2
+ 412              		.global	USB_Class_CDC_PSTN_Get_Comm_Feature
+ 413              		.thumb
+ 414              		.thumb_func
+ 416              	USB_Class_CDC_PSTN_Get_Comm_Feature:
+ 417              	.LFB5:
+ 290:../Generated_Code/usb_cdc_pstn.c **** 
+ 291:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+ 292:../Generated_Code/usb_cdc_pstn.c ****  *
+ 293:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_PSTN_Get_Comm_Feature
+ 294:../Generated_Code/usb_cdc_pstn.c ****  *
+ 295:../Generated_Code/usb_cdc_pstn.c ****  * @brief  This function is called in response to GetCommFeature request
+ 296:../Generated_Code/usb_cdc_pstn.c ****  *
+ 297:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID   : Controller ID
+ 298:../Generated_Code/usb_cdc_pstn.c ****  * @param setup_packet    : Pointer to setup packet
+ 299:../Generated_Code/usb_cdc_pstn.c ****  * @param data            : Pointer to Data to be send
+ 300:../Generated_Code/usb_cdc_pstn.c ****  * @param size            : Pointer to Size of Data
+ 301:../Generated_Code/usb_cdc_pstn.c ****  *
+ 302:../Generated_Code/usb_cdc_pstn.c ****  * @return status:
+ 303:../Generated_Code/usb_cdc_pstn.c ****  *      USB_OK                  : When Successfull
+ 304:../Generated_Code/usb_cdc_pstn.c ****  *      USBERR_INVALID_REQ_TYPE : When  request for invalid
+ 305:../Generated_Code/usb_cdc_pstn.c ****  *                                Interface is presented
+ 306:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 307:../Generated_Code/usb_cdc_pstn.c ****  * Returns the status of the get comm feature request
+ 308:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 309:../Generated_Code/usb_cdc_pstn.c **** uint_8 USB_Class_CDC_PSTN_Get_Comm_Feature (
+ 310:../Generated_Code/usb_cdc_pstn.c ****     uint_8 controller_ID,               /* [IN] Controller ID */
+ 311:../Generated_Code/usb_cdc_pstn.c ****     USB_SETUP_STRUCT * setup_packet,    /* [IN] Pointer to setup packet */
+ 312:../Generated_Code/usb_cdc_pstn.c ****     uint_8_ptr *data,                   /* [OUT] Pointer to Data to send */
+ 313:../Generated_Code/usb_cdc_pstn.c ****     USB_PACKET_SIZE *size               /* [OUT] Pointer to Size of Data */
+ 314:../Generated_Code/usb_cdc_pstn.c **** )
+ 315:../Generated_Code/usb_cdc_pstn.c **** {   uint_8 status;
+ 418              		.loc 1 315 0
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 24
+ 421              		@ frame_needed = 1, uses_anonymous_args = 0
+ 422 0000 80B5     		push	{r7, lr}
+ 423              		.cfi_def_cfa_offset 8
+ 424              		.cfi_offset 7, -8
+ 425              		.cfi_offset 14, -4
+ 426 0002 86B0     		sub	sp, sp, #24
+ 427              		.cfi_def_cfa_offset 32
+ 428 0004 00AF     		add	r7, sp, #0
+ 429              		.cfi_def_cfa_register 7
+ 430 0006 B960     		str	r1, [r7, #8]
+ 431 0008 7A60     		str	r2, [r7, #4]
+ 432 000a 3B60     		str	r3, [r7]
+ 433 000c 0346     		mov	r3, r0
+ 434 000e FB73     		strb	r3, [r7, #15]
+ 316:../Generated_Code/usb_cdc_pstn.c **** 
+ 317:../Generated_Code/usb_cdc_pstn.c ****     status = USB_OK;
+ 435              		.loc 1 317 0
+ 436 0010 0023     		movs	r3, #0
+ 437 0012 FB75     		strb	r3, [r7, #23]
+ 318:../Generated_Code/usb_cdc_pstn.c ****     *size = COMM_FEATURE_DATA_SIZE;
+ 438              		.loc 1 318 0
+ 439 0014 3B68     		ldr	r3, [r7]
+ 440 0016 0222     		movs	r2, #2
+ 441 0018 1A80     		strh	r2, [r3]	@ movhi
+ 319:../Generated_Code/usb_cdc_pstn.c ****     g_current_interface = (uint_8)setup_packet->index ;
+ 442              		.loc 1 319 0
+ 443 001a BB68     		ldr	r3, [r7, #8]
+ 444 001c 9B88     		ldrh	r3, [r3, #4]
+ 445 001e DAB2     		uxtb	r2, r3
+ 446 0020 134B     		ldr	r3, .L28
+ 447 0022 1A70     		strb	r2, [r3]
+ 320:../Generated_Code/usb_cdc_pstn.c ****     if(setup_packet->value == ABSTRACT_STATE_FEATURE)
+ 448              		.loc 1 320 0
+ 449 0024 BB68     		ldr	r3, [r7, #8]
+ 450 0026 5B88     		ldrh	r3, [r3, #2]
+ 451 0028 012B     		cmp	r3, #1
+ 452 002a 0AD1     		bne	.L24
+ 321:../Generated_Code/usb_cdc_pstn.c ****     {
+ 322:../Generated_Code/usb_cdc_pstn.c ****         status = USB_Desc_Get_Abstract_State(controller_ID, 
+ 453              		.loc 1 322 0
+ 454 002c 104B     		ldr	r3, .L28
+ 455 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 456 0030 FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 457 0032 1046     		mov	r0, r2
+ 458 0034 1946     		mov	r1, r3
+ 459 0036 7A68     		ldr	r2, [r7, #4]
+ 460 0038 FFF7FEFF 		bl	USB_Desc_Get_Abstract_State
+ 461 003c 0346     		mov	r3, r0
+ 462 003e FB75     		strb	r3, [r7, #23]
+ 463 0040 11E0     		b	.L25
+ 464              	.L24:
+ 323:../Generated_Code/usb_cdc_pstn.c ****             g_current_interface, data);
+ 324:../Generated_Code/usb_cdc_pstn.c ****     }
+ 325:../Generated_Code/usb_cdc_pstn.c ****     else if(setup_packet->value == COUNTRY_SETTING_FEATURE)
+ 465              		.loc 1 325 0
+ 466 0042 BB68     		ldr	r3, [r7, #8]
+ 467 0044 5B88     		ldrh	r3, [r3, #2]
+ 468 0046 022B     		cmp	r3, #2
+ 469 0048 0AD1     		bne	.L26
+ 326:../Generated_Code/usb_cdc_pstn.c ****     {
+ 327:../Generated_Code/usb_cdc_pstn.c ****         status = USB_Desc_Get_Country_Setting(controller_ID,
+ 470              		.loc 1 327 0
+ 471 004a 094B     		ldr	r3, .L28
+ 472 004c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 473 004e FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 474 0050 1046     		mov	r0, r2
+ 475 0052 1946     		mov	r1, r3
+ 476 0054 7A68     		ldr	r2, [r7, #4]
+ 477 0056 FFF7FEFF 		bl	USB_Desc_Get_Country_Setting
+ 478 005a 0346     		mov	r3, r0
+ 479 005c FB75     		strb	r3, [r7, #23]
+ 480 005e 02E0     		b	.L25
+ 481              	.L26:
+ 328:../Generated_Code/usb_cdc_pstn.c ****             g_current_interface, data);
+ 329:../Generated_Code/usb_cdc_pstn.c ****     }
+ 330:../Generated_Code/usb_cdc_pstn.c ****     else
+ 331:../Generated_Code/usb_cdc_pstn.c ****     {
+ 332:../Generated_Code/usb_cdc_pstn.c ****         *size = 0; /* for Reserved/Invalid Feature Selector Value */
+ 482              		.loc 1 332 0
+ 483 0060 3B68     		ldr	r3, [r7]
+ 484 0062 0022     		movs	r2, #0
+ 485 0064 1A80     		strh	r2, [r3]	@ movhi
+ 486              	.L25:
+ 333:../Generated_Code/usb_cdc_pstn.c ****     }
+ 334:../Generated_Code/usb_cdc_pstn.c ****     return status;
+ 487              		.loc 1 334 0
+ 488 0066 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 335:../Generated_Code/usb_cdc_pstn.c **** }
+ 489              		.loc 1 335 0
+ 490 0068 1846     		mov	r0, r3
+ 491 006a 1837     		adds	r7, r7, #24
+ 492 006c BD46     		mov	sp, r7
+ 493              		@ sp needed
+ 494 006e 80BD     		pop	{r7, pc}
+ 495              	.L29:
+ 496              		.align	2
+ 497              	.L28:
+ 498 0070 00000000 		.word	g_current_interface
+ 499              		.cfi_endproc
+ 500              	.LFE5:
+ 502              		.section	.text.USB_Class_CDC_PSTN_Set_Comm_Feature,"ax",%progbits
+ 503              		.align	2
+ 504              		.global	USB_Class_CDC_PSTN_Set_Comm_Feature
+ 505              		.thumb
+ 506              		.thumb_func
+ 508              	USB_Class_CDC_PSTN_Set_Comm_Feature:
+ 509              	.LFB6:
+ 336:../Generated_Code/usb_cdc_pstn.c **** 
+ 337:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+ 338:../Generated_Code/usb_cdc_pstn.c ****  *
+ 339:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_PSTN_Set_Comm_Feature
+ 340:../Generated_Code/usb_cdc_pstn.c ****  *
+ 341:../Generated_Code/usb_cdc_pstn.c ****  * @brief  This function is called in response to SetCommFeature request
+ 342:../Generated_Code/usb_cdc_pstn.c ****  *
+ 343:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID   : Controller ID
+ 344:../Generated_Code/usb_cdc_pstn.c ****  * @param setup_packet    : Pointer to setup packet
+ 345:../Generated_Code/usb_cdc_pstn.c ****  * @param data            : Pointer to Data
+ 346:../Generated_Code/usb_cdc_pstn.c ****  * @param size            : Pointer to Size of Data
+ 347:../Generated_Code/usb_cdc_pstn.c ****  *
+ 348:../Generated_Code/usb_cdc_pstn.c ****  * @return status:
+ 349:../Generated_Code/usb_cdc_pstn.c ****  *      USB_OK                  : When Successfull
+ 350:../Generated_Code/usb_cdc_pstn.c ****  *      USBERR_INVALID_REQ_TYPE : When  request for invalid
+ 351:../Generated_Code/usb_cdc_pstn.c ****  *                                Interface is presented
+ 352:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 353:../Generated_Code/usb_cdc_pstn.c ****  * Sets the comm feature specified by Host
+ 354:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 355:../Generated_Code/usb_cdc_pstn.c **** uint_8 USB_Class_CDC_PSTN_Set_Comm_Feature (
+ 356:../Generated_Code/usb_cdc_pstn.c ****     uint_8 controller_ID,               /* [IN] Controller ID */
+ 357:../Generated_Code/usb_cdc_pstn.c ****     USB_SETUP_STRUCT * setup_packet,    /* [IN] Pointer to setup packet */
+ 358:../Generated_Code/usb_cdc_pstn.c ****     uint_8_ptr *data,                   /* [OUT] Pointer to Data */
+ 359:../Generated_Code/usb_cdc_pstn.c ****     USB_PACKET_SIZE *size               /* [OUT] Pointer to Size of Data */
+ 360:../Generated_Code/usb_cdc_pstn.c **** )
+ 361:../Generated_Code/usb_cdc_pstn.c **** {
+ 510              		.loc 1 361 0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 24
+ 513              		@ frame_needed = 1, uses_anonymous_args = 0
+ 514 0000 80B5     		push	{r7, lr}
+ 515              		.cfi_def_cfa_offset 8
+ 516              		.cfi_offset 7, -8
+ 517              		.cfi_offset 14, -4
+ 518 0002 86B0     		sub	sp, sp, #24
+ 519              		.cfi_def_cfa_offset 32
+ 520 0004 00AF     		add	r7, sp, #0
+ 521              		.cfi_def_cfa_register 7
+ 522 0006 B960     		str	r1, [r7, #8]
+ 523 0008 7A60     		str	r2, [r7, #4]
+ 524 000a 3B60     		str	r3, [r7]
+ 525 000c 0346     		mov	r3, r0
+ 526 000e FB73     		strb	r3, [r7, #15]
+ 362:../Generated_Code/usb_cdc_pstn.c ****     uint_8 status;
+ 363:../Generated_Code/usb_cdc_pstn.c ****     status = USB_OK;
+ 527              		.loc 1 363 0
+ 528 0010 0023     		movs	r3, #0
+ 529 0012 FB75     		strb	r3, [r7, #23]
+ 364:../Generated_Code/usb_cdc_pstn.c ****     *size = COMM_FEATURE_DATA_SIZE;
+ 530              		.loc 1 364 0
+ 531 0014 3B68     		ldr	r3, [r7]
+ 532 0016 0222     		movs	r2, #2
+ 533 0018 1A80     		strh	r2, [r3]	@ movhi
+ 365:../Generated_Code/usb_cdc_pstn.c ****     g_current_interface = (uint_8)setup_packet->index ;
+ 534              		.loc 1 365 0
+ 535 001a BB68     		ldr	r3, [r7, #8]
+ 536 001c 9B88     		ldrh	r3, [r3, #4]
+ 537 001e DAB2     		uxtb	r2, r3
+ 538 0020 134B     		ldr	r3, .L35
+ 539 0022 1A70     		strb	r2, [r3]
+ 366:../Generated_Code/usb_cdc_pstn.c ****     if(setup_packet->value == ABSTRACT_STATE_FEATURE)
+ 540              		.loc 1 366 0
+ 541 0024 BB68     		ldr	r3, [r7, #8]
+ 542 0026 5B88     		ldrh	r3, [r3, #2]
+ 543 0028 012B     		cmp	r3, #1
+ 544 002a 0AD1     		bne	.L31
+ 367:../Generated_Code/usb_cdc_pstn.c ****     {
+ 368:../Generated_Code/usb_cdc_pstn.c ****         status = USB_Desc_Set_Abstract_State(controller_ID,
+ 545              		.loc 1 368 0
+ 546 002c 104B     		ldr	r3, .L35
+ 547 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 548 0030 FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 549 0032 1046     		mov	r0, r2
+ 550 0034 1946     		mov	r1, r3
+ 551 0036 7A68     		ldr	r2, [r7, #4]
+ 552 0038 FFF7FEFF 		bl	USB_Desc_Set_Abstract_State
+ 553 003c 0346     		mov	r3, r0
+ 554 003e FB75     		strb	r3, [r7, #23]
+ 555 0040 11E0     		b	.L32
+ 556              	.L31:
+ 369:../Generated_Code/usb_cdc_pstn.c ****             g_current_interface, data);
+ 370:../Generated_Code/usb_cdc_pstn.c ****     }
+ 371:../Generated_Code/usb_cdc_pstn.c ****     else if(setup_packet->value == COUNTRY_SETTING_FEATURE)
+ 557              		.loc 1 371 0
+ 558 0042 BB68     		ldr	r3, [r7, #8]
+ 559 0044 5B88     		ldrh	r3, [r3, #2]
+ 560 0046 022B     		cmp	r3, #2
+ 561 0048 0AD1     		bne	.L33
+ 372:../Generated_Code/usb_cdc_pstn.c ****     {
+ 373:../Generated_Code/usb_cdc_pstn.c ****         status = USB_Desc_Set_Country_Setting(controller_ID,
+ 562              		.loc 1 373 0
+ 563 004a 094B     		ldr	r3, .L35
+ 564 004c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 565 004e FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 566 0050 1046     		mov	r0, r2
+ 567 0052 1946     		mov	r1, r3
+ 568 0054 7A68     		ldr	r2, [r7, #4]
+ 569 0056 FFF7FEFF 		bl	USB_Desc_Set_Country_Setting
+ 570 005a 0346     		mov	r3, r0
+ 571 005c FB75     		strb	r3, [r7, #23]
+ 572 005e 02E0     		b	.L32
+ 573              	.L33:
+ 374:../Generated_Code/usb_cdc_pstn.c ****             g_current_interface, data);
+ 375:../Generated_Code/usb_cdc_pstn.c ****     }
+ 376:../Generated_Code/usb_cdc_pstn.c ****     else
+ 377:../Generated_Code/usb_cdc_pstn.c ****     {
+ 378:../Generated_Code/usb_cdc_pstn.c ****         *size = 0; /* for Reserved/Invalid Feature Selector Value */
+ 574              		.loc 1 378 0
+ 575 0060 3B68     		ldr	r3, [r7]
+ 576 0062 0022     		movs	r2, #0
+ 577 0064 1A80     		strh	r2, [r3]	@ movhi
+ 578              	.L32:
+ 379:../Generated_Code/usb_cdc_pstn.c ****     }
+ 380:../Generated_Code/usb_cdc_pstn.c ****     return status;
+ 579              		.loc 1 380 0
+ 580 0066 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 381:../Generated_Code/usb_cdc_pstn.c **** }
+ 581              		.loc 1 381 0
+ 582 0068 1846     		mov	r0, r3
+ 583 006a 1837     		adds	r7, r7, #24
+ 584 006c BD46     		mov	sp, r7
+ 585              		@ sp needed
+ 586 006e 80BD     		pop	{r7, pc}
+ 587              	.L36:
+ 588              		.align	2
+ 589              	.L35:
+ 590 0070 00000000 		.word	g_current_interface
+ 591              		.cfi_endproc
+ 592              	.LFE6:
+ 594              		.section	.text.USB_Class_CDC_PSTN_Send_Serial_State,"ax",%progbits
+ 595              		.align	2
+ 596              		.global	USB_Class_CDC_PSTN_Send_Serial_State
+ 597              		.thumb
+ 598              		.thumb_func
+ 600              	USB_Class_CDC_PSTN_Send_Serial_State:
+ 601              	.LFB7:
+ 382:../Generated_Code/usb_cdc_pstn.c **** 
+ 383:../Generated_Code/usb_cdc_pstn.c **** #if CIC_NOTIF_ELEM_SUPPORT
+ 384:../Generated_Code/usb_cdc_pstn.c **** /**************************************************************************//*!
+ 385:../Generated_Code/usb_cdc_pstn.c ****  *
+ 386:../Generated_Code/usb_cdc_pstn.c ****  * @name  USB_Class_CDC_PSTN_Send_Serial_State
+ 387:../Generated_Code/usb_cdc_pstn.c ****  *
+ 388:../Generated_Code/usb_cdc_pstn.c ****  * @brief  This function is called to send serial state notification
+ 389:../Generated_Code/usb_cdc_pstn.c ****  *
+ 390:../Generated_Code/usb_cdc_pstn.c ****  * @param controller_ID : Controller ID
+ 391:../Generated_Code/usb_cdc_pstn.c ****  *
+ 392:../Generated_Code/usb_cdc_pstn.c ****  * @return NONE
+ 393:../Generated_Code/usb_cdc_pstn.c ****  ******************************************************************************
+ 394:../Generated_Code/usb_cdc_pstn.c ****  * Returns the Serial State
+ 395:../Generated_Code/usb_cdc_pstn.c ****  *****************************************************************************/
+ 396:../Generated_Code/usb_cdc_pstn.c **** void USB_Class_CDC_PSTN_Send_Serial_State (
+ 397:../Generated_Code/usb_cdc_pstn.c ****     uint_8 controller_ID               /* [IN] Controller ID */
+ 398:../Generated_Code/usb_cdc_pstn.c **** )
+ 399:../Generated_Code/usb_cdc_pstn.c **** {
+ 602              		.loc 1 399 0
+ 603              		.cfi_startproc
+ 604              		@ args = 0, pretend = 0, frame = 8
+ 605              		@ frame_needed = 1, uses_anonymous_args = 0
+ 606 0000 80B5     		push	{r7, lr}
+ 607              		.cfi_def_cfa_offset 8
+ 608              		.cfi_offset 7, -8
+ 609              		.cfi_offset 14, -4
+ 610 0002 82B0     		sub	sp, sp, #8
+ 611              		.cfi_def_cfa_offset 16
+ 612 0004 00AF     		add	r7, sp, #0
+ 613              		.cfi_def_cfa_register 7
+ 614 0006 0346     		mov	r3, r0
+ 615 0008 FB71     		strb	r3, [r7, #7]
+ 400:../Generated_Code/usb_cdc_pstn.c ****     /* update array for current interface */
+ 401:../Generated_Code/usb_cdc_pstn.c ****     g_serial_state_buf[4] = g_current_interface;
+ 616              		.loc 1 401 0
+ 617 000a 094B     		ldr	r3, .L38
+ 618 000c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 619 000e 094B     		ldr	r3, .L38+4
+ 620 0010 1A71     		strb	r2, [r3, #4]
+ 402:../Generated_Code/usb_cdc_pstn.c ****     /* Lower byte of UART BITMAP */
+ 403:../Generated_Code/usb_cdc_pstn.c ****     g_serial_state_buf[NOTIF_PACKET_SIZE+UART_BITMAP_SIZE-2] =
+ 404:../Generated_Code/usb_cdc_pstn.c ****         g_uart_bitmap._byte;
+ 621              		.loc 1 404 0
+ 622 0012 094B     		ldr	r3, .L38+8
+ 623 0014 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 403:../Generated_Code/usb_cdc_pstn.c ****     g_serial_state_buf[NOTIF_PACKET_SIZE+UART_BITMAP_SIZE-2] =
+ 624              		.loc 1 403 0
+ 625 0016 074B     		ldr	r3, .L38+4
+ 626 0018 1A72     		strb	r2, [r3, #8]
+ 405:../Generated_Code/usb_cdc_pstn.c ****     (void)USB_Class_CDC_Interface_CIC_Send_Data(controller_ID,
+ 627              		.loc 1 405 0
+ 628 001a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 629 001c 1846     		mov	r0, r3
+ 630 001e 0321     		movs	r1, #3
+ 631 0020 044A     		ldr	r2, .L38+4
+ 632 0022 0A23     		movs	r3, #10
+ 633 0024 FFF7FEFF 		bl	USB_Class_CDC_Send_Data
+ 406:../Generated_Code/usb_cdc_pstn.c ****         g_serial_state_buf, (NOTIF_PACKET_SIZE + UART_BITMAP_SIZE));
+ 407:../Generated_Code/usb_cdc_pstn.c **** }
+ 634              		.loc 1 407 0
+ 635 0028 0837     		adds	r7, r7, #8
+ 636 002a BD46     		mov	sp, r7
+ 637              		@ sp needed
+ 638 002c 80BD     		pop	{r7, pc}
+ 639              	.L39:
+ 640 002e 00BF     		.align	2
+ 641              	.L38:
+ 642 0030 00000000 		.word	g_current_interface
+ 643 0034 00000000 		.word	g_serial_state_buf
+ 644 0038 00000000 		.word	g_uart_bitmap
+ 645              		.cfi_endproc
+ 646              	.LFE7:
+ 648              		.text
+ 649              	.Letext0:
+ 650              		.file 2 "../Generated_Code/types.h"
+ 651              		.file 3 "../Generated_Code/usb_class.h"
+ 652              		.file 4 "../Generated_Code/usb_cdc_pstn.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_cdc_pstn.c
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:21     .bss.g_pstn_callback:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:24     .bss.g_pstn_callback:00000000 g_pstn_callback
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:29     .bss.g_dte_present:00000000 g_dte_present
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:30     .bss.g_dte_present:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:34     .bss.g_dte_status:00000000 g_dte_status
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:35     .bss.g_dte_status:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:37     .bss.g_break_duration:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:40     .bss.g_break_duration:00000000 g_break_duration
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:45     .bss.g_current_interface:00000000 g_current_interface
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:46     .bss.g_current_interface:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:48     .bss.g_uart_bitmap:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:51     .bss.g_uart_bitmap:00000000 g_uart_bitmap
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:54     .data.g_serial_state_buf:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:57     .data.g_serial_state_buf:00000000 g_serial_state_buf
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:69     .text.USB_Class_CDC_Pstn_Init:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:74     .text.USB_Class_CDC_Pstn_Init:00000000 USB_Class_CDC_Pstn_Init
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:111    .text.USB_Class_CDC_Pstn_Init:00000024 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:116    .text.USB_Class_CDC_PSTN_Get_Line_Coding:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:121    .text.USB_Class_CDC_PSTN_Get_Line_Coding:00000000 USB_Class_CDC_PSTN_Get_Line_Coding
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:167    .text.USB_Class_CDC_PSTN_Get_Line_Coding:00000038 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:172    .text.USB_Class_CDC_PSTN_Set_Line_Coding:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:177    .text.USB_Class_CDC_PSTN_Set_Line_Coding:00000000 USB_Class_CDC_PSTN_Set_Line_Coding
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:228    .text.USB_Class_CDC_PSTN_Set_Line_Coding:00000044 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:233    .text.USB_Class_CDC_PSTN_Set_Ctrl_Line_State:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:238    .text.USB_Class_CDC_PSTN_Set_Ctrl_Line_State:00000000 USB_Class_CDC_PSTN_Set_Ctrl_Line_State
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:600    .text.USB_Class_CDC_PSTN_Send_Serial_State:00000000 USB_Class_CDC_PSTN_Send_Serial_State
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:353    .text.USB_Class_CDC_PSTN_Set_Ctrl_Line_State:000000b0 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:361    .text.USB_Class_CDC_PSTN_Send_Break:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:366    .text.USB_Class_CDC_PSTN_Send_Break:00000000 USB_Class_CDC_PSTN_Send_Break
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:406    .text.USB_Class_CDC_PSTN_Send_Break:0000002c $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:411    .text.USB_Class_CDC_PSTN_Get_Comm_Feature:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:416    .text.USB_Class_CDC_PSTN_Get_Comm_Feature:00000000 USB_Class_CDC_PSTN_Get_Comm_Feature
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:498    .text.USB_Class_CDC_PSTN_Get_Comm_Feature:00000070 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:503    .text.USB_Class_CDC_PSTN_Set_Comm_Feature:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:508    .text.USB_Class_CDC_PSTN_Set_Comm_Feature:00000000 USB_Class_CDC_PSTN_Set_Comm_Feature
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:590    .text.USB_Class_CDC_PSTN_Set_Comm_Feature:00000070 $d
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:595    .text.USB_Class_CDC_PSTN_Send_Serial_State:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\cc5EsvZ9.s:642    .text.USB_Class_CDC_PSTN_Send_Serial_State:00000030 $d
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.0.22dcf9ce9babd46e5ea858ea4400d115
+                           .group:00000000 wm4.stddef.h.39.daafd3d79fe2f3a84d2d73d7d4e706f8
+                           .group:00000000 wm4.types.h.50.034d0729b1885c66fd44563eba5494e4
+                           .group:00000000 wm4.hidef.h.47.6ef7d215344a2f057d0c5b3f27c726aa
+                           .group:00000000 wm4.features.h.22.6a4ca7cd053637cc1d0db6c16f39b2d7
+                           .group:00000000 wm4._default_types.h.15.8b2cb27e528498f8ff711db085d6e489
+                           .group:00000000 wm4.stdint.h.20.796e373797e732130a803d4c0338fa1b
+                           .group:00000000 wm4.PE_Types.h.111.91c29732807f8842161a15451efcd747
+                           .group:00000000 wm4.PE_Error.h.60.6ccf96637e85421388d147a5dcbc3621
+                           .group:00000000 wm4.PE_Const.h.60.44eca2ca2a72148441f11b3e43b344a9
+                           .group:00000000 wm4.MK22F12.h.59.83dcc0895f45d7d67f2182a38aa7f04f
+                           .group:00000000 wm4.Cpu.h.80.27ab3269a1d751f899c04690559be7d6
+                           .group:00000000 wm4.FSL_USB_Stack_Config.h.5.a51a5d818e84d127c6c2fe6362a5c643
+                           .group:00000000 wm4.usb_user_config.h.47.47e295f338247e629ef1110422279558
+                           .group:00000000 wm4.usb_devapi.h.60.9ad576a4fab4e64ae00ce9daf4685bf6
+                           .group:00000000 wm4.usb_class.h.55.92808305847d365ece574c9f6c1494ae
+                           .group:00000000 wm4.usb_descriptor.h.37.fbc555cd90d1139ae430b7b76bc9716d
+                           .group:00000000 wm4.usb_cdc.h.58.c94ce985817d1f5c3dd470be7faf296c
+                           .group:00000000 wm4.usb_cdc_pstn.h.76.8c9aa49446045067b0f5c08ae01c11e8
+
+UNDEFINED SYMBOLS
+USB_Desc_Get_Line_Coding
+USB_Desc_Set_Line_Coding
+USB_Desc_Get_Abstract_State
+USB_Desc_Get_Country_Setting
+USB_Desc_Set_Abstract_State
+USB_Desc_Set_Country_Setting
+USB_Class_CDC_Send_Data

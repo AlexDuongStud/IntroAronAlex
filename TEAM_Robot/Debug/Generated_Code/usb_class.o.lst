@@ -1,0 +1,1403 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.file	"usb_class.c"
+  17              		.text
+  18              	.Ltext0:
+  19              		.cfi_sections	.debug_frame
+  20              		.section	.bss.g_class_callback,"aw",%nobits
+  21              		.align	2
+  24              	g_class_callback:
+  25 0000 00000000 		.space	4
+  26              		.section	.bss.g_device_state_before_suspend,"aw",%nobits
+  29              	g_device_state_before_suspend:
+  30 0000 00       		.space	1
+  31              		.section	.text.USB_Suspend_Service,"ax",%progbits
+  32              		.align	2
+  33              		.global	USB_Suspend_Service
+  34              		.thumb
+  35              		.thumb_func
+  37              	USB_Suspend_Service:
+  38              	.LFB0:
+  39              		.file 1 "../Generated_Code/usb_class.c"
+   1:../Generated_Code/usb_class.c **** /******************************************************************************
+   2:../Generated_Code/usb_class.c ****  *
+   3:../Generated_Code/usb_class.c ****  * Freescale Semiconductor Inc.
+   4:../Generated_Code/usb_class.c ****  * (c) Copyright 2004-2010 Freescale Semiconductor, Inc.
+   5:../Generated_Code/usb_class.c ****  * ALL RIGHTS RESERVED.
+   6:../Generated_Code/usb_class.c ****  *
+   7:../Generated_Code/usb_class.c ****  ******************************************************************************
+   8:../Generated_Code/usb_class.c ****  *
+   9:../Generated_Code/usb_class.c ****  * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+  10:../Generated_Code/usb_class.c ****  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  11:../Generated_Code/usb_class.c ****  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  12:../Generated_Code/usb_class.c ****  * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  13:../Generated_Code/usb_class.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  14:../Generated_Code/usb_class.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  15:../Generated_Code/usb_class.c ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  16:../Generated_Code/usb_class.c ****  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+  17:../Generated_Code/usb_class.c ****  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+  18:../Generated_Code/usb_class.c ****  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  19:../Generated_Code/usb_class.c ****  * THE POSSIBILITY OF SUCH DAMAGE.
+  20:../Generated_Code/usb_class.c ****  *
+  21:../Generated_Code/usb_class.c ****  **************************************************************************//*!
+  22:../Generated_Code/usb_class.c ****  *
+  23:../Generated_Code/usb_class.c ****  * @file usb_class.c
+  24:../Generated_Code/usb_class.c ****  *
+  25:../Generated_Code/usb_class.c ****  * @author
+  26:../Generated_Code/usb_class.c ****  *
+  27:../Generated_Code/usb_class.c ****  * @version
+  28:../Generated_Code/usb_class.c ****  *
+  29:../Generated_Code/usb_class.c ****  * @date
+  30:../Generated_Code/usb_class.c ****  *
+  31:../Generated_Code/usb_class.c ****  * @brief The file contains USB stack Class module implementation.
+  32:../Generated_Code/usb_class.c ****  *
+  33:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  34:../Generated_Code/usb_class.c **** 
+  35:../Generated_Code/usb_class.c **** /******************************************************************************
+  36:../Generated_Code/usb_class.c ****  * Includes
+  37:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  38:../Generated_Code/usb_class.c **** #include "usb_class.h"      /* USB class Header File */
+  39:../Generated_Code/usb_class.c **** #include "usb_devapi.h"     /* USB device Header file */
+  40:../Generated_Code/usb_class.c **** #include "usb_framework.h"  /* USB framework module header file */
+  41:../Generated_Code/usb_class.c **** #include "hidef.h"          /* for EnableInterrupts macro */
+  42:../Generated_Code/usb_class.c **** 
+  43:../Generated_Code/usb_class.c **** #if 0 /* << EST */
+  44:../Generated_Code/usb_class.c **** #if (defined _MCF51MM256_H) || (defined _MCF51JE256_H)
+  45:../Generated_Code/usb_class.c **** #include "exceptions.h"
+  46:../Generated_Code/usb_class.c **** #endif
+  47:../Generated_Code/usb_class.c **** #else
+  48:../Generated_Code/usb_class.c **** /* device is Kinetis K22F120 << EST */
+  49:../Generated_Code/usb_class.c **** #endif
+  50:../Generated_Code/usb_class.c **** /*****************************************************************************
+  51:../Generated_Code/usb_class.c ****  * Constant and Macro's
+  52:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  53:../Generated_Code/usb_class.c **** 
+  54:../Generated_Code/usb_class.c **** /****************************************************************************
+  55:../Generated_Code/usb_class.c ****  * Global Variables
+  56:../Generated_Code/usb_class.c ****  ****************************************************************************/
+  57:../Generated_Code/usb_class.c ****  /* Class callback pointer */
+  58:../Generated_Code/usb_class.c **** static USB_CLASS_CALLBACK g_class_callback = NULL;
+  59:../Generated_Code/usb_class.c **** /* save the device state before device goes to suspend state */
+  60:../Generated_Code/usb_class.c **** static uint_8 g_device_state_before_suspend;
+  61:../Generated_Code/usb_class.c **** /*****************************************************************************
+  62:../Generated_Code/usb_class.c ****  * Local Types - None
+  63:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  64:../Generated_Code/usb_class.c **** 
+  65:../Generated_Code/usb_class.c **** /*****************************************************************************
+  66:../Generated_Code/usb_class.c ****  * Local Functions Prototypes
+  67:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  68:../Generated_Code/usb_class.c **** void USB_Suspend_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  69:../Generated_Code/usb_class.c **** void USB_Resume_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  70:../Generated_Code/usb_class.c **** void USB_Stall_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  71:../Generated_Code/usb_class.c **** void USB_Sof_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  72:../Generated_Code/usb_class.c **** void USB_Reset_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  73:../Generated_Code/usb_class.c **** void USB_Error_Service (PTR_USB_DEV_EVENT_STRUCT event );
+  74:../Generated_Code/usb_class.c **** 
+  75:../Generated_Code/usb_class.c **** /*****************************************************************************
+  76:../Generated_Code/usb_class.c ****  * Local Variables
+  77:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  78:../Generated_Code/usb_class.c **** 
+  79:../Generated_Code/usb_class.c ****  /*****************************************************************************
+  80:../Generated_Code/usb_class.c ****  * Local Functions - None
+  81:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  82:../Generated_Code/usb_class.c **** 
+  83:../Generated_Code/usb_class.c **** /*****************************************************************************
+  84:../Generated_Code/usb_class.c ****  * Global Functions
+  85:../Generated_Code/usb_class.c ****  *****************************************************************************/
+  86:../Generated_Code/usb_class.c **** #if 0 /* << EST */
+  87:../Generated_Code/usb_class.c **** #if (defined(_MC9S08MM128_H) || defined(_MC9S08JE128_H))
+  88:../Generated_Code/usb_class.c **** #pragma CODE_SEG DEFAULT
+  89:../Generated_Code/usb_class.c **** #endif
+  90:../Generated_Code/usb_class.c **** #else
+  91:../Generated_Code/usb_class.c **** /* device is Kinetis K22F120 << EST */
+  92:../Generated_Code/usb_class.c **** #endif
+  93:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+  94:../Generated_Code/usb_class.c ****  *
+  95:../Generated_Code/usb_class.c ****  * @name  USB_Suspend_Service
+  96:../Generated_Code/usb_class.c ****  *
+  97:../Generated_Code/usb_class.c ****  * @brief The function is called when host suspends the USB port
+  98:../Generated_Code/usb_class.c ****  *
+  99:../Generated_Code/usb_class.c ****  * @param event     : Pointer to USB Event Structure
+ 100:../Generated_Code/usb_class.c ****  *
+ 101:../Generated_Code/usb_class.c ****  * @return None
+ 102:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 103:../Generated_Code/usb_class.c ****  * Sets the device state as USB_STATE_SUSPEND
+ 104:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 105:../Generated_Code/usb_class.c **** void USB_Suspend_Service (
+ 106:../Generated_Code/usb_class.c ****     PTR_USB_DEV_EVENT_STRUCT event /* [IN] Pointer to USB Event Structure */
+ 107:../Generated_Code/usb_class.c **** )
+ 108:../Generated_Code/usb_class.c **** {
+  40              		.loc 1 108 0
+  41              		.cfi_startproc
+  42              		@ args = 0, pretend = 0, frame = 8
+  43              		@ frame_needed = 1, uses_anonymous_args = 0
+  44 0000 80B5     		push	{r7, lr}
+  45              		.cfi_def_cfa_offset 8
+  46              		.cfi_offset 7, -8
+  47              		.cfi_offset 14, -4
+  48 0002 82B0     		sub	sp, sp, #8
+  49              		.cfi_def_cfa_offset 16
+  50 0004 00AF     		add	r7, sp, #0
+  51              		.cfi_def_cfa_register 7
+  52 0006 7860     		str	r0, [r7, #4]
+ 109:../Generated_Code/usb_class.c ****     /* Get the status of the device before suspend, so that on resume we
+ 110:../Generated_Code/usb_class.c ****        can get back to the same state */
+ 111:../Generated_Code/usb_class.c ****     (void)_usb_device_get_status(&(event->controller_ID),
+  53              		.loc 1 111 0
+  54 0008 7B68     		ldr	r3, [r7, #4]
+  55 000a 1846     		mov	r0, r3
+  56 000c 0121     		movs	r1, #1
+  57 000e 0A4A     		ldr	r2, .L3
+  58 0010 FFF7FEFF 		bl	_usb_device_get_status
+ 112:../Generated_Code/usb_class.c ****         USB_STATUS_DEVICE_STATE, &g_device_state_before_suspend);
+ 113:../Generated_Code/usb_class.c ****     /* Set the device state in the Device Layer to SUSPEND */
+ 114:../Generated_Code/usb_class.c ****     (void)_usb_device_set_status(&(event->controller_ID), USB_STATUS_DEVICE_STATE,
+  59              		.loc 1 114 0
+  60 0014 7B68     		ldr	r3, [r7, #4]
+  61 0016 1846     		mov	r0, r3
+  62 0018 0121     		movs	r1, #1
+  63 001a 8022     		movs	r2, #128
+  64 001c FFF7FEFF 		bl	_usb_device_set_status
+ 115:../Generated_Code/usb_class.c ****         USB_STATE_SUSPEND);
+ 116:../Generated_Code/usb_class.c **** 
+ 117:../Generated_Code/usb_class.c ****     /* let the application know that bus suspend has taken place */
+ 118:../Generated_Code/usb_class.c ****     g_class_callback(event->controller_ID, USB_APP_BUS_SUSPEND, NULL);
+  65              		.loc 1 118 0
+  66 0020 064B     		ldr	r3, .L3+4
+  67 0022 1B68     		ldr	r3, [r3]
+  68 0024 7A68     		ldr	r2, [r7, #4]
+  69 0026 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+  70 0028 1046     		mov	r0, r2
+  71 002a 0A21     		movs	r1, #10
+  72 002c 0022     		movs	r2, #0
+  73 002e 9847     		blx	r3
+ 119:../Generated_Code/usb_class.c ****     
+ 120:../Generated_Code/usb_class.c ****     return;
+  74              		.loc 1 120 0
+  75 0030 00BF     		nop
+ 121:../Generated_Code/usb_class.c **** }
+  76              		.loc 1 121 0
+  77 0032 0837     		adds	r7, r7, #8
+  78 0034 BD46     		mov	sp, r7
+  79              		@ sp needed
+  80 0036 80BD     		pop	{r7, pc}
+  81              	.L4:
+  82              		.align	2
+  83              	.L3:
+  84 0038 00000000 		.word	g_device_state_before_suspend
+  85 003c 00000000 		.word	g_class_callback
+  86              		.cfi_endproc
+  87              	.LFE0:
+  89              		.section	.text.USB_Resume_Service,"ax",%progbits
+  90              		.align	2
+  91              		.global	USB_Resume_Service
+  92              		.thumb
+  93              		.thumb_func
+  95              	USB_Resume_Service:
+  96              	.LFB1:
+ 122:../Generated_Code/usb_class.c **** 
+ 123:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 124:../Generated_Code/usb_class.c ****  *
+ 125:../Generated_Code/usb_class.c ****  * @name  USB_Resume_Service
+ 126:../Generated_Code/usb_class.c ****  *
+ 127:../Generated_Code/usb_class.c ****  * @brief The function is called when host resumes the USB port
+ 128:../Generated_Code/usb_class.c ****  *
+ 129:../Generated_Code/usb_class.c ****  * @param event     : Pointer to USB Event Structure
+ 130:../Generated_Code/usb_class.c ****  *
+ 131:../Generated_Code/usb_class.c ****  * @return None
+ 132:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 133:../Generated_Code/usb_class.c ****  * Restore the state of the device before suspend
+ 134:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 135:../Generated_Code/usb_class.c **** void USB_Resume_Service (
+ 136:../Generated_Code/usb_class.c ****     PTR_USB_DEV_EVENT_STRUCT event /* [IN] Pointer to USB Event Structure */
+ 137:../Generated_Code/usb_class.c **** )
+ 138:../Generated_Code/usb_class.c **** {
+  97              		.loc 1 138 0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 16
+ 100              		@ frame_needed = 1, uses_anonymous_args = 0
+ 101 0000 80B5     		push	{r7, lr}
+ 102              		.cfi_def_cfa_offset 8
+ 103              		.cfi_offset 7, -8
+ 104              		.cfi_offset 14, -4
+ 105 0002 84B0     		sub	sp, sp, #16
+ 106              		.cfi_def_cfa_offset 24
+ 107 0004 00AF     		add	r7, sp, #0
+ 108              		.cfi_def_cfa_register 7
+ 109 0006 7860     		str	r0, [r7, #4]
+ 139:../Generated_Code/usb_class.c ****     uint_8 device_state;
+ 140:../Generated_Code/usb_class.c ****     (void)_usb_device_get_status(&(event->controller_ID), USB_STATUS_DEVICE_STATE,
+ 110              		.loc 1 140 0
+ 111 0008 7A68     		ldr	r2, [r7, #4]
+ 112 000a 07F10F03 		add	r3, r7, #15
+ 113 000e 1046     		mov	r0, r2
+ 114 0010 0121     		movs	r1, #1
+ 115 0012 1A46     		mov	r2, r3
+ 116 0014 FFF7FEFF 		bl	_usb_device_get_status
+ 141:../Generated_Code/usb_class.c ****         &device_state);
+ 142:../Generated_Code/usb_class.c ****     if(device_state == USB_STATE_SUSPEND)
+ 117              		.loc 1 142 0
+ 118 0018 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 119 001a 802B     		cmp	r3, #128
+ 120 001c 07D1     		bne	.L6
+ 143:../Generated_Code/usb_class.c ****     {
+ 144:../Generated_Code/usb_class.c ****         /*
+ 145:../Generated_Code/usb_class.c ****            Set the device state in the Device Layer to the state
+ 146:../Generated_Code/usb_class.c ****            before suspend
+ 147:../Generated_Code/usb_class.c ****         */
+ 148:../Generated_Code/usb_class.c ****         (void)_usb_device_set_status(&(event->controller_ID),
+ 121              		.loc 1 148 0
+ 122 001e 7A68     		ldr	r2, [r7, #4]
+ 123 0020 094B     		ldr	r3, .L8
+ 124 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 125 0024 1046     		mov	r0, r2
+ 126 0026 0121     		movs	r1, #1
+ 127 0028 1A46     		mov	r2, r3
+ 128 002a FFF7FEFF 		bl	_usb_device_set_status
+ 129              	.L6:
+ 149:../Generated_Code/usb_class.c ****             USB_STATUS_DEVICE_STATE, g_device_state_before_suspend);
+ 150:../Generated_Code/usb_class.c ****     }
+ 151:../Generated_Code/usb_class.c ****     
+ 152:../Generated_Code/usb_class.c ****     /* let the application know that bus resume has taken place */
+ 153:../Generated_Code/usb_class.c ****     g_class_callback(event->controller_ID, USB_APP_BUS_RESUME, NULL);
+ 130              		.loc 1 153 0
+ 131 002e 074B     		ldr	r3, .L8+4
+ 132 0030 1B68     		ldr	r3, [r3]
+ 133 0032 7A68     		ldr	r2, [r7, #4]
+ 134 0034 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 135 0036 1046     		mov	r0, r2
+ 136 0038 0B21     		movs	r1, #11
+ 137 003a 0022     		movs	r2, #0
+ 138 003c 9847     		blx	r3
+ 154:../Generated_Code/usb_class.c ****     
+ 155:../Generated_Code/usb_class.c ****     return;
+ 139              		.loc 1 155 0
+ 140 003e 00BF     		nop
+ 156:../Generated_Code/usb_class.c **** }
+ 141              		.loc 1 156 0
+ 142 0040 1037     		adds	r7, r7, #16
+ 143 0042 BD46     		mov	sp, r7
+ 144              		@ sp needed
+ 145 0044 80BD     		pop	{r7, pc}
+ 146              	.L9:
+ 147 0046 00BF     		.align	2
+ 148              	.L8:
+ 149 0048 00000000 		.word	g_device_state_before_suspend
+ 150 004c 00000000 		.word	g_class_callback
+ 151              		.cfi_endproc
+ 152              	.LFE1:
+ 154              		.section	.text.USB_Stall_Service,"ax",%progbits
+ 155              		.align	2
+ 156              		.global	USB_Stall_Service
+ 157              		.thumb
+ 158              		.thumb_func
+ 160              	USB_Stall_Service:
+ 161              	.LFB2:
+ 157:../Generated_Code/usb_class.c **** 
+ 158:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 159:../Generated_Code/usb_class.c ****  *
+ 160:../Generated_Code/usb_class.c ****  * @name  USB_Stall_Service
+ 161:../Generated_Code/usb_class.c ****  *
+ 162:../Generated_Code/usb_class.c ****  * @brief The function is called when endpoint is stalled
+ 163:../Generated_Code/usb_class.c ****  *
+ 164:../Generated_Code/usb_class.c ****  * @param event: Pointer to USB Event Structure
+ 165:../Generated_Code/usb_class.c ****  *
+ 166:../Generated_Code/usb_class.c ****  * @return None
+ 167:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 168:../Generated_Code/usb_class.c ****  * This function sends STALL Packet for the endpoint to be stalled. Also, sets
+ 169:../Generated_Code/usb_class.c ****  * the status of Endpoint as STALLED
+ 170:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 171:../Generated_Code/usb_class.c **** void USB_Stall_Service (
+ 172:../Generated_Code/usb_class.c ****     PTR_USB_DEV_EVENT_STRUCT event /* [IN] Pointer to USB Event Structure */
+ 173:../Generated_Code/usb_class.c **** )
+ 174:../Generated_Code/usb_class.c **** {
+ 162              		.loc 1 174 0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 8
+ 165              		@ frame_needed = 1, uses_anonymous_args = 0
+ 166 0000 80B5     		push	{r7, lr}
+ 167              		.cfi_def_cfa_offset 8
+ 168              		.cfi_offset 7, -8
+ 169              		.cfi_offset 14, -4
+ 170 0002 82B0     		sub	sp, sp, #8
+ 171              		.cfi_def_cfa_offset 16
+ 172 0004 00AF     		add	r7, sp, #0
+ 173              		.cfi_def_cfa_register 7
+ 174 0006 7860     		str	r0, [r7, #4]
+ 175:../Generated_Code/usb_class.c ****     if(event->ep_num == CONTROL_ENDPOINT)
+ 175              		.loc 1 175 0
+ 176 0008 7B68     		ldr	r3, [r7, #4]
+ 177 000a 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 178 000c 002B     		cmp	r3, #0
+ 179 000e 0DD1     		bne	.L11
+ 176:../Generated_Code/usb_class.c ****     {
+ 177:../Generated_Code/usb_class.c ****         /* Update the Endpoint Status in the Device Layer to Idle */
+ 178:../Generated_Code/usb_class.c ****         (void)_usb_device_set_status(&(event->controller_ID),
+ 180              		.loc 1 178 0
+ 181 0010 7A68     		ldr	r2, [r7, #4]
+ 179:../Generated_Code/usb_class.c ****             (uint_8)(USB_STATUS_ENDPOINT | CONTROL_ENDPOINT |
+ 180:../Generated_Code/usb_class.c ****             (event->direction << USB_COMPONENT_DIRECTION_SHIFT)),
+ 182              		.loc 1 180 0
+ 183 0012 7B68     		ldr	r3, [r7, #4]
+ 184 0014 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 185 0016 DB01     		lsls	r3, r3, #7
+ 178:../Generated_Code/usb_class.c ****         (void)_usb_device_set_status(&(event->controller_ID),
+ 186              		.loc 1 178 0
+ 187 0018 DBB2     		uxtb	r3, r3
+ 188 001a 43F01003 		orr	r3, r3, #16
+ 189 001e DBB2     		uxtb	r3, r3
+ 190 0020 DBB2     		uxtb	r3, r3
+ 191 0022 1046     		mov	r0, r2
+ 192 0024 1946     		mov	r1, r3
+ 193 0026 0022     		movs	r2, #0
+ 194 0028 FFF7FEFF 		bl	_usb_device_set_status
+ 195              	.L11:
+ 181:../Generated_Code/usb_class.c ****             (uint_16)USB_STATUS_IDLE);
+ 182:../Generated_Code/usb_class.c ****     }
+ 183:../Generated_Code/usb_class.c ****     return;
+ 196              		.loc 1 183 0
+ 197 002c 00BF     		nop
+ 184:../Generated_Code/usb_class.c **** }
+ 198              		.loc 1 184 0
+ 199 002e 0837     		adds	r7, r7, #8
+ 200 0030 BD46     		mov	sp, r7
+ 201              		@ sp needed
+ 202 0032 80BD     		pop	{r7, pc}
+ 203              		.cfi_endproc
+ 204              	.LFE2:
+ 206              		.section	.text.USB_Sof_Service,"ax",%progbits
+ 207              		.align	2
+ 208              		.global	USB_Sof_Service
+ 209              		.thumb
+ 210              		.thumb_func
+ 212              	USB_Sof_Service:
+ 213              	.LFB3:
+ 185:../Generated_Code/usb_class.c **** 
+ 186:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 187:../Generated_Code/usb_class.c ****  *
+ 188:../Generated_Code/usb_class.c ****  * @name  USB_Sof_Service
+ 189:../Generated_Code/usb_class.c ****  *
+ 190:../Generated_Code/usb_class.c ****  * @brief The function is called when SOF flag is set (from ISR)
+ 191:../Generated_Code/usb_class.c ****  *
+ 192:../Generated_Code/usb_class.c ****  * @param event: Pointer to USB Event Structure
+ 193:../Generated_Code/usb_class.c ****  *
+ 194:../Generated_Code/usb_class.c ****  * @return None
+ 195:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 196:../Generated_Code/usb_class.c ****  * This function is called when SOF token is received by controller. Updates
+ 197:../Generated_Code/usb_class.c ****  * SOF Count status.
+ 198:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 199:../Generated_Code/usb_class.c **** void USB_Sof_Service (
+ 200:../Generated_Code/usb_class.c ****     PTR_USB_DEV_EVENT_STRUCT event     /* [IN] Pointer to USB Event Structure */
+ 201:../Generated_Code/usb_class.c **** )
+ 202:../Generated_Code/usb_class.c **** {
+ 214              		.loc 1 202 0
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 16
+ 217              		@ frame_needed = 1, uses_anonymous_args = 0
+ 218 0000 80B5     		push	{r7, lr}
+ 219              		.cfi_def_cfa_offset 8
+ 220              		.cfi_offset 7, -8
+ 221              		.cfi_offset 14, -4
+ 222 0002 84B0     		sub	sp, sp, #16
+ 223              		.cfi_def_cfa_offset 24
+ 224 0004 00AF     		add	r7, sp, #0
+ 225              		.cfi_def_cfa_register 7
+ 226 0006 7860     		str	r0, [r7, #4]
+ 203:../Generated_Code/usb_class.c ****     uint_16 sof_count;
+ 204:../Generated_Code/usb_class.c **** 
+ 205:../Generated_Code/usb_class.c ****     /* update SOF */
+ 206:../Generated_Code/usb_class.c ****     sof_count = event->buffer_ptr[0];
+ 227              		.loc 1 206 0
+ 228 0008 7B68     		ldr	r3, [r7, #4]
+ 229 000a 5B68     		ldr	r3, [r3, #4]	@ unaligned
+ 230 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 231 000e FB81     		strh	r3, [r7, #14]	@ movhi
+ 207:../Generated_Code/usb_class.c ****     sof_count <<= SOF_HIGH_BYTE_SHIFT;
+ 232              		.loc 1 207 0
+ 233 0010 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 234 0012 1B02     		lsls	r3, r3, #8
+ 235 0014 FB81     		strh	r3, [r7, #14]	@ movhi
+ 208:../Generated_Code/usb_class.c ****     sof_count |= event->buffer_ptr[1];
+ 236              		.loc 1 208 0
+ 237 0016 7B68     		ldr	r3, [r7, #4]
+ 238 0018 5B68     		ldr	r3, [r3, #4]	@ unaligned
+ 239 001a 0133     		adds	r3, r3, #1
+ 240 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 241 001e 1A46     		mov	r2, r3
+ 242 0020 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 243 0022 1343     		orrs	r3, r3, r2
+ 244 0024 FB81     		strh	r3, [r7, #14]	@ movhi
+ 209:../Generated_Code/usb_class.c **** 
+ 210:../Generated_Code/usb_class.c ****     /* write SOF to status */
+ 211:../Generated_Code/usb_class.c ****     (void)_usb_device_set_status(&(event->controller_ID), USB_STATUS_SOF_COUNT,
+ 245              		.loc 1 211 0
+ 246 0026 7A68     		ldr	r2, [r7, #4]
+ 247 0028 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 248 002a DBB2     		uxtb	r3, r3
+ 249 002c 1046     		mov	r0, r2
+ 250 002e 0521     		movs	r1, #5
+ 251 0030 1A46     		mov	r2, r3
+ 252 0032 FFF7FEFF 		bl	_usb_device_set_status
+ 212:../Generated_Code/usb_class.c ****         (uint_8)sof_count);
+ 213:../Generated_Code/usb_class.c ****     return;
+ 253              		.loc 1 213 0
+ 254 0036 00BF     		nop
+ 214:../Generated_Code/usb_class.c **** }
+ 255              		.loc 1 214 0
+ 256 0038 1037     		adds	r7, r7, #16
+ 257 003a BD46     		mov	sp, r7
+ 258              		@ sp needed
+ 259 003c 80BD     		pop	{r7, pc}
+ 260              		.cfi_endproc
+ 261              	.LFE3:
+ 263 003e 00BF     		.section	.text.USB_Reset_Service,"ax",%progbits
+ 264              		.align	2
+ 265              		.global	USB_Reset_Service
+ 266              		.thumb
+ 267              		.thumb_func
+ 269              	USB_Reset_Service:
+ 270              	.LFB4:
+ 215:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 216:../Generated_Code/usb_class.c ****  *
+ 217:../Generated_Code/usb_class.c ****  * @name  USB_Reset_Service
+ 218:../Generated_Code/usb_class.c ****  *
+ 219:../Generated_Code/usb_class.c ****  * @brief The function is called upon a bus reset event.
+ 220:../Generated_Code/usb_class.c ****               Initializes the control endpoint.
+ 221:../Generated_Code/usb_class.c ****  *
+ 222:../Generated_Code/usb_class.c ****  * @param event: Pointer to USB Event Structure
+ 223:../Generated_Code/usb_class.c ****  *
+ 224:../Generated_Code/usb_class.c ****  * @return None
+ 225:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 226:../Generated_Code/usb_class.c ****  * Reset Callback function. This function re-initializes CONTROL Endpoint
+ 227:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 228:../Generated_Code/usb_class.c **** void USB_Reset_Service (
+ 229:../Generated_Code/usb_class.c ****     PTR_USB_DEV_EVENT_STRUCT event  /* [IN] Pointer to USB Event Structure */
+ 230:../Generated_Code/usb_class.c **** )
+ 231:../Generated_Code/usb_class.c **** {
+ 271              		.loc 1 231 0
+ 272              		.cfi_startproc
+ 273              		@ args = 0, pretend = 0, frame = 16
+ 274              		@ frame_needed = 1, uses_anonymous_args = 0
+ 275 0000 90B5     		push	{r4, r7, lr}
+ 276              		.cfi_def_cfa_offset 12
+ 277              		.cfi_offset 4, -12
+ 278              		.cfi_offset 7, -8
+ 279              		.cfi_offset 14, -4
+ 280 0002 87B0     		sub	sp, sp, #28
+ 281              		.cfi_def_cfa_offset 40
+ 282 0004 02AF     		add	r7, sp, #8
+ 283              		.cfi_def_cfa 7, 32
+ 284 0006 7860     		str	r0, [r7, #4]
+ 232:../Generated_Code/usb_class.c **** 
+ 233:../Generated_Code/usb_class.c ****     USB_EP_STRUCT ep_struct;
+ 234:../Generated_Code/usb_class.c ****     uint_8 err;
+ 235:../Generated_Code/usb_class.c **** 
+ 236:../Generated_Code/usb_class.c ****     /* Initialize the endpoint 0 in both directions */
+ 237:../Generated_Code/usb_class.c ****     ep_struct.direction = USB_SEND;
+ 285              		.loc 1 237 0
+ 286 0008 0123     		movs	r3, #1
+ 287 000a BB72     		strb	r3, [r7, #10]
+ 238:../Generated_Code/usb_class.c ****     ep_struct.ep_num = CONTROL_ENDPOINT;
+ 288              		.loc 1 238 0
+ 289 000c 0023     		movs	r3, #0
+ 290 000e 3B72     		strb	r3, [r7, #8]
+ 239:../Generated_Code/usb_class.c ****     ep_struct.size = CONTROL_MAX_PACKET_SIZE;
+ 291              		.loc 1 239 0
+ 292 0010 0023     		movs	r3, #0
+ 293 0012 43F01003 		orr	r3, r3, #16
+ 294 0016 FB72     		strb	r3, [r7, #11]
+ 295 0018 0023     		movs	r3, #0
+ 296 001a 3B73     		strb	r3, [r7, #12]
+ 240:../Generated_Code/usb_class.c ****     ep_struct.type = USB_CONTROL_PIPE;
+ 297              		.loc 1 240 0
+ 298 001c 0023     		movs	r3, #0
+ 299 001e 7B72     		strb	r3, [r7, #9]
+ 241:../Generated_Code/usb_class.c **** 
+ 242:../Generated_Code/usb_class.c ****     /* Deinit Endpoint in case its already initialized */
+ 243:../Generated_Code/usb_class.c ****     err = _usb_device_deinit_endpoint(&(event->controller_ID),
+ 300              		.loc 1 243 0
+ 301 0020 7968     		ldr	r1, [r7, #4]
+ 302 0022 3A7A     		ldrb	r2, [r7, #8]	@ zero_extendqisi2
+ 303 0024 BB7A     		ldrb	r3, [r7, #10]	@ zero_extendqisi2
+ 304 0026 0846     		mov	r0, r1
+ 305 0028 1146     		mov	r1, r2
+ 306 002a 1A46     		mov	r2, r3
+ 307 002c FFF7FEFF 		bl	_usb_device_deinit_endpoint
+ 308 0030 0346     		mov	r3, r0
+ 309 0032 FB73     		strb	r3, [r7, #15]
+ 244:../Generated_Code/usb_class.c ****     	ep_struct.ep_num, ep_struct.direction);
+ 245:../Generated_Code/usb_class.c ****     /* now initialize the endpoint */
+ 246:../Generated_Code/usb_class.c ****     err = _usb_device_init_endpoint(&(event->controller_ID),
+ 310              		.loc 1 246 0
+ 311 0034 7868     		ldr	r0, [r7, #4]
+ 312 0036 397A     		ldrb	r1, [r7, #8]	@ zero_extendqisi2
+ 313 0038 B7F80B30 		ldrh	r3, [r7, #11]	@ unaligned
+ 314 003c 9AB2     		uxth	r2, r3
+ 315 003e BB7A     		ldrb	r3, [r7, #10]	@ zero_extendqisi2
+ 316 0040 7C7A     		ldrb	r4, [r7, #9]	@ zero_extendqisi2
+ 317 0042 0094     		str	r4, [sp]
+ 318 0044 0124     		movs	r4, #1
+ 319 0046 0194     		str	r4, [sp, #4]
+ 320 0048 FFF7FEFF 		bl	_usb_device_init_endpoint
+ 321 004c 0346     		mov	r3, r0
+ 322 004e FB73     		strb	r3, [r7, #15]
+ 247:../Generated_Code/usb_class.c ****     		ep_struct.ep_num, (uint_16)ep_struct.size, ep_struct.direction, ep_struct.type, TRUE);
+ 248:../Generated_Code/usb_class.c **** 
+ 249:../Generated_Code/usb_class.c ****     ep_struct.direction = USB_RECV;
+ 323              		.loc 1 249 0
+ 324 0050 0023     		movs	r3, #0
+ 325 0052 BB72     		strb	r3, [r7, #10]
+ 250:../Generated_Code/usb_class.c ****     /* Deinit Endpoint in case its already initialized */
+ 251:../Generated_Code/usb_class.c ****     (void)_usb_device_deinit_endpoint(&(event->controller_ID),
+ 326              		.loc 1 251 0
+ 327 0054 7968     		ldr	r1, [r7, #4]
+ 328 0056 3A7A     		ldrb	r2, [r7, #8]	@ zero_extendqisi2
+ 329 0058 BB7A     		ldrb	r3, [r7, #10]	@ zero_extendqisi2
+ 330 005a 0846     		mov	r0, r1
+ 331 005c 1146     		mov	r1, r2
+ 332 005e 1A46     		mov	r2, r3
+ 333 0060 FFF7FEFF 		bl	_usb_device_deinit_endpoint
+ 252:../Generated_Code/usb_class.c ****     	ep_struct.ep_num, ep_struct.direction);
+ 253:../Generated_Code/usb_class.c ****     /* now initialize the endpoint */
+ 254:../Generated_Code/usb_class.c ****     (void)_usb_device_init_endpoint(&(event->controller_ID),
+ 334              		.loc 1 254 0
+ 335 0064 7868     		ldr	r0, [r7, #4]
+ 336 0066 397A     		ldrb	r1, [r7, #8]	@ zero_extendqisi2
+ 337 0068 B7F80B30 		ldrh	r3, [r7, #11]	@ unaligned
+ 338 006c 9AB2     		uxth	r2, r3
+ 339 006e BB7A     		ldrb	r3, [r7, #10]	@ zero_extendqisi2
+ 340 0070 7C7A     		ldrb	r4, [r7, #9]	@ zero_extendqisi2
+ 341 0072 0094     		str	r4, [sp]
+ 342 0074 0124     		movs	r4, #1
+ 343 0076 0194     		str	r4, [sp, #4]
+ 344 0078 FFF7FEFF 		bl	_usb_device_init_endpoint
+ 255:../Generated_Code/usb_class.c ****     		ep_struct.ep_num, (uint_16)ep_struct.size, ep_struct.direction, ep_struct.type, TRUE);
+ 256:../Generated_Code/usb_class.c **** 
+ 257:../Generated_Code/usb_class.c ****     /* set the default device state */
+ 258:../Generated_Code/usb_class.c ****     (void)_usb_device_set_status(&(event->controller_ID), USB_STATUS_DEVICE_STATE,
+ 345              		.loc 1 258 0
+ 346 007c 7B68     		ldr	r3, [r7, #4]
+ 347 007e 1846     		mov	r0, r3
+ 348 0080 0121     		movs	r1, #1
+ 349 0082 0222     		movs	r2, #2
+ 350 0084 FFF7FEFF 		bl	_usb_device_set_status
+ 259:../Generated_Code/usb_class.c ****         USB_STATE_DEFAULT);
+ 260:../Generated_Code/usb_class.c **** 
+ 261:../Generated_Code/usb_class.c ****     /* set the default device state */
+ 262:../Generated_Code/usb_class.c ****     (void)_usb_device_set_status(&(event->controller_ID), USB_STATUS_DEVICE,
+ 351              		.loc 1 262 0
+ 352 0088 7B68     		ldr	r3, [r7, #4]
+ 353 008a 1846     		mov	r0, r3
+ 354 008c 0621     		movs	r1, #6
+ 355 008e 0122     		movs	r2, #1
+ 356 0090 FFF7FEFF 		bl	_usb_device_set_status
+ 263:../Generated_Code/usb_class.c ****         SELF_POWERED >> SELF_POWER_BIT_SHIFT);
+ 264:../Generated_Code/usb_class.c **** 
+ 265:../Generated_Code/usb_class.c ****     /* set the EndPoint Status as Idle in the device layer */
+ 266:../Generated_Code/usb_class.c ****     (void)_usb_device_set_status(&(event->controller_ID),
+ 357              		.loc 1 266 0
+ 358 0094 7B68     		ldr	r3, [r7, #4]
+ 359 0096 1846     		mov	r0, r3
+ 360 0098 9021     		movs	r1, #144
+ 361 009a 0022     		movs	r2, #0
+ 362 009c FFF7FEFF 		bl	_usb_device_set_status
+ 267:../Generated_Code/usb_class.c ****         (uint_8)(USB_STATUS_ENDPOINT | CONTROL_ENDPOINT |
+ 268:../Generated_Code/usb_class.c ****         (USB_SEND << USB_COMPONENT_DIRECTION_SHIFT)),
+ 269:../Generated_Code/usb_class.c ****         USB_STATUS_IDLE);
+ 270:../Generated_Code/usb_class.c ****     /* let the application know that bus reset has taken place */
+ 271:../Generated_Code/usb_class.c ****     g_class_callback(event->controller_ID, USB_APP_BUS_RESET, NULL);
+ 363              		.loc 1 271 0
+ 364 00a0 054B     		ldr	r3, .L17
+ 365 00a2 1B68     		ldr	r3, [r3]
+ 366 00a4 7A68     		ldr	r2, [r7, #4]
+ 367 00a6 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 368 00a8 1046     		mov	r0, r2
+ 369 00aa 0021     		movs	r1, #0
+ 370 00ac 0022     		movs	r2, #0
+ 371 00ae 9847     		blx	r3
+ 272:../Generated_Code/usb_class.c **** 
+ 273:../Generated_Code/usb_class.c **** 	UNUSED(err);
+ 274:../Generated_Code/usb_class.c ****     return;
+ 372              		.loc 1 274 0
+ 373 00b0 00BF     		nop
+ 275:../Generated_Code/usb_class.c **** }
+ 374              		.loc 1 275 0
+ 375 00b2 1437     		adds	r7, r7, #20
+ 376 00b4 BD46     		mov	sp, r7
+ 377              		@ sp needed
+ 378 00b6 90BD     		pop	{r4, r7, pc}
+ 379              	.L18:
+ 380              		.align	2
+ 381              	.L17:
+ 382 00b8 00000000 		.word	g_class_callback
+ 383              		.cfi_endproc
+ 384              	.LFE4:
+ 386              		.section	.text.USB_Error_Service,"ax",%progbits
+ 387              		.align	2
+ 388              		.global	USB_Error_Service
+ 389              		.thumb
+ 390              		.thumb_func
+ 392              	USB_Error_Service:
+ 393              	.LFB5:
+ 276:../Generated_Code/usb_class.c **** 
+ 277:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 278:../Generated_Code/usb_class.c ****  *
+ 279:../Generated_Code/usb_class.c ****  * @name  USB_Error_Service
+ 280:../Generated_Code/usb_class.c ****  *
+ 281:../Generated_Code/usb_class.c ****  * @brief The function is called when an error has been detected
+ 282:../Generated_Code/usb_class.c ****  *
+ 283:../Generated_Code/usb_class.c ****  * @param event: Pointer to USB Event Structure
+ 284:../Generated_Code/usb_class.c ****  *
+ 285:../Generated_Code/usb_class.c ****  * @return None
+ 286:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 287:../Generated_Code/usb_class.c ****  * Calls application with the error code received from the lower layer
+ 288:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 289:../Generated_Code/usb_class.c **** void USB_Error_Service (
+ 290:../Generated_Code/usb_class.c ****     PTR_USB_DEV_EVENT_STRUCT event /* [IN] Pointer to USB Event Structure */
+ 291:../Generated_Code/usb_class.c **** )
+ 292:../Generated_Code/usb_class.c **** {
+ 394              		.loc 1 292 0
+ 395              		.cfi_startproc
+ 396              		@ args = 0, pretend = 0, frame = 8
+ 397              		@ frame_needed = 1, uses_anonymous_args = 0
+ 398 0000 80B5     		push	{r7, lr}
+ 399              		.cfi_def_cfa_offset 8
+ 400              		.cfi_offset 7, -8
+ 401              		.cfi_offset 14, -4
+ 402 0002 82B0     		sub	sp, sp, #8
+ 403              		.cfi_def_cfa_offset 16
+ 404 0004 00AF     		add	r7, sp, #0
+ 405              		.cfi_def_cfa_register 7
+ 406 0006 7860     		str	r0, [r7, #4]
+ 293:../Generated_Code/usb_class.c ****     /* notify the application of the error */
+ 294:../Generated_Code/usb_class.c ****     g_class_callback(event->controller_ID, USB_APP_ERROR,
+ 407              		.loc 1 294 0
+ 408 0008 064B     		ldr	r3, .L21
+ 409 000a 1B68     		ldr	r3, [r3]
+ 410 000c 7A68     		ldr	r2, [r7, #4]
+ 411 000e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 295:../Generated_Code/usb_class.c ****         (uint_8*)(&(event->errors)));
+ 412              		.loc 1 295 0
+ 413 0010 7A68     		ldr	r2, [r7, #4]
+ 414 0012 0832     		adds	r2, r2, #8
+ 294:../Generated_Code/usb_class.c ****     g_class_callback(event->controller_ID, USB_APP_ERROR,
+ 415              		.loc 1 294 0
+ 416 0014 0846     		mov	r0, r1
+ 417 0016 0521     		movs	r1, #5
+ 418 0018 9847     		blx	r3
+ 296:../Generated_Code/usb_class.c ****     return;
+ 419              		.loc 1 296 0
+ 420 001a 00BF     		nop
+ 297:../Generated_Code/usb_class.c **** }
+ 421              		.loc 1 297 0
+ 422 001c 0837     		adds	r7, r7, #8
+ 423 001e BD46     		mov	sp, r7
+ 424              		@ sp needed
+ 425 0020 80BD     		pop	{r7, pc}
+ 426              	.L22:
+ 427 0022 00BF     		.align	2
+ 428              	.L21:
+ 429 0024 00000000 		.word	g_class_callback
+ 430              		.cfi_endproc
+ 431              	.LFE5:
+ 433              		.section	.text.USB_Class_Init,"ax",%progbits
+ 434              		.align	2
+ 435              		.global	USB_Class_Init
+ 436              		.thumb
+ 437              		.thumb_func
+ 439              	USB_Class_Init:
+ 440              	.LFB6:
+ 298:../Generated_Code/usb_class.c **** 
+ 299:../Generated_Code/usb_class.c **** 
+ 300:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 301:../Generated_Code/usb_class.c ****  *
+ 302:../Generated_Code/usb_class.c ****  * @name  USB_Class_Init
+ 303:../Generated_Code/usb_class.c ****  *
+ 304:../Generated_Code/usb_class.c ****  * @brief The function initializes the Class Module
+ 305:../Generated_Code/usb_class.c ****  *
+ 306:../Generated_Code/usb_class.c ****  * @param controller_ID         : Controller ID
+ 307:../Generated_Code/usb_class.c ****  * @param class_callback        : Class callback
+ 308:../Generated_Code/usb_class.c ****  * @param other_req_callback    : Other Requests Callback
+ 309:../Generated_Code/usb_class.c ****  *
+ 310:../Generated_Code/usb_class.c ****  * @return status
+ 311:../Generated_Code/usb_class.c ****  *         USB_OK           : When Successfull
+ 312:../Generated_Code/usb_class.c ****  *         Others           : Errors
+ 313:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 314:../Generated_Code/usb_class.c ****  * Initializes USB Class Module
+ 315:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 316:../Generated_Code/usb_class.c **** uint_8 USB_Class_Init (
+ 317:../Generated_Code/usb_class.c ****     uint_8    controller_ID,                /* [IN] Controller ID */
+ 318:../Generated_Code/usb_class.c ****     USB_CLASS_CALLBACK class_callback,      /* [IN] Class Callback */
+ 319:../Generated_Code/usb_class.c ****     USB_REQ_FUNC       other_req_callback   /* [IN] Other Requests Callback */
+ 320:../Generated_Code/usb_class.c **** )
+ 321:../Generated_Code/usb_class.c **** {
+ 441              		.loc 1 321 0
+ 442              		.cfi_startproc
+ 443              		@ args = 0, pretend = 0, frame = 24
+ 444              		@ frame_needed = 1, uses_anonymous_args = 0
+ 445 0000 80B5     		push	{r7, lr}
+ 446              		.cfi_def_cfa_offset 8
+ 447              		.cfi_offset 7, -8
+ 448              		.cfi_offset 14, -4
+ 449 0002 86B0     		sub	sp, sp, #24
+ 450              		.cfi_def_cfa_offset 32
+ 451 0004 00AF     		add	r7, sp, #0
+ 452              		.cfi_def_cfa_register 7
+ 453 0006 0346     		mov	r3, r0
+ 454 0008 B960     		str	r1, [r7, #8]
+ 455 000a 7A60     		str	r2, [r7, #4]
+ 456 000c FB73     		strb	r3, [r7, #15]
+ 322:../Generated_Code/usb_class.c ****     uint_8 status = USB_Framework_Init(controller_ID,class_callback,
+ 457              		.loc 1 322 0
+ 458 000e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 459 0010 1846     		mov	r0, r3
+ 460 0012 B968     		ldr	r1, [r7, #8]
+ 461 0014 7A68     		ldr	r2, [r7, #4]
+ 462 0016 FFF7FEFF 		bl	USB_Framework_Init
+ 463 001a 0346     		mov	r3, r0
+ 464 001c FB75     		strb	r3, [r7, #23]
+ 323:../Generated_Code/usb_class.c ****         other_req_callback);
+ 324:../Generated_Code/usb_class.c **** 
+ 325:../Generated_Code/usb_class.c ****     /* save callback address */
+ 326:../Generated_Code/usb_class.c ****     g_class_callback = class_callback;
+ 465              		.loc 1 326 0
+ 466 001e 2B4B     		ldr	r3, .L26
+ 467 0020 BA68     		ldr	r2, [r7, #8]
+ 468 0022 1A60     		str	r2, [r3]
+ 327:../Generated_Code/usb_class.c **** 
+ 328:../Generated_Code/usb_class.c ****     if(status == USB_OK)
+ 469              		.loc 1 328 0
+ 470 0024 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 471 0026 002B     		cmp	r3, #0
+ 472 0028 4BD1     		bne	.L24
+ 329:../Generated_Code/usb_class.c ****     {
+ 330:../Generated_Code/usb_class.c ****         /* Register all the services here */
+ 331:../Generated_Code/usb_class.c ****         status |= _usb_device_register_service(controller_ID,
+ 473              		.loc 1 331 0
+ 474 002a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 475 002c 1846     		mov	r0, r3
+ 476 002e 1021     		movs	r1, #16
+ 477 0030 274A     		ldr	r2, .L26+4
+ 478 0032 FFF7FEFF 		bl	_usb_device_register_service
+ 479 0036 0346     		mov	r3, r0
+ 480 0038 1A46     		mov	r2, r3
+ 481 003a FB7D     		ldrb	r3, [r7, #23]
+ 482 003c 1343     		orrs	r3, r3, r2
+ 483 003e FB75     		strb	r3, [r7, #23]
+ 332:../Generated_Code/usb_class.c ****             USB_SERVICE_BUS_RESET, USB_Reset_Service);
+ 333:../Generated_Code/usb_class.c ****         status |= _usb_device_register_service(controller_ID,
+ 484              		.loc 1 333 0
+ 485 0040 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 486 0042 1846     		mov	r0, r3
+ 487 0044 1221     		movs	r1, #18
+ 488 0046 234A     		ldr	r2, .L26+8
+ 489 0048 FFF7FEFF 		bl	_usb_device_register_service
+ 490 004c 0346     		mov	r3, r0
+ 491 004e 1A46     		mov	r2, r3
+ 492 0050 FB7D     		ldrb	r3, [r7, #23]
+ 493 0052 1343     		orrs	r3, r3, r2
+ 494 0054 FB75     		strb	r3, [r7, #23]
+ 334:../Generated_Code/usb_class.c ****             USB_SERVICE_SOF,USB_Sof_Service);
+ 335:../Generated_Code/usb_class.c ****         status |= _usb_device_register_service(controller_ID,
+ 495              		.loc 1 335 0
+ 496 0056 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 497 0058 1846     		mov	r0, r3
+ 498 005a 1421     		movs	r1, #20
+ 499 005c 1E4A     		ldr	r2, .L26+12
+ 500 005e FFF7FEFF 		bl	_usb_device_register_service
+ 501 0062 0346     		mov	r3, r0
+ 502 0064 1A46     		mov	r2, r3
+ 503 0066 FB7D     		ldrb	r3, [r7, #23]
+ 504 0068 1343     		orrs	r3, r3, r2
+ 505 006a FB75     		strb	r3, [r7, #23]
+ 336:../Generated_Code/usb_class.c ****             USB_SERVICE_SLEEP,USB_Suspend_Service);
+ 337:../Generated_Code/usb_class.c ****         status |= _usb_device_register_service(controller_ID,
+ 506              		.loc 1 337 0
+ 507 006c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 508 006e 1846     		mov	r0, r3
+ 509 0070 1321     		movs	r1, #19
+ 510 0072 1A4A     		ldr	r2, .L26+16
+ 511 0074 FFF7FEFF 		bl	_usb_device_register_service
+ 512 0078 0346     		mov	r3, r0
+ 513 007a 1A46     		mov	r2, r3
+ 514 007c FB7D     		ldrb	r3, [r7, #23]
+ 515 007e 1343     		orrs	r3, r3, r2
+ 516 0080 FB75     		strb	r3, [r7, #23]
+ 338:../Generated_Code/usb_class.c ****             USB_SERVICE_RESUME,USB_Resume_Service);
+ 339:../Generated_Code/usb_class.c ****         status |= _usb_device_register_service(controller_ID,
+ 517              		.loc 1 339 0
+ 518 0082 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 519 0084 1846     		mov	r0, r3
+ 520 0086 1721     		movs	r1, #23
+ 521 0088 154A     		ldr	r2, .L26+20
+ 522 008a FFF7FEFF 		bl	_usb_device_register_service
+ 523 008e 0346     		mov	r3, r0
+ 524 0090 1A46     		mov	r2, r3
+ 525 0092 FB7D     		ldrb	r3, [r7, #23]
+ 526 0094 1343     		orrs	r3, r3, r2
+ 527 0096 FB75     		strb	r3, [r7, #23]
+ 340:../Generated_Code/usb_class.c ****             USB_SERVICE_STALL,USB_Stall_Service);
+ 341:../Generated_Code/usb_class.c ****         status |= _usb_device_register_service(controller_ID,
+ 528              		.loc 1 341 0
+ 529 0098 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 530 009a 1846     		mov	r0, r3
+ 531 009c 1621     		movs	r1, #22
+ 532 009e 114A     		ldr	r2, .L26+24
+ 533 00a0 FFF7FEFF 		bl	_usb_device_register_service
+ 534 00a4 0346     		mov	r3, r0
+ 535 00a6 1A46     		mov	r2, r3
+ 536 00a8 FB7D     		ldrb	r3, [r7, #23]
+ 537 00aa 1343     		orrs	r3, r3, r2
+ 538 00ac FB75     		strb	r3, [r7, #23]
+ 342:../Generated_Code/usb_class.c ****             USB_SERVICE_ERROR,USB_Error_Service);
+ 343:../Generated_Code/usb_class.c **** 
+ 344:../Generated_Code/usb_class.c ****         /* set the device state as powered */
+ 345:../Generated_Code/usb_class.c ****         (void)_usb_device_set_status(&controller_ID,
+ 539              		.loc 1 345 0
+ 540 00ae 07F10F03 		add	r3, r7, #15
+ 541 00b2 1846     		mov	r0, r3
+ 542 00b4 0121     		movs	r1, #1
+ 543 00b6 0322     		movs	r2, #3
+ 544 00b8 FFF7FEFF 		bl	_usb_device_set_status
+ 346:../Generated_Code/usb_class.c ****             USB_STATUS_DEVICE_STATE,USB_STATE_POWERED);
+ 347:../Generated_Code/usb_class.c ****         g_device_state_before_suspend = USB_STATE_POWERED;
+ 545              		.loc 1 347 0
+ 546 00bc 0A4B     		ldr	r3, .L26+28
+ 547 00be 0322     		movs	r2, #3
+ 548 00c0 1A70     		strb	r2, [r3]
+ 549              	.L24:
+ 348:../Generated_Code/usb_class.c ****     }
+ 349:../Generated_Code/usb_class.c **** 
+ 350:../Generated_Code/usb_class.c ****     return status;
+ 550              		.loc 1 350 0
+ 551 00c2 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 351:../Generated_Code/usb_class.c **** }
+ 552              		.loc 1 351 0
+ 553 00c4 1846     		mov	r0, r3
+ 554 00c6 1837     		adds	r7, r7, #24
+ 555 00c8 BD46     		mov	sp, r7
+ 556              		@ sp needed
+ 557 00ca 80BD     		pop	{r7, pc}
+ 558              	.L27:
+ 559              		.align	2
+ 560              	.L26:
+ 561 00cc 00000000 		.word	g_class_callback
+ 562 00d0 00000000 		.word	USB_Reset_Service
+ 563 00d4 00000000 		.word	USB_Sof_Service
+ 564 00d8 00000000 		.word	USB_Suspend_Service
+ 565 00dc 00000000 		.word	USB_Resume_Service
+ 566 00e0 00000000 		.word	USB_Stall_Service
+ 567 00e4 00000000 		.word	USB_Error_Service
+ 568 00e8 00000000 		.word	g_device_state_before_suspend
+ 569              		.cfi_endproc
+ 570              	.LFE6:
+ 572              		.section	.text.USB_Class_DeInit,"ax",%progbits
+ 573              		.align	2
+ 574              		.global	USB_Class_DeInit
+ 575              		.thumb
+ 576              		.thumb_func
+ 578              	USB_Class_DeInit:
+ 579              	.LFB7:
+ 352:../Generated_Code/usb_class.c **** 
+ 353:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 354:../Generated_Code/usb_class.c ****  *
+ 355:../Generated_Code/usb_class.c ****  * @name  USB_Class_DeInit
+ 356:../Generated_Code/usb_class.c ****  *
+ 357:../Generated_Code/usb_class.c ****  * @brief The function De-initializes the Class Module
+ 358:../Generated_Code/usb_class.c ****  *
+ 359:../Generated_Code/usb_class.c ****  * @param controller_ID         : Controller ID
+ 360:../Generated_Code/usb_class.c ****  *
+ 361:../Generated_Code/usb_class.c ****  * @return status
+ 362:../Generated_Code/usb_class.c ****  *         USB_OK           : When Successfull
+ 363:../Generated_Code/usb_class.c ****  *         Others           : Errors
+ 364:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 365:../Generated_Code/usb_class.c ****  * De-initializes USB Class Module
+ 366:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 367:../Generated_Code/usb_class.c **** uint_8 USB_Class_DeInit
+ 368:../Generated_Code/usb_class.c **** (
+ 369:../Generated_Code/usb_class.c ****     uint_8    controller_ID          /* [IN] Controller ID */
+ 370:../Generated_Code/usb_class.c **** )
+ 371:../Generated_Code/usb_class.c **** {
+ 580              		.loc 1 371 0
+ 581              		.cfi_startproc
+ 582              		@ args = 0, pretend = 0, frame = 16
+ 583              		@ frame_needed = 1, uses_anonymous_args = 0
+ 584 0000 80B5     		push	{r7, lr}
+ 585              		.cfi_def_cfa_offset 8
+ 586              		.cfi_offset 7, -8
+ 587              		.cfi_offset 14, -4
+ 588 0002 84B0     		sub	sp, sp, #16
+ 589              		.cfi_def_cfa_offset 24
+ 590 0004 00AF     		add	r7, sp, #0
+ 591              		.cfi_def_cfa_register 7
+ 592 0006 0346     		mov	r3, r0
+ 593 0008 FB71     		strb	r3, [r7, #7]
+ 372:../Generated_Code/usb_class.c ****     uint_8 status = USB_OK;
+ 594              		.loc 1 372 0
+ 595 000a 0023     		movs	r3, #0
+ 596 000c FB73     		strb	r3, [r7, #15]
+ 373:../Generated_Code/usb_class.c ****     /* Free class_callback */
+ 374:../Generated_Code/usb_class.c ****     g_class_callback = NULL;
+ 597              		.loc 1 374 0
+ 598 000e 264B     		ldr	r3, .L31
+ 599 0010 0022     		movs	r2, #0
+ 600 0012 1A60     		str	r2, [r3]
+ 375:../Generated_Code/usb_class.c **** 
+ 376:../Generated_Code/usb_class.c ****     /* Unegister all the services here */
+ 377:../Generated_Code/usb_class.c ****     status |= _usb_device_unregister_service(&controller_ID,USB_SERVICE_BUS_RESET);
+ 601              		.loc 1 377 0
+ 602 0014 FB1D     		adds	r3, r7, #7
+ 603 0016 1846     		mov	r0, r3
+ 604 0018 1021     		movs	r1, #16
+ 605 001a FFF7FEFF 		bl	_usb_device_unregister_service
+ 606 001e 0346     		mov	r3, r0
+ 607 0020 1A46     		mov	r2, r3
+ 608 0022 FB7B     		ldrb	r3, [r7, #15]
+ 609 0024 1343     		orrs	r3, r3, r2
+ 610 0026 FB73     		strb	r3, [r7, #15]
+ 378:../Generated_Code/usb_class.c ****     status |= _usb_device_unregister_service(&controller_ID,USB_SERVICE_SOF);
+ 611              		.loc 1 378 0
+ 612 0028 FB1D     		adds	r3, r7, #7
+ 613 002a 1846     		mov	r0, r3
+ 614 002c 1221     		movs	r1, #18
+ 615 002e FFF7FEFF 		bl	_usb_device_unregister_service
+ 616 0032 0346     		mov	r3, r0
+ 617 0034 1A46     		mov	r2, r3
+ 618 0036 FB7B     		ldrb	r3, [r7, #15]
+ 619 0038 1343     		orrs	r3, r3, r2
+ 620 003a FB73     		strb	r3, [r7, #15]
+ 379:../Generated_Code/usb_class.c ****     status |= _usb_device_unregister_service(&controller_ID,USB_SERVICE_SLEEP);
+ 621              		.loc 1 379 0
+ 622 003c FB1D     		adds	r3, r7, #7
+ 623 003e 1846     		mov	r0, r3
+ 624 0040 1421     		movs	r1, #20
+ 625 0042 FFF7FEFF 		bl	_usb_device_unregister_service
+ 626 0046 0346     		mov	r3, r0
+ 627 0048 1A46     		mov	r2, r3
+ 628 004a FB7B     		ldrb	r3, [r7, #15]
+ 629 004c 1343     		orrs	r3, r3, r2
+ 630 004e FB73     		strb	r3, [r7, #15]
+ 380:../Generated_Code/usb_class.c ****     status |= _usb_device_unregister_service(&controller_ID,USB_SERVICE_RESUME);
+ 631              		.loc 1 380 0
+ 632 0050 FB1D     		adds	r3, r7, #7
+ 633 0052 1846     		mov	r0, r3
+ 634 0054 1321     		movs	r1, #19
+ 635 0056 FFF7FEFF 		bl	_usb_device_unregister_service
+ 636 005a 0346     		mov	r3, r0
+ 637 005c 1A46     		mov	r2, r3
+ 638 005e FB7B     		ldrb	r3, [r7, #15]
+ 639 0060 1343     		orrs	r3, r3, r2
+ 640 0062 FB73     		strb	r3, [r7, #15]
+ 381:../Generated_Code/usb_class.c ****     status |= _usb_device_unregister_service(&controller_ID,USB_SERVICE_STALL);
+ 641              		.loc 1 381 0
+ 642 0064 FB1D     		adds	r3, r7, #7
+ 643 0066 1846     		mov	r0, r3
+ 644 0068 1721     		movs	r1, #23
+ 645 006a FFF7FEFF 		bl	_usb_device_unregister_service
+ 646 006e 0346     		mov	r3, r0
+ 647 0070 1A46     		mov	r2, r3
+ 648 0072 FB7B     		ldrb	r3, [r7, #15]
+ 649 0074 1343     		orrs	r3, r3, r2
+ 650 0076 FB73     		strb	r3, [r7, #15]
+ 382:../Generated_Code/usb_class.c ****     status |= _usb_device_unregister_service(&controller_ID,USB_SERVICE_ERROR);
+ 651              		.loc 1 382 0
+ 652 0078 FB1D     		adds	r3, r7, #7
+ 653 007a 1846     		mov	r0, r3
+ 654 007c 1621     		movs	r1, #22
+ 655 007e FFF7FEFF 		bl	_usb_device_unregister_service
+ 656 0082 0346     		mov	r3, r0
+ 657 0084 1A46     		mov	r2, r3
+ 658 0086 FB7B     		ldrb	r3, [r7, #15]
+ 659 0088 1343     		orrs	r3, r3, r2
+ 660 008a FB73     		strb	r3, [r7, #15]
+ 383:../Generated_Code/usb_class.c **** 
+ 384:../Generated_Code/usb_class.c ****     if(status == USB_OK)
+ 661              		.loc 1 384 0
+ 662 008c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 663 008e 002B     		cmp	r3, #0
+ 664 0090 05D1     		bne	.L29
+ 385:../Generated_Code/usb_class.c ****         /* Call Framework deinit function */
+ 386:../Generated_Code/usb_class.c ****         status = USB_Framework_DeInit(controller_ID);
+ 665              		.loc 1 386 0
+ 666 0092 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 667 0094 1846     		mov	r0, r3
+ 668 0096 FFF7FEFF 		bl	USB_Framework_DeInit
+ 669 009a 0346     		mov	r3, r0
+ 670 009c FB73     		strb	r3, [r7, #15]
+ 671              	.L29:
+ 387:../Generated_Code/usb_class.c **** 
+ 388:../Generated_Code/usb_class.c ****     return status;
+ 672              		.loc 1 388 0
+ 673 009e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 389:../Generated_Code/usb_class.c **** }
+ 674              		.loc 1 389 0
+ 675 00a0 1846     		mov	r0, r3
+ 676 00a2 1037     		adds	r7, r7, #16
+ 677 00a4 BD46     		mov	sp, r7
+ 678              		@ sp needed
+ 679 00a6 80BD     		pop	{r7, pc}
+ 680              	.L32:
+ 681              		.align	2
+ 682              	.L31:
+ 683 00a8 00000000 		.word	g_class_callback
+ 684              		.cfi_endproc
+ 685              	.LFE7:
+ 687              		.section	.text.USB_Class_Initiate_Resume,"ax",%progbits
+ 688              		.align	2
+ 689              		.global	USB_Class_Initiate_Resume
+ 690              		.thumb
+ 691              		.thumb_func
+ 693              	USB_Class_Initiate_Resume:
+ 694              	.LFB8:
+ 390:../Generated_Code/usb_class.c **** 
+ 391:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 392:../Generated_Code/usb_class.c ****  *
+ 393:../Generated_Code/usb_class.c ****  * @name  USB_Class_Initiate_Resume
+ 394:../Generated_Code/usb_class.c ****  *
+ 395:../Generated_Code/usb_class.c ****  * @brief The function initiates resume procedure
+ 396:../Generated_Code/usb_class.c ****  *
+ 397:../Generated_Code/usb_class.c ****  * @param controller_ID         : Controller ID
+ 398:../Generated_Code/usb_class.c ****  *
+ 399:../Generated_Code/usb_class.c ****  * @return device_state
+ 400:../Generated_Code/usb_class.c ****  ******************************************************************************/
+ 401:../Generated_Code/usb_class.c **** uint_8 USB_Class_Initiate_Resume(
+ 402:../Generated_Code/usb_class.c **** 		uint_8           controller_ID /* [IN] Controller ID */
+ 403:../Generated_Code/usb_class.c **** )
+ 404:../Generated_Code/usb_class.c **** {
+ 695              		.loc 1 404 0
+ 696              		.cfi_startproc
+ 697              		@ args = 0, pretend = 0, frame = 16
+ 698              		@ frame_needed = 1, uses_anonymous_args = 0
+ 699 0000 80B5     		push	{r7, lr}
+ 700              		.cfi_def_cfa_offset 8
+ 701              		.cfi_offset 7, -8
+ 702              		.cfi_offset 14, -4
+ 703 0002 84B0     		sub	sp, sp, #16
+ 704              		.cfi_def_cfa_offset 24
+ 705 0004 00AF     		add	r7, sp, #0
+ 706              		.cfi_def_cfa_register 7
+ 707 0006 0346     		mov	r3, r0
+ 708 0008 FB71     		strb	r3, [r7, #7]
+ 405:../Generated_Code/usb_class.c ****   uint_8 device_state, state;
+ 406:../Generated_Code/usb_class.c **** 	
+ 407:../Generated_Code/usb_class.c ****   (void)_usb_device_get_status(&controller_ID, USB_STATUS_DEVICE_STATE, 
+ 709              		.loc 1 407 0
+ 710 000a FA1D     		adds	r2, r7, #7
+ 711 000c 07F10F03 		add	r3, r7, #15
+ 712 0010 1046     		mov	r0, r2
+ 713 0012 0121     		movs	r1, #1
+ 714 0014 1A46     		mov	r2, r3
+ 715 0016 FFF7FEFF 		bl	_usb_device_get_status
+ 408:../Generated_Code/usb_class.c ****   		&device_state);
+ 409:../Generated_Code/usb_class.c ****   (void)_usb_device_get_status(&controller_ID, USB_STATUS_DEVICE, &state);
+ 716              		.loc 1 409 0
+ 717 001a FA1D     		adds	r2, r7, #7
+ 718 001c 07F10E03 		add	r3, r7, #14
+ 719 0020 1046     		mov	r0, r2
+ 720 0022 0621     		movs	r1, #6
+ 721 0024 1A46     		mov	r2, r3
+ 722 0026 FFF7FEFF 		bl	_usb_device_get_status
+ 410:../Generated_Code/usb_class.c ****   if((device_state == USB_STATE_SUSPEND) &&
+ 723              		.loc 1 410 0
+ 724 002a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 725 002c 802B     		cmp	r3, #128
+ 726 002e 19D1     		bne	.L34
+ 411:../Generated_Code/usb_class.c ****       (state & REMOTE_WAKEUP_STATUS_MASK ) &&
+ 727              		.loc 1 411 0 discriminator 1
+ 728 0030 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 729 0032 03F00203 		and	r3, r3, #2
+ 410:../Generated_Code/usb_class.c ****   if((device_state == USB_STATE_SUSPEND) &&
+ 730              		.loc 1 410 0 discriminator 1
+ 731 0036 002B     		cmp	r3, #0
+ 732 0038 14D0     		beq	.L34
+ 412:../Generated_Code/usb_class.c ****       (USB_Frame_Remote_Wakeup(controller_ID) == TRUE))
+ 733              		.loc 1 412 0
+ 734 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 735 003c 1846     		mov	r0, r3
+ 736 003e FFF7FEFF 		bl	USB_Desc_Remote_Wakeup
+ 737 0042 0346     		mov	r3, r0
+ 411:../Generated_Code/usb_class.c ****       (state & REMOTE_WAKEUP_STATUS_MASK ) &&
+ 738              		.loc 1 411 0
+ 739 0044 012B     		cmp	r3, #1
+ 740 0046 0DD1     		bne	.L34
+ 413:../Generated_Code/usb_class.c ****   {
+ 414:../Generated_Code/usb_class.c ****       DisableInterrupts;
+ 741              		.loc 1 414 0
+ 742              	@ 414 "../Generated_Code/usb_class.c" 1
+ 743 0048 72B6     		CPSID  i
+ 744              	@ 0 "" 2
+ 415:../Generated_Code/usb_class.c **** #if 0
+ 416:../Generated_Code/usb_class.c **** 		#if (defined _MCF51MM256_H) || (defined _MCF51JE256_H)
+ 417:../Generated_Code/usb_class.c **** 		usb_int_dis();
+ 418:../Generated_Code/usb_class.c **** 		#endif
+ 419:../Generated_Code/usb_class.c **** #else /* << EST */
+ 420:../Generated_Code/usb_class.c **** 		/* device is Kinetis K22F120 << EST */
+ 421:../Generated_Code/usb_class.c **** #endif
+ 422:../Generated_Code/usb_class.c ****   /* Resume the bus */
+ 423:../Generated_Code/usb_class.c **** 	_usb_device_assert_resume(&controller_ID);
+ 745              		.loc 1 423 0
+ 746              		.thumb
+ 747 004a FB1D     		adds	r3, r7, #7
+ 748 004c 1846     		mov	r0, r3
+ 749 004e FFF7FEFF 		bl	_usb_device_assert_resume
+ 424:../Generated_Code/usb_class.c **** 
+ 425:../Generated_Code/usb_class.c **** 	device_state = USB_STATE_CONFIG;
+ 750              		.loc 1 425 0
+ 751 0052 0023     		movs	r3, #0
+ 752 0054 FB73     		strb	r3, [r7, #15]
+ 426:../Generated_Code/usb_class.c ****       /* Set the device state in the Device Layer to DEFAULT */
+ 427:../Generated_Code/usb_class.c ****       (void)_usb_device_set_status(&controller_ID, USB_STATUS_DEVICE_STATE,
+ 753              		.loc 1 427 0
+ 754 0056 FB1D     		adds	r3, r7, #7
+ 755 0058 1846     		mov	r0, r3
+ 756 005a 0121     		movs	r1, #1
+ 757 005c 0022     		movs	r2, #0
+ 758 005e FFF7FEFF 		bl	_usb_device_set_status
+ 428:../Generated_Code/usb_class.c ****           USB_STATE_CONFIG);
+ 429:../Generated_Code/usb_class.c ****       EnableInterrupts;
+ 759              		.loc 1 429 0
+ 760              	@ 429 "../Generated_Code/usb_class.c" 1
+ 761 0062 62B6     		CPSIE  i
+ 762              	@ 0 "" 2
+ 763              		.thumb
+ 764              	.L34:
+ 430:../Generated_Code/usb_class.c **** 	#if (defined _MCF51MM256_H) || (defined _MCF51JE256_H)
+ 431:../Generated_Code/usb_class.c **** 	usb_int_en();
+ 432:../Generated_Code/usb_class.c **** 	#endif		
+ 433:../Generated_Code/usb_class.c ****   }
+ 434:../Generated_Code/usb_class.c ****   return device_state;
+ 765              		.loc 1 434 0
+ 766 0064 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 435:../Generated_Code/usb_class.c **** }
+ 767              		.loc 1 435 0
+ 768 0066 1846     		mov	r0, r3
+ 769 0068 1037     		adds	r7, r7, #16
+ 770 006a BD46     		mov	sp, r7
+ 771              		@ sp needed
+ 772 006c 80BD     		pop	{r7, pc}
+ 773              		.cfi_endproc
+ 774              	.LFE8:
+ 776              		.section	.text.USB_Class_Send_Data,"ax",%progbits
+ 777              		.align	2
+ 778              		.global	USB_Class_Send_Data
+ 779              		.thumb
+ 780              		.thumb_func
+ 782              	USB_Class_Send_Data:
+ 783              	.LFB9:
+ 436:../Generated_Code/usb_class.c **** 
+ 437:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 438:../Generated_Code/usb_class.c ****  *
+ 439:../Generated_Code/usb_class.c ****  * @name  USB_Class_Send_Data
+ 440:../Generated_Code/usb_class.c ****  *
+ 441:../Generated_Code/usb_class.c ****  * @brief The function calls the device to send data upon receiving an IN token
+ 442:../Generated_Code/usb_class.c ****  *
+ 443:../Generated_Code/usb_class.c ****  * @param controller_ID     : Controller ID
+ 444:../Generated_Code/usb_class.c ****  * @param ep_num            : Endpoint number
+ 445:../Generated_Code/usb_class.c ****  * @param buff_ptr          : Buffer to send
+ 446:../Generated_Code/usb_class.c ****  * @param size              : Length of transfer
+ 447:../Generated_Code/usb_class.c ****  *
+ 448:../Generated_Code/usb_class.c ****  * @return status
+ 449:../Generated_Code/usb_class.c ****  *         USB_OK           : When Successfull
+ 450:../Generated_Code/usb_class.c ****  *         Others           : Errors
+ 451:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 452:../Generated_Code/usb_class.c ****  * Used by Application to send Data on USB Bus if not suspended
+ 453:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 454:../Generated_Code/usb_class.c **** uint_8 USB_Class_Send_Data (
+ 455:../Generated_Code/usb_class.c ****     uint_8           controller_ID, /* [IN] Controller ID */
+ 456:../Generated_Code/usb_class.c ****     uint_8           ep_num,        /* [IN] Endpoint number */
+ 457:../Generated_Code/usb_class.c ****     uint_8_ptr       buff_ptr,      /* [IN] Buffer to send */
+ 458:../Generated_Code/usb_class.c ****     USB_PACKET_SIZE  size           /* [IN] Length of the transfer */
+ 459:../Generated_Code/usb_class.c **** )
+ 460:../Generated_Code/usb_class.c **** {
+ 784              		.loc 1 460 0
+ 785              		.cfi_startproc
+ 786              		@ args = 0, pretend = 0, frame = 16
+ 787              		@ frame_needed = 1, uses_anonymous_args = 0
+ 788 0000 80B5     		push	{r7, lr}
+ 789              		.cfi_def_cfa_offset 8
+ 790              		.cfi_offset 7, -8
+ 791              		.cfi_offset 14, -4
+ 792 0002 84B0     		sub	sp, sp, #16
+ 793              		.cfi_def_cfa_offset 24
+ 794 0004 00AF     		add	r7, sp, #0
+ 795              		.cfi_def_cfa_register 7
+ 796 0006 3A60     		str	r2, [r7]
+ 797 0008 0246     		mov	r2, r0
+ 798 000a FA71     		strb	r2, [r7, #7]
+ 799 000c 0A46     		mov	r2, r1
+ 800 000e BA71     		strb	r2, [r7, #6]
+ 801 0010 BB80     		strh	r3, [r7, #4]	@ movhi
+ 461:../Generated_Code/usb_class.c **** 
+ 462:../Generated_Code/usb_class.c ****     uint_8 status = USB_OK;
+ 802              		.loc 1 462 0
+ 803 0012 0023     		movs	r3, #0
+ 804 0014 FB73     		strb	r3, [r7, #15]
+ 463:../Generated_Code/usb_class.c ****     uint_8 device_state;
+ 464:../Generated_Code/usb_class.c ****     
+ 465:../Generated_Code/usb_class.c ****     device_state = USB_Class_Initiate_Resume(controller_ID);
+ 805              		.loc 1 465 0
+ 806 0016 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 807 0018 1846     		mov	r0, r3
+ 808 001a FFF7FEFF 		bl	USB_Class_Initiate_Resume
+ 809 001e 0346     		mov	r3, r0
+ 810 0020 BB73     		strb	r3, [r7, #14]
+ 466:../Generated_Code/usb_class.c **** 
+ 467:../Generated_Code/usb_class.c ****     if(device_state != USB_STATE_SUSPEND)
+ 811              		.loc 1 467 0
+ 812 0022 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 813 0024 802B     		cmp	r3, #128
+ 814 0026 09D0     		beq	.L37
+ 468:../Generated_Code/usb_class.c ****     {    /* if not suspended */
+ 469:../Generated_Code/usb_class.c ****          status = _usb_device_send_data(&controller_ID, ep_num, buff_ptr, size);
+ 815              		.loc 1 469 0
+ 816 0028 BB88     		ldrh	r3, [r7, #4]
+ 817 002a F91D     		adds	r1, r7, #7
+ 818 002c BA79     		ldrb	r2, [r7, #6]	@ zero_extendqisi2
+ 819 002e 0846     		mov	r0, r1
+ 820 0030 1146     		mov	r1, r2
+ 821 0032 3A68     		ldr	r2, [r7]
+ 822 0034 FFF7FEFF 		bl	_usb_device_send_data
+ 823 0038 0346     		mov	r3, r0
+ 824 003a FB73     		strb	r3, [r7, #15]
+ 825              	.L37:
+ 470:../Generated_Code/usb_class.c ****     }
+ 471:../Generated_Code/usb_class.c **** 
+ 472:../Generated_Code/usb_class.c ****     return status;
+ 826              		.loc 1 472 0
+ 827 003c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 473:../Generated_Code/usb_class.c ****  }
+ 828              		.loc 1 473 0
+ 829 003e 1846     		mov	r0, r3
+ 830 0040 1037     		adds	r7, r7, #16
+ 831 0042 BD46     		mov	sp, r7
+ 832              		@ sp needed
+ 833 0044 80BD     		pop	{r7, pc}
+ 834              		.cfi_endproc
+ 835              	.LFE9:
+ 837 0046 00BF     		.section	.text.USB_Class_Periodic_Task,"ax",%progbits
+ 838              		.align	2
+ 839              		.global	USB_Class_Periodic_Task
+ 840              		.thumb
+ 841              		.thumb_func
+ 843              	USB_Class_Periodic_Task:
+ 844              	.LFB10:
+ 474:../Generated_Code/usb_class.c **** 
+ 475:../Generated_Code/usb_class.c **** /**************************************************************************//*!
+ 476:../Generated_Code/usb_class.c ****  *
+ 477:../Generated_Code/usb_class.c ****  * @name   USB_Class_Periodic_Task
+ 478:../Generated_Code/usb_class.c ****  *
+ 479:../Generated_Code/usb_class.c ****  * @brief  The function calls for periodic tasks
+ 480:../Generated_Code/usb_class.c ****  *
+ 481:../Generated_Code/usb_class.c ****  * @param  None
+ 482:../Generated_Code/usb_class.c ****  *
+ 483:../Generated_Code/usb_class.c ****  * @return None
+ 484:../Generated_Code/usb_class.c ****  ******************************************************************************
+ 485:../Generated_Code/usb_class.c ****  * Called to check for any pending requests
+ 486:../Generated_Code/usb_class.c ****  *****************************************************************************/
+ 487:../Generated_Code/usb_class.c **** void USB_Class_Periodic_Task (void)
+ 488:../Generated_Code/usb_class.c **** {
+ 845              		.loc 1 488 0
+ 846              		.cfi_startproc
+ 847              		@ args = 0, pretend = 0, frame = 0
+ 848              		@ frame_needed = 1, uses_anonymous_args = 0
+ 849              		@ link register save eliminated.
+ 850 0000 80B4     		push	{r7}
+ 851              		.cfi_def_cfa_offset 4
+ 852              		.cfi_offset 7, -4
+ 853 0002 00AF     		add	r7, sp, #0
+ 854              		.cfi_def_cfa_register 7
+ 489:../Generated_Code/usb_class.c **** #ifdef DELAYED_PROCESSING
+ 490:../Generated_Code/usb_class.c ****     USB_Framework_Periodic_Task();
+ 491:../Generated_Code/usb_class.c **** #endif
+ 492:../Generated_Code/usb_class.c **** }
+ 855              		.loc 1 492 0
+ 856 0004 BD46     		mov	sp, r7
+ 857              		@ sp needed
+ 858 0006 5DF8047B 		ldr	r7, [sp], #4
+ 859 000a 7047     		bx	lr
+ 860              		.cfi_endproc
+ 861              	.LFE10:
+ 863              		.text
+ 864              	.Letext0:
+ 865              		.file 2 "../Generated_Code/types.h"
+ 866              		.file 3 "../Generated_Code/usb_devapi.h"
+ 867              		.file 4 "../Generated_Code/usb_class.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 usb_class.c
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:21     .bss.g_class_callback:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:24     .bss.g_class_callback:00000000 g_class_callback
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:29     .bss.g_device_state_before_suspend:00000000 g_device_state_before_suspend
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:30     .bss.g_device_state_before_suspend:00000000 $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:32     .text.USB_Suspend_Service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:37     .text.USB_Suspend_Service:00000000 USB_Suspend_Service
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:84     .text.USB_Suspend_Service:00000038 $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:90     .text.USB_Resume_Service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:95     .text.USB_Resume_Service:00000000 USB_Resume_Service
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:149    .text.USB_Resume_Service:00000048 $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:155    .text.USB_Stall_Service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:160    .text.USB_Stall_Service:00000000 USB_Stall_Service
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:207    .text.USB_Sof_Service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:212    .text.USB_Sof_Service:00000000 USB_Sof_Service
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:264    .text.USB_Reset_Service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:269    .text.USB_Reset_Service:00000000 USB_Reset_Service
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:382    .text.USB_Reset_Service:000000b8 $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:387    .text.USB_Error_Service:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:392    .text.USB_Error_Service:00000000 USB_Error_Service
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:429    .text.USB_Error_Service:00000024 $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:434    .text.USB_Class_Init:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:439    .text.USB_Class_Init:00000000 USB_Class_Init
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:561    .text.USB_Class_Init:000000cc $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:573    .text.USB_Class_DeInit:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:578    .text.USB_Class_DeInit:00000000 USB_Class_DeInit
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:683    .text.USB_Class_DeInit:000000a8 $d
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:688    .text.USB_Class_Initiate_Resume:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:693    .text.USB_Class_Initiate_Resume:00000000 USB_Class_Initiate_Resume
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:777    .text.USB_Class_Send_Data:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:782    .text.USB_Class_Send_Data:00000000 USB_Class_Send_Data
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:838    .text.USB_Class_Periodic_Task:00000000 $t
+C:\Users\Aron\AppData\Local\Temp\ccYCaLGi.s:843    .text.USB_Class_Periodic_Task:00000000 USB_Class_Periodic_Task
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.0.22dcf9ce9babd46e5ea858ea4400d115
+                           .group:00000000 wm4.stddef.h.39.daafd3d79fe2f3a84d2d73d7d4e706f8
+                           .group:00000000 wm4.types.h.50.034d0729b1885c66fd44563eba5494e4
+                           .group:00000000 wm4.hidef.h.47.6ef7d215344a2f057d0c5b3f27c726aa
+                           .group:00000000 wm4.features.h.22.6a4ca7cd053637cc1d0db6c16f39b2d7
+                           .group:00000000 wm4._default_types.h.15.8b2cb27e528498f8ff711db085d6e489
+                           .group:00000000 wm4.stdint.h.20.796e373797e732130a803d4c0338fa1b
+                           .group:00000000 wm4.PE_Types.h.111.91c29732807f8842161a15451efcd747
+                           .group:00000000 wm4.PE_Error.h.60.6ccf96637e85421388d147a5dcbc3621
+                           .group:00000000 wm4.PE_Const.h.60.44eca2ca2a72148441f11b3e43b344a9
+                           .group:00000000 wm4.MK22F12.h.59.83dcc0895f45d7d67f2182a38aa7f04f
+                           .group:00000000 wm4.Cpu.h.80.27ab3269a1d751f899c04690559be7d6
+                           .group:00000000 wm4.FSL_USB_Stack_Config.h.5.a51a5d818e84d127c6c2fe6362a5c643
+                           .group:00000000 wm4.usb_user_config.h.47.47e295f338247e629ef1110422279558
+                           .group:00000000 wm4.usb_devapi.h.60.9ad576a4fab4e64ae00ce9daf4685bf6
+                           .group:00000000 wm4.usb_class.h.55.92808305847d365ece574c9f6c1494ae
+                           .group:00000000 wm4.usb_descriptor.h.22.8ce00718dc8831c9823675dd75db5e93
+                           .group:00000000 wm4.usb_framework.h.52.a25a6e7fafc6a07277aff719344526fc
+
+UNDEFINED SYMBOLS
+_usb_device_get_status
+_usb_device_set_status
+_usb_device_deinit_endpoint
+_usb_device_init_endpoint
+USB_Framework_Init
+_usb_device_register_service
+_usb_device_unregister_service
+USB_Framework_DeInit
+USB_Desc_Remote_Wakeup
+_usb_device_assert_resume
+_usb_device_send_data
