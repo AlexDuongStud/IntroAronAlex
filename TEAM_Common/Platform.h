@@ -104,7 +104,7 @@
 #define PL_CONFIG_HAS_SNAKE_GAME        (1 && !defined(PL_LOCAL_CONFIG_HAS_SNAKE_GAME_DISABLED) && PL_CONFIG_HAS_LCD)
 
 /*!
- * \brief Driver de-initialization
+ * \brief Driver de-initialization 
  */
 void PL_Deinit(void);
 
